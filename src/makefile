@@ -5,10 +5,6 @@
 PROJECT_NAME = game
 CC = gcc
 
-# DÉFINITION DES CHEMINS
-# Basé sur "../lib/raylib/include/raylib.h"
-RAYLIB_DIR = ../lib/raylib
-
 # CFLAGS : -I permet d'ajouter le dossier d'include (optionnel si tu mets le chemin complet dans le .c, mais plus propre)
 CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I$(RAYLIB_DIR)/include
 
@@ -22,6 +18,7 @@ ifeq ($(OS),Windows_NT)
     LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -lopengl32 -lgdi32 -lwinmm
     EXT = .exe
     RM = del /Q
+    RAYLIB_DIR = ../lib/raylib/windows
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
@@ -29,12 +26,14 @@ else
         LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
         EXT = 
         RM = rm -f
+        RAYLIB_DIR = ../lib/raylib/linux
     endif
     ifeq ($(UNAME_S),Darwin)
         # MacOS
         LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -framework IOKit -framework Cocoa -framework OpenGL
         EXT = 
         RM = rm -f
+        RAYLIB_DIR = ../lib/raylib/linux
     endif
 endif
 
