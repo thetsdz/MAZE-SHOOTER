@@ -1,71 +1,53 @@
-# ==========================================
-# CONFIGURATION DU COMPILATEUR
-# ==========================================
+# -----------------------------------------------------------------------------
+# MAKEFILE ADAPTÉ (Game)
+# -----------------------------------------------------------------------------
+
+PROJECT_NAME = game
 CC = gcc
 
-# Flags de compilation :
-# -Wall -Wextra : Affiche tous les avertissements (bonnes pratiques)
-# -g : Ajoute les infos de débogage (utile pour gdb/valgrind)
-# -I. : Cherche les .h dans le dossier courant
-# -I../lib/raylib/include : Cherche les headers Raylib
-CFLAGS = -Wall -Wextra -g -I. -I../lib/raylib/include
+# DÉFINITION DES CHEMINS
+# Basé sur "../lib/raylib/include/raylib.h"
+#####RAYLIB_DIR = ../lib/raylib
 
-# Flags de l'éditeur de liens (Linker) :
-# -L../lib/raylib/lib : Cherche la librairie compilée (.a) dans ce dossier
-LDFLAGS = -L../lib/raylib/lib
+# CFLAGS : -I permet d'ajouter le dossier d'include (optionnel si tu mets le chemin complet dans le .c, mais plus propre)
+CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I$(RAYLIB_DIR)/include
 
-# Bibliothèques à lier :
-# -lraylib : La librairie Raylib
-# -lm : Math library (indispensable pour la 3D)
-# -lpthread -ldl -lrt -lX11 : Dépendances système pour Raylib sous Linux
-LDLIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+# LISTE DES FICHIERS SOURCE
+SRCS = main.c level.c player.c projectile.c
 
-# Nom de l'exécutable final
-EXEC = jeu
+# DÉTECTION OS & LIBRAIRIES
+# On ajoute -L pour dire au compilateur où chercher le fichier binaire de raylib
+ifeq ($(OS),Windows_NT)
+    # Sur Windows, on cherche souvent dans lib/
+    LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -lopengl32 -lgdi32 -lwinmm
+    EXT = .exe
+    RM = del /Q
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        # Sur Linux, il faut souvent lier explicitement m (math), pthread, etc.
+        LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+        EXT = 
+        RM = rm -f
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        # MacOS
+        LDFLAGS = -L$(RAYLIB_DIR)/lib -lraylib -framework IOKit -framework Cocoa -framework OpenGL
+        EXT = 
+        RM = rm -f
+    endif
+endif
 
-# Liste des fichiers sources
-SRC = main.c pile.c labyrinthe.c
-
-# Liste des fichiers objets (remplace .c par .o)
-OBJ = $(SRC:.c=.o)
-
-# ==========================================
 # RÈGLES DE COMPILATION
-# ==========================================
 
-# Règle par défaut (lancée par la commande "make")
-all: $(EXEC)
+# 1. Règle par défaut
+all:
+	$(CC) $(SRCS) -o $(PROJECT_NAME)$(EXT) $(CFLAGS) $(LDFLAGS)
 
-# Édition de liens : Crée l'exécutable à partir des objets
-$(EXEC): $(OBJ)
-	$(CC) $(OBJ) -o $@ $(LDFLAGS) $(LDLIBS)
+# 2. Lancer le jeu après compilation
+run: all
+	./$(PROJECT_NAME)$(EXT)
 
-# Compilation générique des fichiers .c en .o
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# ==========================================
-# GESTION DES DÉPENDANCES
-# ==========================================
-# Ici, on précise quel fichier dépend de quel header.
-# Si un .h change, on recompilera le .c associé.
-
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c -o main.o
-
-pile.o: pile.c pile.h
-	$(CC) $(CFLAGS) -c pile.c -o pile.o
-
-labyrinthe.o: labyrinthe.c pile.h fonctionslabyrinthe.h
-	$(CC) $(CFLAGS) -c labyrinthe.c -o labyrinthe.o
-
-# ==========================================
-# NETTOYAGE
-# ==========================================
-
-# Supprime les fichiers temporaires ("make clean")
+# 3. Nettoyer les fichiers générés
 clean:
-	rm -f $(OBJ) $(EXEC)
-
-# Indique que 'all' et 'clean' ne sont pas des fichiers réels
-.PHONY: all clean
+	$(RM) $(PROJECT_NAME)$(EXT)

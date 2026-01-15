@@ -1,216 +1,158 @@
-#include "../lib/raylib/include/raylib.h"
-#include "../lib/raylib/include/raymath.h"
+#include "raylib.h"
+#include "raymath.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
-#include <math.h>
 
-/**
- * @file main.c
- * @brief Programme principal pour mon projet.
- * @author Thomas Dequirez
- */
-
-/**
- * @brief Affiche un message de bienvenue.
- * @param nom Le nom de l'utilisateur.
- */
-
-typedef struct {
-    Vector3 pos;
-    float width;
-    float height;
-    float depth;
-    Color color;
-} Block;
-
-#define NUM_BLOCKS 10 // 5 blocs + 4 murs de bordure + 1 plafond
-
+// Inclusion de nos propres modules
+#include "types.h"
+#include "level.h"
+#include "player.h"
+#include "projectile.h"
 
 int main(void){
-    // --- Initialisation plein écran ---
+    // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);
     int screenHeight = GetMonitorHeight(0);
-    InitWindow(screenWidth, screenHeight, "JEU");
+    InitWindow(screenWidth, screenHeight, "JEU REFACTORISE");
     ToggleFullscreen();
-    SetTargetFPS(60);
-    DisableCursor();
-    srand(time(NULL));
+    SetTargetFPS(60);   // Essaye de maintenir 60 images/seconde
+    DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
+    srand(time(NULL));  // Initialise le générateur aléatoire
 
-    int fps = GetFPS();
-    // --- Cube joueur ---
-    Vector3 cubePos = {0, 0.5f, 0};
-    float cubeSize = 1.0f;
-    float normalHeight = 0.5f;
-    float crouchHeight = 0.2f;
+    // --- Initialisation des Objets ---
+    Player player;
+    InitPlayer(&player);
 
-    // --- Orientation caméra ---
-    float yaw = 0.0f;
-    float pitch = 0.0f;
-    float speed = 0.1f;
-    float rotationSpeed = 0.03f;
+    Block blocks[NUM_BLOCKS];
+    InitLevel(blocks);
 
-    // --- Saut et gravité ---
-    float velocityY = 0.0f;
-    float gravity = 0.02f;
-    bool onGround = true;
-    float jumpStrength = 0.4f;
+    Projectile projs[MAX_PROJ];
+    InitProjectiles(projs);
 
-    // --- Cible rouge ---
-    Vector3 ciblePos = {(float)(rand()%20-10),0.5f,(float)(rand()%20-10)};
+    // Setup de la cible rouge
+    Vector3 ciblePos = {(float)(rand()%20-10), 0.5f, (float)(rand()%20-10)};
     float cibleRadius = 0.5f;
     int score = 0;
 
-    // --- Blocs solides ---
-    Block blocks[NUM_BLOCKS] = {
-        // Blocs classiques
-        {{2, 0.5f, 2}, 2, 1, 2, BROWN},
-        {{-3, 1.0f, 4}, 3, 1, 3, BROWN},
-        {{5, 1.5f, -2}, 2, 1, 2, BROWN},
-        {{-2, 2.0f, -3}, 4, 1, 2, BROWN},
-        {{0, 3.0f, 5}, 2, 1, 2, BROWN},
-        // Bordure (hauteur 3)
-        {{0, 1.5f, -25}, 50, 6, 1, BLACK},
-        {{0, 1.5f, 25}, 50, 6, 1, BLACK},
-        {{-25, 1.5f, 0}, 1, 6, 50, BLACK},
-        {{25, 1.5f, 0}, 1, 6, 50, BLACK},
-        // Plafond invisible
-        {{0, 10.0f, 0}, 50, 1, 50, Fade(LIGHTGRAY, 0.0f)}
-    };
-
-    // --- Caméra 3D ---
+    // Setup Caméra Raylib standard
     Camera3D camera = {0};
-    camera.up = (Vector3){0,1,0};
-    camera.fovy = 60;
+    camera.up = (Vector3){0,1,0}; // L'axe Y pointe vers le haut
+    camera.fovy = 60;              // Champ de vision (Field of View)
     camera.projection = CAMERA_PERSPECTIVE;
 
+    // Fichier de log
+    FILE *f = fopen("log.txt", "w");
+    // --- 3. Boucle Principale ---
     while(!WindowShouldClose()){
-        // --- Quitter jeu avec Échap ---
+        
         if(IsKeyPressed(KEY_ESCAPE)) break;
 
-        // --- Rotation caméra avec flèches ---
-        if(IsKeyDown(KEY_LEFT))  yaw += rotationSpeed;
-        if(IsKeyDown(KEY_RIGHT)) yaw -= rotationSpeed;
+        // --- ETAPE UPDATE ---
+        
+        UpdatePlayer(&player, blocks, &camera);
 
-        //rotation avec touches hors flèches
-        if(IsKeyDown(KEY_A))  yaw += rotationSpeed;
-        if(IsKeyDown(KEY_D)) yaw -= rotationSpeed;
-
-        // --- Rotation caméra souris ---
-        Vector2 mouseDelta = GetMouseDelta();
-        yaw -= mouseDelta.x * 0.003f;
-        pitch -= mouseDelta.y * 0.003f;
-        if(pitch > 1.5f) pitch = 1.5f;
-        if(pitch < -1.5f) pitch = -1.5f;
-
-        // --- Vecteur avant pour déplacement ---
-        Vector3 forward = {sinf(yaw), 0, cosf(yaw)};
-
-        // --- Accroupissement ---
-        float playerHalf = cubeSize/2;
-        float baseY = normalHeight;
-        if(IsKeyDown(KEY_LEFT_SHIFT) && onGround) baseY = crouchHeight;
-
-        // --- Saut ---
-        if(IsKeyPressed(KEY_SPACE) && onGround){
-            velocityY = jumpStrength;
-            onGround = false;
-        }
-
-        // --- Appliquer gravité ---
-        velocityY -= gravity;
-
-        // --- Déplacement tentative cube ---
-        Vector3 nextPos = cubePos;
-        if(IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)){
-            nextPos.x += forward.x * speed;
-            nextPos.z += forward.z * speed;
-        }
-        if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)){
-            nextPos.x += forward.x * speed;
-            nextPos.z += forward.z * speed;
-        }
-        nextPos.y += velocityY;
-
-        // --- Collision complète avec blocs ---
-        onGround = false;
-        for(int i=0;i<NUM_BLOCKS;i++){
-            Block b = blocks[i];
-            float halfX = b.width/2;
-            float halfY = b.height/2;
-            float halfZ = b.depth/2;
-
-            bool collideX = nextPos.x + playerHalf > b.pos.x - halfX && nextPos.x - playerHalf < b.pos.x + halfX;
-            bool collideY = nextPos.y + playerHalf > b.pos.y - halfY && nextPos.y - playerHalf < b.pos.y + halfY;
-            bool collideZ = nextPos.z + playerHalf > b.pos.z - halfZ && nextPos.z - playerHalf < b.pos.z + halfZ;
-
-            if(collideX && collideY && collideZ){
-                float top = b.pos.y + halfY;
-                float bottom = b.pos.y - halfY;
-
-                if(velocityY < 0 && cubePos.y - playerHalf >= top){ 
-                    // Collision en tombant (dessus du bloc)
-                    nextPos.y = top + playerHalf;
-                    velocityY = 0;
-                    onGround = true;
-                }
-                else if(velocityY > 0 && cubePos.y + playerHalf <= bottom){ 
-                    // Collision en montant (dessous du bloc)
-                    nextPos.y = bottom - playerHalf;
-                    velocityY = 0;
-                } else {
-                    // Bloquer déplacement horizontal
-                    nextPos.x = cubePos.x;
-                    nextPos.z = cubePos.z;
-                }
+        // enregistrer les informations joueur dans le fichier de sauvegarde
+        if(IsKeyPressed(KEY_Y)){
+            FILE *fw = fopen("save.txt", "w");
+            if(fw){
+                fprintf(fw, "%d\n", score);
+                fprintf(fw, "%d\n", player.maxAmmo);
+                fclose(fw);
             }
         }
 
-        // --- Collision avec le sol ---
-        if(nextPos.y <= baseY){
-            nextPos.y = baseY;
-            velocityY = 0;
-            onGround = true;
+        // charger les informations joueur depuis le fichier de sauvegarde
+        if(IsKeyPressed(KEY_U)){
+            FILE * fr = fopen("save.txt", "r");
+            if(fr){
+                fscanf(fr, "%d\n", &score);
+                fscanf(fr, "%d\n", &player.maxAmmo);
+                fclose(fr);
+            }
+        }
+        // --- GESTION MUNITIONS & AMELIORATIONS ---
+
+        // Recharger (Touche R)
+        if(IsKeyPressed(KEY_R)){
+            player.ammo = player.maxAmmo; // Remplit le chargeur au max actuel
         }
 
-        cubePos = nextPos;
+        // Acheter Amélioration (Touche E)
+        // Condition : Avoir assez de score ET ne pas dépasser 50 de capacité max
+        if(IsKeyPressed(KEY_E) && score >= SCORE_TRADE && player.maxAmmo < MAX_PROJ){
+            score -= SCORE_TRADE;       // Coût
+            player.maxAmmo += 2; // Bonus
+            TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d", player.maxAmmo);
+        }
 
-        // --- Collision avec cible ---
-        if(Vector3Distance(cubePos,ciblePos) <= cubeSize/2 + cibleRadius){
+        // Tirer (Clic Gauche)
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(player.ammo > 0) {
+                ShootProjectile(projs, player); 
+                player.ammo--; // On décrémente une balle
+            } else {
+                TraceLog(LOG_INFO, "Clic! Plus de munitions.");
+            }
+        }
+
+        UpdateProjectiles(projs, blocks, &ciblePos, cibleRadius, &score);
+
+        if(Vector3Distance(player.pos, ciblePos) <= player.size/2 + cibleRadius){
             score++;
             ciblePos.x = (float)(rand()%20-10);
             ciblePos.z = (float)(rand()%20-10);
         }
 
-        // --- Caméra ---
-        Vector3 camForward = {sinf(yaw)*cosf(pitch), sinf(pitch), cosf(yaw)*cosf(pitch)};
-        camera.position = (Vector3){cubePos.x, cubePos.y + 0.5f, cubePos.z};
-        camera.target   = Vector3Add(camera.position, camForward);
-
-        // --- Rendu ---
+        // --- ETAPE DRAW ---
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
         BeginMode3D(camera);
-            DrawPlane((Vector3){0,0,0},(Vector2){50,50},LIGHTGRAY);
-            DrawGrid(100,1.0f);
-
-            // Dessiner blocs
-            for(int i=0;i<NUM_BLOCKS;i++){
-                Block b = blocks[i];
-                DrawCube(b.pos,b.width,b.height,b.depth,b.color);
-            }
-
-            // Cube joueur
-            DrawCube(cubePos,cubeSize,cubeSize,cubeSize,BLUE);
-
-            // Cible
-            DrawSphere(ciblePos,cibleRadius,RED);
+            DrawLevel(blocks);
+            DrawCube(player.pos, player.size, player.size, player.size, BLUE);
+            DrawSphere(ciblePos, cibleRadius, RED);
+            DrawProjectiles(projs);
         EndMode3D();
 
-        DrawText(TextFormat("Score: %d | FPS: %d",score,GetFPS()),10,10,20,DARKGRAY);
+        // --- INTERFACE UTILISATEUR (UI) MISE A JOUR ---
+        
+        // Affichage Score et FPS
+        DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20, DARKGRAY);
+        
+        // Affichage Munitions (Rouge si vide, Vert sinon)
+        Color ammoColor = (player.ammo == 0) ? RED : DARKGREEN;
+        DrawText(TextFormat("Munitions: %d / %d", player.ammo, player.maxAmmo), 10, 40, 20, ammoColor);
+        
+        // Affichage instruction Recharge
+        if(player.ammo < player.maxAmmo) {
+            DrawText("Appuyez sur [R] pour Recharger", 10, 65, 10, GRAY);
+        }
+
+        // Affichage Magasin (Upgrade)
+        if(player.maxAmmo < MAX_PROJ) {
+            if(score >= SCORE_TRADE) {
+                // Le joueur peut acheter : Texte en Or/Orange
+                DrawText("Appuyez sur [E] pour +2 Munitions Max (-100 pts)", 10, 90, 20, GOLD);
+            } else {
+                // Pas assez de points : Texte gris
+                DrawText(TextFormat("Prochaine amélioration: 100 pts (Actuel: %d)", score), 10, 90, 10, LIGHTGRAY);
+            }
+        } else {
+            DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
+        }
+        
         EndDrawing();
     }
 
-    CloseWindow();
+    // --- Enregistrement des informations de fin de partie ---
+    if(f){
+        fprintf(f, "%d\n", score);
+        fprintf(f, "%d\n", player.maxAmmo);
+    }
+    // --- Nettoyage ---
+    if(f) fclose(f);
+    CloseWindow(); // Ferme la fenêtre OpenGL
     return 0;
 }
+
