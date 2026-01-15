@@ -8,6 +8,8 @@ void InitPlayer(Player *player) {
     player->velocityY = 0.0f;
     player->onGround = true;
     player->size = 1.0f;
+    player->ammo = 10;     // Commence avec 10 balles
+    player->maxAmmo = 10;  // Capacité de base de 10
 }
 
 void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {

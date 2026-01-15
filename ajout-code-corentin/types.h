@@ -4,7 +4,8 @@
 #include "raylib.h"
 
 #define NUM_BLOCKS 10
-#define MAX_PROJ 32
+#define MAX_PROJ 50
+#define SCORE_TRADE 100
 
 // Structure représentant un obstacle (mur, sol, plateforme)
 typedef struct {
@@ -32,6 +33,8 @@ typedef struct {
     float velocityY;  // Vitesse verticale (pour la gravité/saut)
     bool onGround;    // Est-ce que le joueur touche le sol ?
     float size;       // Taille du cube joueur
+    int ammo;         // Munitions actuelles dans le chargeur
+    int maxAmmo;      // Capacité actuelle du chargeur (commence à 10, max 50)
 } Player;
 
 #endif

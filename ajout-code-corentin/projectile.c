@@ -1,16 +1,15 @@
 #include "projectile.h"
 #include <stdlib.h> // pour rand()
 
+
+
 void InitProjectiles(Projectile *projs) {
     // On marque tous les slots comme inactifs
     // Cela évite d'utiliser malloc/free à chaque tir (plus performant)
     for(int i=0; i<MAX_PROJ; i++) projs[i].active = false;
 }
 
-void ShootProjectile(Projectile *projs, Player p, FILE *logFile) {
-    // Log dans le fichier
-    fprintf(logFile, "piew!\n");
-    fflush(logFile); // Force l'écriture immédiate sur le disque
+void ShootProjectile(Projectile *projs, Player p) {
     
     // 1. Calcul de la direction du tir
     // C'est la même formule que pour la caméra dans player.c

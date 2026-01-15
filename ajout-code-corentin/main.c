@@ -1,4 +1,4 @@
-#include "raylib.h" 
+#include "raylib.h"
 #include "raymath.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,50 +43,116 @@ int main(void){
 
     // Fichier de log
     FILE *f = fopen("log.txt", "w");
-
     // --- 3. Boucle Principale ---
-    while(!WindowShouldClose()){ // Tant qu'on n'appuie pas sur Croix ou ESC
+    while(!WindowShouldClose()){
         
-        // Quitter explicitement
         if(IsKeyPressed(KEY_ESCAPE)) break;
 
-        // --- ETAPE UPDATE (Mise à jour logique) ---
+        // --- ETAPE UPDATE ---
         
-        // A. Physique et Mouvement du joueur
         UpdatePlayer(&player, blocks, &camera);
 
-        // B. Gestion des inputs de tir
-        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            ShootProjectile(projs, player, f);
+        // enregistrer les informations joueur dans le fichier de sauvegarde
+        if(IsKeyPressed(KEY_Y)){
+            FILE *fw = fopen("save.txt", "w");
+            if(fw){
+                fprintf(fw, "%d\n", score);
+                fprintf(fw, "%d\n", player.maxAmmo);
+                fclose(fw);
+            }
         }
 
-        // C. Déplacement des balles et vérification collisions balles
+        // charger les informations joueur depuis le fichier de sauvegarde
+        if(IsKeyPressed(KEY_U)){
+            FILE * fr = fopen("save.txt", "r");
+            if(fr){
+                fscanf(fr, "%d\n", &score);
+                fscanf(fr, "%d\n", &player.maxAmmo);
+                fclose(fr);
+            }
+        }
+        // --- GESTION MUNITIONS & AMELIORATIONS ---
+
+        // 1. Recharger (Touche R)
+        if(IsKeyPressed(KEY_R)){
+            player.ammo = player.maxAmmo; // Remplit le chargeur au max actuel
+        }
+
+        // 2. Acheter Amélioration (Touche E)
+        // Condition : Avoir assez de score ET ne pas dépasser 50 de capacité max
+        if(IsKeyPressed(KEY_E) && score >= SCORE_TRADE && player.maxAmmo < MAX_PROJ){
+            score -= SCORE_TRADE;       // Coût
+            player.maxAmmo += 2; // Bonus
+            TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d", player.maxAmmo);
+        }
+
+        // 3. Tirer (Clic Gauche)
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(player.ammo > 0) {
+                // On passe 'f' si ta fonction ShootProjectile attend le fichier, 
+                // sinon retire ', f' selon ta version de projectile.c
+                ShootProjectile(projs, player); 
+                player.ammo--; // On décrémente une balle
+            } else {
+                // Optionnel : Jouer un son "clic" (chargeur vide)
+                TraceLog(LOG_INFO, "Clic! Plus de munitions.");
+            }
+        }
+
         UpdateProjectiles(projs, blocks, &ciblePos, cibleRadius, &score);
 
-        // D. Collision Joueur ramasse Cible (corps à corps)
         if(Vector3Distance(player.pos, ciblePos) <= player.size/2 + cibleRadius){
             score++;
             ciblePos.x = (float)(rand()%20-10);
             ciblePos.z = (float)(rand()%20-10);
         }
 
-        // --- ETAPE DRAW (Rendu graphique) ---
+        // --- ETAPE DRAW ---
         BeginDrawing();
-        ClearBackground(RAYWHITE); // Efface l'écran précédent
+        ClearBackground(RAYWHITE);
 
-        BeginMode3D(camera); // Passe en mode 3D
+        BeginMode3D(camera);
             DrawLevel(blocks);
-            DrawCube(player.pos, player.size, player.size, player.size, BLUE); // Le joueur
-            DrawSphere(ciblePos, cibleRadius, RED); // La cible
+            DrawCube(player.pos, player.size, player.size, player.size, BLUE);
+            DrawSphere(ciblePos, cibleRadius, RED);
             DrawProjectiles(projs);
-        EndMode3D(); // Fin du mode 3D
+        EndMode3D();
 
-        // Interface utilisateur (UI) en 2D par dessus la 3D
+        // --- INTERFACE UTILISATEUR (UI) MISE A JOUR ---
+        
+        // Affichage Score et FPS
         DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20, DARKGRAY);
+        
+        // Affichage Munitions (Rouge si vide, Vert sinon)
+        Color ammoColor = (player.ammo == 0) ? RED : DARKGREEN;
+        DrawText(TextFormat("Munitions: %d / %d", player.ammo, player.maxAmmo), 10, 40, 20, ammoColor);
+        
+        // Affichage instruction Recharge
+        if(player.ammo < player.maxAmmo) {
+            DrawText("Appuyez sur [R] pour Recharger", 10, 65, 10, GRAY);
+        }
+
+        // Affichage Magasin (Upgrade)
+        if(player.maxAmmo < MAX_PROJ) {
+            if(score >= SCORE_TRADE) {
+                // Le joueur peut acheter : Texte en Or/Orange
+                DrawText("Appuyez sur [E] pour +2 Munitions Max (-100 pts)", 10, 90, 20, GOLD);
+            } else {
+                // Pas assez de points : Texte gris
+                DrawText(TextFormat("Prochaine amélioration: 100 pts (Actuel: %d)", score), 10, 90, 10, LIGHTGRAY);
+            }
+        } else {
+            DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
+        }
         
         EndDrawing();
     }
 
+    // --- 4. Enregistrement des informations de fin de partie ---
+    if(f){
+        fprintf(f, "%d\n", score);
+        fprintf(f, "%d\n", player.maxAmmo);
+    }
     // --- 4. Nettoyage ---
     if(f) fclose(f);
     CloseWindow(); // Ferme la fenêtre OpenGL
