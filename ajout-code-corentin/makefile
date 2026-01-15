@@ -6,10 +6,7 @@ PROJECT_NAME = game
 CC = gcc
 
 # DÉFINITION DES CHEMINS
-# Basé sur ton include "../lib/raylib/include/raylib.h"
-# On suppose que la structure est :
-#   /lib/raylib/include (pour les .h)
-#   /lib/raylib/lib     (pour les .a ou .lib)
+# Basé sur "../lib/raylib/include/raylib.h"
 #####RAYLIB_DIR = ../lib/raylib
 
 # CFLAGS : -I permet d'ajouter le dossier d'include (optionnel si tu mets le chemin complet dans le .c, mais plus propre)

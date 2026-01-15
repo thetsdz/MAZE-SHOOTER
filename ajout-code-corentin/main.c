@@ -11,7 +11,7 @@
 #include "projectile.h"
 
 int main(void){
-    // --- 1. Initialisation Fenêtre & Raylib ---
+    // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);
     int screenHeight = GetMonitorHeight(0);
     InitWindow(screenWidth, screenHeight, "JEU REFACTORISE");
@@ -20,7 +20,7 @@ int main(void){
     DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
     srand(time(NULL));  // Initialise le générateur aléatoire
 
-    // --- 2. Initialisation des Objets ---
+    // --- Initialisation des Objets ---
     Player player;
     InitPlayer(&player);
 
@@ -73,12 +73,12 @@ int main(void){
         }
         // --- GESTION MUNITIONS & AMELIORATIONS ---
 
-        // 1. Recharger (Touche R)
+        // Recharger (Touche R)
         if(IsKeyPressed(KEY_R)){
             player.ammo = player.maxAmmo; // Remplit le chargeur au max actuel
         }
 
-        // 2. Acheter Amélioration (Touche E)
+        // Acheter Amélioration (Touche E)
         // Condition : Avoir assez de score ET ne pas dépasser 50 de capacité max
         if(IsKeyPressed(KEY_E) && score >= SCORE_TRADE && player.maxAmmo < MAX_PROJ){
             score -= SCORE_TRADE;       // Coût
@@ -86,15 +86,12 @@ int main(void){
             TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d", player.maxAmmo);
         }
 
-        // 3. Tirer (Clic Gauche)
+        // Tirer (Clic Gauche)
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(player.ammo > 0) {
-                // On passe 'f' si ta fonction ShootProjectile attend le fichier, 
-                // sinon retire ', f' selon ta version de projectile.c
                 ShootProjectile(projs, player); 
                 player.ammo--; // On décrémente une balle
             } else {
-                // Optionnel : Jouer un son "clic" (chargeur vide)
                 TraceLog(LOG_INFO, "Clic! Plus de munitions.");
             }
         }
@@ -148,12 +145,12 @@ int main(void){
         EndDrawing();
     }
 
-    // --- 4. Enregistrement des informations de fin de partie ---
+    // --- Enregistrement des informations de fin de partie ---
     if(f){
         fprintf(f, "%d\n", score);
         fprintf(f, "%d\n", player.maxAmmo);
     }
-    // --- 4. Nettoyage ---
+    // --- Nettoyage ---
     if(f) fclose(f);
     CloseWindow(); // Ferme la fenêtre OpenGL
     return 0;

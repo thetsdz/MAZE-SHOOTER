@@ -20,7 +20,7 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
     float normalHeight = 0.5f;
     float crouchHeight = 0.2f;
 
-    // --- 1. Gestion de la Caméra (Souris) ---
+    // --- Gestion de la Caméra (Souris) ---
     // On récupère le déplacement de la souris depuis la dernière frame
     Vector2 mouseDelta = GetMouseDelta();
     
@@ -37,21 +37,21 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
     // Utile pour se déplacer sans s'envoler quand on regarde en l'air
     Vector3 forward = {sinf(player->yaw), 0, cosf(player->yaw)};
     
-    // --- 2. Accroupissement ---
+    // --- Accroupissement ---
     float playerHalf = player->size/2;
     float baseY = normalHeight; // Hauteur minimale du sol
     if(IsKeyDown(KEY_LEFT_SHIFT) && player->onGround) baseY = crouchHeight;
 
-    // --- 3. Saut ---
+    // --- Saut ---
     if(IsKeyPressed(KEY_SPACE) && player->onGround){
         player->velocityY = jumpStrength;
         player->onGround = false; // On quitte le sol
     }
 
-    // --- 4. Gravité ---
+    // --- Gravité ---
     player->velocityY -= gravity; // On réduit la vitesse Y à chaque frame
 
-    // --- 5. Calcul du Mouvement (Clavier) ---
+    // --- Calcul du Mouvement (Clavier) ---
     Vector3 nextPos = player->pos; // Position hypothétique future
     Vector3 move = {0, 0, 0};
     
@@ -77,7 +77,7 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
     // On applique le mouvement vertical
     nextPos.y += player->velocityY;
 
-    // --- 6. Collisions avec les Blocs (AABB) ---
+    // --- Collisions avec les Blocs (AABB) ---
     // AABB = Axis Aligned Bounding Box (Boîte englobante alignée sur les axes)
     player->onGround = false; // On suppose qu'on est en l'air avant de vérifier
     
@@ -117,7 +117,7 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
         }
     }
 
-    // --- 7. Collision avec le Sol global ---
+    // --- Collision avec le Sol global ---
     if(nextPos.y <= baseY){
         nextPos.y = baseY;
         player->velocityY = 0;
@@ -127,7 +127,7 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
     // Validation finale de la position
     player->pos = nextPos;
 
-    // --- 8. Mise à jour de la Caméra Raylib ---
+    // --- Mise à jour de la Caméra Raylib ---
     // Calcul du vecteur direction 3D complet (sphérique -> cartésien)
     Vector3 camForward = {
         sinf(player->yaw) * cosf(player->pitch), // X
