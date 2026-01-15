@@ -7,7 +7,7 @@ CC = gcc
 
 # DÉFINITION DES CHEMINS
 # Basé sur "../lib/raylib/include/raylib.h"
-#####RAYLIB_DIR = ../lib/raylib
+RAYLIB_DIR = ../lib/raylib
 
 # CFLAGS : -I permet d'ajouter le dossier d'include (optionnel si tu mets le chemin complet dans le .c, mais plus propre)
 CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I$(RAYLIB_DIR)/include
