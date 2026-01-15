@@ -2,7 +2,7 @@
 #define PROJECTILE_H
 
 #include "types.h"
-#include "raymath.h"
+#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 #include <stdio.h> // Nécessaire pour le type FILE*
 
 // Initialise le tableau de projectiles (tous inactifs au début)

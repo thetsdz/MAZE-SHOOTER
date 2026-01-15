@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "raylib.h"
+#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 
 #define NUM_BLOCKS 10
 #define MAX_PROJ 50
