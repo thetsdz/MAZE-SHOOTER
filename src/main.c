@@ -10,6 +10,9 @@
 #include "player.h"
 #include "projectile.h"
 
+#define TRUE 1
+#define FALSE 0
+
 int main(void){
     // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);
@@ -73,10 +76,10 @@ int main(void){
         }
         // --- GESTION MUNITIONS & AMELIORATIONS ---
 
-        // Recharger (Touche R)
         if(IsKeyPressed(KEY_R)){
-            player.ammo = player.maxAmmo; // Remplit le chargeur au max actuel
+            player.ammo = player.maxAmmo;
         }
+
 
         // Acheter Amélioration (Touche E)
         // Condition : Avoir assez de score ET ne pas dépasser 50 de capacité max

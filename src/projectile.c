@@ -26,7 +26,7 @@ void ShootProjectile(Projectile *projs, Player p) {
         if(!projs[i].active){
             projs[i].active = true;
             projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(camDir, 20.0f); // Direction * Vitesse (20.0f)
+            projs[i].vel = Vector3Scale(camDir, 50.0f); // Direction * Vitesse (20.0f)
             projs[i].radius = 0.2f;
             projs[i].life = 5.0f; // Disparaît après 5 secondes
             TraceLog(LOG_INFO, "Spawn projectile at (%f,%f,%f)", projs[i].pos.x, projs[i].pos.y, projs[i].pos.z);
