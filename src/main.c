@@ -9,6 +9,7 @@
 #include "level.h"
 #include "player.h"
 #include "projectile.h"
+#include "asset.h"
 
 int main(void){
     // --- Initialisation Fenêtre & Raylib ---
@@ -40,6 +41,10 @@ int main(void){
     camera.up = (Vector3){0,1,0}; // L'axe Y pointe vers le haut
     camera.fovy = 60;              // Champ de vision (Field of View)
     camera.projection = CAMERA_PERSPECTIVE;
+
+    // Initialisation des textures
+    Texture2D viseur = ChargerTexture("../assets/crosshair.png");
+    Texture2D armeTex = ChargerTexture("../assets/weapon_placeholder.png");
 
     // Fichier de log
     FILE *f = fopen("log.txt", "w");
@@ -114,9 +119,10 @@ int main(void){
             DrawSphere(ciblePos, cibleRadius, RED);
             DrawProjectiles(projs);
         EndMode3D();
-
+	// --- UI 2D (Après la 3D) ---
+      
         // --- INTERFACE UTILISATEUR (UI) MISE A JOUR ---
-        
+ 	       
         // Affichage Score et FPS
         DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20, DARKGRAY);
         
@@ -141,7 +147,10 @@ int main(void){
         } else {
             DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
         }
-        
+	//Dessin du viseur et de l'arme
+        DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());  
+	DessinerArme(armeTex, GetScreenWidth(), GetScreenHeight());
+
         EndDrawing();
     }
 
@@ -152,6 +161,8 @@ int main(void){
     }
     // --- Nettoyage ---
     if(f) fclose(f);
+    UnloadTexture(viseur);
+    UnloadTexture(armeTex);
     CloseWindow(); // Ferme la fenêtre OpenGL
     return 0;
 }
