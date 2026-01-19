@@ -1,5 +1,5 @@
 **_Membre_**
-- DEQUIREZ Thomas
+- DEQUIREZ Thomas (Coordinateur/Reponsable de projet)
 - JAMMES Corentin
 - ASTIER Hugues
 _______________
