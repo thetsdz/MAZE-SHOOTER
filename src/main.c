@@ -10,6 +10,7 @@
 #include "player.h"
 #include "projectile.h"
 #include "asset.h"
+#include "map.h"
 
 #define TRUE 1
 #define FALSE 0
