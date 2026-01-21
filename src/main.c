@@ -11,6 +11,7 @@
 #include "projectile.h"
 #include "asset.h"
 #include "map.h"
+#include "pile.h"
 
 #define TRUE 1
 #define FALSE 0
