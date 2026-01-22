@@ -1,7 +1,11 @@
+#ifndef PILE_H
+#define PILE_H
 
-// Prototypes des primitives de manipulation d'une pile d'entiers
+#include "types.h"
 
 void initpile(void);
-void empiler (int);
-void depiler (int *);
 int pilevide(void);
+void empiler(int i, int j);
+Coord depiler(void);  // Retourne une structure Coord
+
+#endif

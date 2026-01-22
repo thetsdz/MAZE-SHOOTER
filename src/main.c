@@ -10,7 +10,6 @@
 #include "player.h"
 #include "projectile.h"
 #include "asset.h"
-#include "map.h"
 #include "pile.h"
 
 #define TRUE 1
@@ -20,7 +19,7 @@ int main(void){
     // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);
     int screenHeight = GetMonitorHeight(0);
-    InitWindow(screenWidth, screenHeight, "JEU REFACTORISE");
+    InitWindow(screenWidth, screenHeight, "JEU");
     ToggleFullscreen();
     SetTargetFPS(60);   // Essaye de maintenir 60 images/seconde
     DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
@@ -30,8 +29,11 @@ int main(void){
     Player player;
     InitPlayer(&player);
 
-    Block blocks[NUM_BLOCKS];
-    InitLevel(blocks);
+    Block blocks[NUM_BLOCKS][NUM_BLOCKS];
+    srand(time(NULL));
+    init_lab(blocks);
+    creer_lab(blocks);
+
 
     Projectile projs[MAX_PROJ];
     InitProjectiles(projs);

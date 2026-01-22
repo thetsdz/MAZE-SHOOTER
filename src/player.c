@@ -1,8 +1,11 @@
 #include "player.h"
 #include <math.h>
 
+#define N 101  // Impair
+#define M 101  // Impair
+
 void InitPlayer(Player *player) {
-    player->pos = (Vector3){0, 0.5f, 0};
+    player->pos = (Vector3){0, 10.0f, 0};
     player->yaw = 0.0f;
     player->pitch = 0.0f;
     player->velocityY = 0.0f;
@@ -12,7 +15,7 @@ void InitPlayer(Player *player) {
     player->maxAmmo = 10;  // Capacité de base de 10
 }
 
-void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
+void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
     // Constantes de gameplay
     float speed = 0.1f;
     float gravity = 0.02f;
@@ -82,47 +85,67 @@ void UpdatePlayer(Player *player, Block *blocks, Camera3D *camera) {
     player->onGround = false; // On suppose qu'on est en l'air avant de vérifier
     
     for(int i=0; i<NUM_BLOCKS; i++){
-        Block b = blocks[i];
-        float halfX = b.width/2;
-        float halfY = b.height/2;
-        float halfZ = b.depth/2;
+        for(int j= 0; j < NUM_BLOCKS; j++){  
+            Block b = blocks[i][j];
+            float halfX = b.width/2;
+            float halfY = b.height/2;
+            float halfZ = b.depth/2;
 
-        // Vérification : Est-ce que le cube "joueur" chevauche le cube "bloc" sur TOUS les axes ?
-        bool collideX = nextPos.x + playerHalf > b.pos.x - halfX && nextPos.x - playerHalf < b.pos.x + halfX;
-        bool collideY = nextPos.y + playerHalf > b.pos.y - halfY && nextPos.y - playerHalf < b.pos.y + halfY;
-        bool collideZ = nextPos.z + playerHalf > b.pos.z - halfZ && nextPos.z - playerHalf < b.pos.z + halfZ;
+            // Vérification : Est-ce que le cube "joueur" chevauche le cube "bloc" sur TOUS les axes ?
+            bool collideX = nextPos.x + playerHalf > b.pos.x - halfX && nextPos.x - playerHalf < b.pos.x + halfX;
+            bool collideY = nextPos.y + playerHalf > b.pos.y - halfY && nextPos.y - playerHalf < b.pos.y + halfY;
+            bool collideZ = nextPos.z + playerHalf > b.pos.z - halfZ && nextPos.z - playerHalf < b.pos.z + halfZ;
 
-        if(collideX && collideY && collideZ){
-            // Collision détectée ! On doit résoudre le conflit.
-            float top = b.pos.y + halfY;
-            float bottom = b.pos.y - halfY;
+            if(collideX && collideY && collideZ){
+                // Collision détectée ! On doit résoudre le conflit.
+                float top = b.pos.y + halfY;
+                float bottom = b.pos.y - halfY;
 
-            // CAS 1 : On tombe sur le bloc (Vélocité négative et on était au-dessus)
-            if(player->velocityY < 0 && player->pos.y - playerHalf >= top){ 
-                nextPos.y = top + playerHalf; // On se pose pile dessus
-                player->velocityY = 0;        // On arrête de tomber
-                player->onGround = true;      // On peut sauter à nouveau
-            }
-            // CAS 2 : On cogne le bloc par le bas (Saut)
-            else if(player->velocityY > 0 && player->pos.y + playerHalf <= bottom){ 
-                nextPos.y = bottom - playerHalf;
-                player->velocityY = 0;        // On s'arrête net (on se cogne la tête)
-            } 
-            // CAS 3 : Collision latérale (Mur)
-            else {
-                // Annulation simple du mouvement horizontal
-                nextPos.x = player->pos.x;
-                nextPos.z = player->pos.z;
+                // CAS 1 : On tombe sur le bloc (Vélocité négative et on était au-dessus)
+                if(player->velocityY < 0 && player->pos.y - playerHalf >= top){ 
+                    nextPos.y = top + playerHalf; // On se pose pile dessus
+                    player->velocityY = 0;        // On arrête de tomber
+                    player->onGround = true;      // On peut sauter à nouveau
+                }
+                // CAS 2 : On cogne le bloc par le bas (Saut)
+                else if(player->velocityY > 0 && player->pos.y + playerHalf <= bottom){ 
+                    nextPos.y = bottom - playerHalf;
+                    player->velocityY = 0;        // On s'arrête net (on se cogne la tête)
+                } 
+                // CAS 3 : Collision latérale (Mur)
+                else {
+                    // Annulation simple du mouvement horizontal
+                    nextPos.x = player->pos.x;
+                    nextPos.z = player->pos.z;
+                }
             }
         }
     }
 
-    // --- Collision avec le Sol global ---
-    if(nextPos.y <= baseY){
-        nextPos.y = baseY;
+    // --- Gravité et sol réel (inclut les couloirs) ---
+    float playerBottom = nextPos.y - playerHalf;
+    float closestGround = 0.0f; // Sol Raylib par défaut
+
+    for(int i = 0; i < NUM_BLOCKS; i++){
+        for(int j = 0; j < NUM_BLOCKS; j++){
+            Block b = blocks[i][j];
+            // On tombe sur tous les blocs "vides" (couloirs)
+            if(b.color.a != 0) continue; 
+
+            float top = b.pos.y + b.height / 2.0f; 
+            if(playerBottom >= top && nextPos.y - playerHalf <= top){
+                if(top > closestGround) closestGround = top;
+            }
+        }
+    }
+
+    // Appliquer la gravité et la position sur le sol le plus haut sous le joueur
+    if(playerBottom <= closestGround){
+        nextPos.y = closestGround + playerHalf;
         player->velocityY = 0;
         player->onGround = true;
     }
+
 
     // Validation finale de la position
     player->pos = nextPos;

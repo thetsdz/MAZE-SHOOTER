@@ -1,47 +1,36 @@
-// Mise en oeuvre d'une pile d'entiers par pointeurs
-
-#include<stdio.h>
-#include<stdlib.h>	// nécessaire pour la définition de malloc et free 
 #include "pile.h"
+#include <stdlib.h>
 
-// definition d'un element de la pile
-typedef struct element{
-	int entier; 
-	struct element* suivant;
-	} t_element;
+typedef struct Element {
+    Coord coord;
+    struct Element *next;
+} Element;
 
-// declaration de la pile
-t_element* pile;
+static Element *top = NULL;
 
-void initpile(void){
-// initialise la pile
-	pile = NULL;
+void initpile(void) {
+    top = NULL;
 }
 
-int pilevide(void){
-// vrai si la pile est vide, faux sinon
-	return (pile == NULL);
+void empiler(int i, int j) {
+    Element *nouv = (Element*)malloc(sizeof(Element));
+    nouv->coord.i = i;
+    nouv->coord.j = j;
+    nouv->next = top;
+    top = nouv;
 }
 
-void empiler(int c){
-// empile l'entier c
-	t_element* nouv;
-
-	nouv = malloc(sizeof(t_element));
-	nouv->entier = c;
-	nouv->suivant = pile;
-	pile = nouv;
+Coord depiler(void) {
+    Coord coord = {-1, -1};
+    if(top != NULL) {
+        Element *tmp = top;
+        coord = top->coord;
+        top = top->next;
+        free(tmp);
+    }
+    return coord;
 }
 
-void depiler(int * c){
-// depile l'entier c
-	t_element* sommet;
-
-	if (pile!=NULL){
-		*c = pile->entier;
-		sommet = pile;
-		pile = sommet->suivant;
-		free(sommet);
-	}
+int pilevide(void) {
+    return top == NULL;
 }
-

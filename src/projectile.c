@@ -35,7 +35,7 @@ void ShootProjectile(Projectile *projs, Player p) {
     }
 }
 
-void UpdateProjectiles(Projectile *projs, Block *blocks, Vector3 *targetPos, float targetRadius, int *score) {
+void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 *targetPos, float targetRadius, int *score) {
     float dt = GetFrameTime(); // Temps écoulé depuis la dernière frame (ex: 0.016s)
     
     for(int i=0; i<MAX_PROJ; i++){
@@ -62,19 +62,21 @@ void UpdateProjectiles(Projectile *projs, Block *blocks, Vector3 *targetPos, flo
 
         // --- Collision avec les Blocs (Point dans AABB) ---
         // Simplifié : on considère la balle comme un point pour collision avec murs
-        for(int j=0; j<NUM_BLOCKS; j++){
-            Block b = blocks[j];
-            float halfX = b.width/2;
-            float halfY = b.height/2;
-            float halfZ = b.depth/2;
-            
-            // Vérifie si le point (balle) est à l'intérieur du rectangle (mur)
-            if(projs[i].pos.x > b.pos.x - halfX && projs[i].pos.x < b.pos.x + halfX &&
-               projs[i].pos.y > b.pos.y - halfY && projs[i].pos.y < b.pos.y + halfY &&
-               projs[i].pos.z > b.pos.z - halfZ && projs[i].pos.z < b.pos.z + halfZ){
+        for(int i=0; i<NUM_BLOCKS; i++){
+            for(int j = 0; j <NUM_BLOCKS; j++){
+                Block b = blocks[i][j];
+                float halfX = b.width/2;
+                float halfY = b.height/2;
+                float halfZ = b.depth/2;
                 
-                projs[i].active = false; // La balle touche un mur et disparaît
-                break;
+                // Vérifie si le point (balle) est à l'intérieur du rectangle (mur)
+                if(projs[i].pos.x > b.pos.x - halfX && projs[i].pos.x < b.pos.x + halfX &&
+                projs[i].pos.y > b.pos.y - halfY && projs[i].pos.y < b.pos.y + halfY &&
+                projs[i].pos.z > b.pos.z - halfZ && projs[i].pos.z < b.pos.z + halfZ){
+                    
+                    projs[i].active = false; // La balle touche un mur et disparaît
+                    break;
+                }
             }
         }
     }

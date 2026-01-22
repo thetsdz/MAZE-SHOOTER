@@ -1,167 +1,125 @@
 #include "level.h"
+#include "pile.h"   // empiler / depiler
+#include <stdlib.h>
+#include <time.h>
 
-// Initialisation de la carte
-void InitLevel(Block *blocks) {
-    // --- Blocs d'obstacles classiques ---
-    // Syntaxe : {{x, y, z}, largeur, hauteur, profondeur, couleur}
-    blocks[0] = (Block){{2, 0.5f, 2}, 2, 1, 2, DARKGRAY};
-    blocks[1] = (Block){{-3, 1.0f, 4}, 3, 1, 3, DARKGRAY};
-    blocks[2] = (Block){{5, 1.5f, -2}, 2, 1, 2, DARKGRAY};
-    blocks[3] = (Block){{-2, 2.0f, -3}, 4, 1, 2, DARKGRAY};
-    blocks[4] = (Block){{0, 3.0f, 5}, 2, 1, 2, DARKGRAY};
-    
-    // --- Murs de bordure (Arène) ---
-    // Ce sont des murs très longs (50 unités) pour fermer la zone
-    blocks[5] = (Block){{0, 1.5f, -25}, 50, 3, 1, GRAY};
-    blocks[6] = (Block){{0, 1.5f, 25}, 50, 3, 1, GRAY};
-    blocks[7] = (Block){{-25, 1.5f, 0}, 1, 3, 50, GRAY};
-    blocks[8] = (Block){{25, 1.5f, 0}, 1, 3, 50, GRAY};
-    
-    // --- Plafond invisible ---
-    // Fade(COLOR, 0.0f) rend la couleur totalement transparente
-    // Utile pour empêcher le joueur de sortir si la gravité s'inverse ou bug
-    blocks[9] = (Block){{0, 10.0f, 0}, 50, 1, 50, Fade(LIGHTGRAY, 0.0f)};
-}
+// --------------------------------------------------
+// Initialisation : tout en murs
+// --------------------------------------------------
+void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
+{
+    float halfSize = 1.0f; // 1 unité = moitié de l'épaisseur pour centrer
+    float offset = (NUM_BLOCKS - 1); // on gardera le centre plus tard
 
-void DrawLevel(Block *blocks) {
-    // Dessine un sol infini vert pour se repérer
-    DrawPlane((Vector3){0,0,0}, (Vector2){50,50}, GREEN);
-    // Dessine une grille par-dessus pour mieux voir la perspective
-    DrawGrid(100, 1.0f);
-    
-    // Boucle d'affichage simple des blocs
-    for(int i=0; i<NUM_BLOCKS; i++){
-        DrawCube(blocks[i].pos, blocks[i].width, blocks[i].height, blocks[i].depth, blocks[i].color);
-        // Optionnel : DrawCubeWires pour voir les arêtes
+    for (int i=0; i<NUM_BLOCKS; i++) {
+        for (int j=0; j<NUM_BLOCKS; j++) {
+
+            // Centre du cube = i*2 et j*2 pour doubler la taille
+            blocks[i][j].pos = (Vector3){ i*3 - offset, 1.0f, j*3 - offset };
+
+            blocks[i][j].width  = 3.0f;
+            blocks[i][j].height = 5.0f;
+            blocks[i][j].depth  = 3.0f;
+
+            blocks[i][j].color = BLACK;
+            blocks[i][j].isWall = 1;
+        }
     }
 }
 
 
-
-
-
-// Booleens
-#define VRAI 1
-#define FAUX 0
-
-// Dimensions du labyrinthe: N lignes et M colonnes (attention: toujours impairs)
-#define N 100
-#define M 100
-
-// Constantes representant le contenu des cases
-#define COULOIR 0
-#define MUR -1
-#define CHEMIN -2
-
-
-
-//******************************
-// Partie creation du labyrinthe
-//******************************
-
-void init_lab(int lab[N][M]){
-//Initialise le labyrinthe avec des murs 
-	int i,j;
-
-	for(i=0;i<N;i++)
-		for(j=0;j<M;j++)
-			lab[i][j] = MUR;
+// --------------------------------------------------
+// Vérifie si la case est valide
+// --------------------------------------------------
+static int valides(int i, int j)
+{
+    return i > 0 && i < NUM_BLOCKS-1 && j > 0 && j < NUM_BLOCKS-1;
 }
 
-int valides(int i, int j){
-// renvoie VRAI si i et j designent une case de la matrice
-	return(i>=0 && i<N &&j>=0 && j<M);
+// --------------------------------------------------
+// Génération du labyrinthe (DFS)
+// --------------------------------------------------
+void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
+{
+    int i = 1, j = 1;
+
+    initpile();
+    blocks[i][j].isWall = 0;
+    blocks[i][j].color = BLANK;
+    empiler(i,j);
+
+    while(!pilevide()) {
+
+        int voisins[4][2] = {
+            { i+2, j },
+            { i-2, j },
+            { i, j+2 },
+            { i, j-2 }
+        };
+
+        int candidats[4][2];
+        int n = 0;
+
+        for(int k=0; k<4; k++) {
+            int ni = voisins[k][0];
+            int nj = voisins[k][1];
+
+            if(valides(ni,nj) && blocks[ni][nj].isWall) {
+                candidats[n][0] = ni;
+                candidats[n][1] = nj;
+                n++;
+            }
+        }
+
+        if(n > 0) {
+            int r = rand() % n;
+            int ni = candidats[r][0];
+            int nj = candidats[r][1];
+
+            // Mur intermédiaire
+            int mi = (i + ni)/2;
+            int mj = (j + nj)/2;
+
+            blocks[mi][mj].isWall = 0;
+			blocks[mi][mj].pos.y = -20.0f;
+            blocks[mi][mj].color = BLANK;
+            blocks[ni][nj].isWall = 0;
+            blocks[ni][nj].color = BLANK;
+			blocks[ni][nj].pos.y = -20.0f;
+
+            empiler(i,j);
+            i = ni; j = nj;
+        }
+        else {
+            Coord c = depiler();
+            i = c.i; j = c.j;
+        }
+    }
 }
 
-int est_vide(int i, int j, int lab[N][M]){
-// renvoie VRAI si i et j designent une case couloir
-	return(valides(i,j) && lab[i][j]==COULOIR);
-}
+// --------------------------------------------------
+// Affichage
+// --------------------------------------------------
+void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
+{
+    DrawPlane((Vector3){0,0,0}, (Vector2){NUM_BLOCKS*2, NUM_BLOCKS*2}, DARKGREEN);
+    DrawGrid(NUM_BLOCKS*2, 1.0f);
 
-int est_mur(int i, int j, int lab[N][M]){
-// renvoie VRAI si i et j designent une case mur
-	return(valides(i,j) && lab[i][j]==MUR);
-}
+    for(int i=0; i<NUM_BLOCKS; i++){
+        for(int j=0; j<NUM_BLOCKS; j++){
 
-int blocage(int i, int j, int lab[N][M]){
-// renvoie VRAI si aucune case voisine n'est un mur
-	return (!est_mur(i+2,j,lab) && !est_mur(i-2,j,lab)
-		&& !est_mur(i,j+2,lab) && !est_mur(i,j-2,lab));
-}
+            Vector3 pos = blocks[i][j].pos;
 
-void creer_lab(int lab[N][M]){
-// Cree le labyrinthe de maniere aleatoire avec une pile
-
-	int termine=FAUX;	// booleen indiquant si labyrinthe est termine
-	int trouve=FAUX;	// booleen indiquant si une case voisine MUR a ete trouvee
-	int i,j,alea;		// alea permet de prendre une case voisine au hasard
-
-	init_lab(lab);
-	initpile();
-
-	i=0, 
-	j=0;
-	lab[0][0]=COULOIR;
-
-   while(!termine){
-
-	if(blocage(i,j,lab)){
-	// cas de blocage: repartir de la derniere case visitee, stockee dans la pile
-		if(!pilevide()){
-			depiler(&j);
-			depiler(&i);
-		}
-		else
-			termine=VRAI;
-	}
-	else{
-	// cas general: chercher une case voisine contenant un mur, abattre ce mur et aller sur cette case
-		trouve=FAUX;
-		while(!trouve){
-			alea=rand()%4; 
-			switch(alea){
-				case 0: 
-					if(est_mur(i+2,j,lab)){ 
-						empiler(i);
-						empiler(j);
-						lab[i+1][j]=COULOIR;
-						lab[i+2][j]=COULOIR;
-						i=i+2;
-						trouve=VRAI;
-						break;
-					}	
-				case 1: 	
-					if(est_mur(i-2,j,lab)){
-						empiler(i);
-						empiler(j);
-						lab[i-1][j]=COULOIR;
-						lab[i-2][j]=COULOIR;
-						i=i-2;
-						trouve=VRAI;
-						break;
-					}	
-				case 2: 	
-					if(est_mur(i,j+2,lab)){
-						empiler(i);
-						empiler(j);
-						lab[i][j+1]=COULOIR;
-						lab[i][j+2]=COULOIR;
-						j=j+2;
-						trouve=VRAI;
-						break;
-					}	
-				case 3: 	
-					if(est_mur(i,j-2,lab)){
-						empiler(i);
-						empiler(j);
-						lab[i][j-1]=COULOIR;
-						lab[i][j-2]=COULOIR;
-						j=j-2;
-						trouve=VRAI;
-					}	
-			}
-		}
-	}
-   }
-
+            if(blocks[i][j].isWall){
+                DrawCube(pos,
+                         blocks[i][j].width,
+                         blocks[i][j].height,
+                         blocks[i][j].depth,
+                         blocks[i][j].color);
+            } else {
+                // Dessiner le sol sous les couloirs
+                DrawCube((Vector3){pos.x, 0, pos.z}, 2, 0.2f, 2, GRAY);
+            }
+        }
+    }
 }
