@@ -5,7 +5,7 @@
 PROJECT_NAME = game
 CC = gcc
 
-SRCS = main.c level.c player.c projectile.c asset.c pile.c
+SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c
 
 CFLAGS = -Wall -std=c99 -Wno-missing-braces -I.
 

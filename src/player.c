@@ -114,9 +114,32 @@ void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
                 } 
                 // CAS 3 : Collision latérale (Mur)
                 else {
-                    // Annulation simple du mouvement horizontal
-                    nextPos.x = player->pos.x;
-                    nextPos.z = player->pos.z;
+                    // Calcule du taux de penetration dans le bloc sur chaque axe
+                    // fabsf() donne la valeur absolue
+                    float overlapX = (halfX + playerHalf) - fabsf(nextPos.x - b.pos.x);
+                    float overlapZ = (halfZ + playerHalf) - fabsf(nextPos.z - b.pos.z);
+
+                    // Choix de l'axe de moindre pénétration
+                    // "sortie la plus rapide" pour ne plus être en collision
+                    if (overlapX < overlapZ) {
+                        // --- CHOC SUR L'AXE X (Mur à gauche ou à droite) ---
+                        // Si on est à gauche du mur, on se met à sa gauche, sinon à sa droite
+                        if (nextPos.x < b.pos.x) 
+                            nextPos.x = b.pos.x - halfX - playerHalf;
+                        else 
+                            nextPos.x = b.pos.x + halfX + playerHalf;
+                            
+                        // IMPORTANT : On ne touche PAS à nextPos.z ! (si vous y touchez je vous bute)
+                    } 
+                    else {
+                        // --- CHOC SUR L'AXE Z (Mur devant ou derrière) ---
+                        if (nextPos.z < b.pos.z)
+                            nextPos.z = b.pos.z - halfZ - playerHalf;
+                        else
+                            nextPos.z = b.pos.z + halfZ + playerHalf;
+
+                        // IMPORTANT : On ne touche PAS à nextPos.x !(idem)
+                    }
                 }
             }
         }

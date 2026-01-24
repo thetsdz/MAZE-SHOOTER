@@ -8,6 +8,7 @@
 #include "types.h"
 #include "level.h"
 #include "player.h"
+#include "bot.h"
 #include "projectile.h"
 #include "asset.h"
 #include "pile.h"
@@ -28,6 +29,9 @@ int main(void){
     // --- Initialisation des Objets ---
     Player player;
     InitPlayer(&player);
+
+    Bot bot;
+    InitBot(&bot);
 
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];
     srand(time(NULL));
@@ -63,6 +67,10 @@ int main(void){
         // --- ETAPE UPDATE ---
         
         UpdatePlayer(&player, blocks, &camera);
+        
+        // Update du bot (sans affichage pour maintenant)
+        Camera3D botCamera = camera; // Caméra du bot
+        UpdateBot(&bot, blocks, &botCamera);
 
         // enregistrer les informations joueur dans le fichier de sauvegarde
         if(IsKeyPressed(KEY_Y)){
@@ -123,6 +131,7 @@ int main(void){
         BeginMode3D(camera);
             DrawLevel(blocks);
             DrawCube(player.pos, player.size, player.size, player.size, BLUE);
+            DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);  // Bot en rouge
             DrawSphere(ciblePos, cibleRadius, RED);
             DrawProjectiles(projs);
         EndMode3D();

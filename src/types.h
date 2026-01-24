@@ -45,4 +45,16 @@ typedef struct {
     int maxAmmo;      // Capacité actuelle du chargeur (commence à 10, max 50)
 } Player;
 
+// Structure regroupant tout l'état du bot IA pour éviter de passer 10 variables
+typedef struct {
+    Vector3 pos;      // Position des pieds/centre du bot
+    float yaw;        // Rotation horizontale (regarder gauche/droite)
+    float pitch;      // Rotation verticale (regarder haut/bas)
+    float velocityY;  // Vitesse verticale (pour la gravité/saut)
+    bool onGround;    // Est-ce que le bot touche le sol ?
+    float size;       // Taille du cube bot
+    int ammo;         // Munitions actuelles dans le chargeur
+    int maxAmmo;      // Capacité actuelle du chargeur
+} Bot;
+
 #endif
