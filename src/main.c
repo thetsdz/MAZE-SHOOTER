@@ -43,7 +43,6 @@ int main(void){
     InitProjectiles(projs);
 
     // Setup de la cible rouge
-    Vector3 ciblePos = {(float)(rand()%20-10), 0.5f, (float)(rand()%20-10)};
     float cibleRadius = 0.5f;
     int score = 0;
 
@@ -116,12 +115,12 @@ int main(void){
             }
         }
 
-        UpdateProjectiles(projs, blocks, &ciblePos, cibleRadius, &score);
+        UpdateProjectiles(projs, blocks, &(bot.pos), cibleRadius, &score);
 
-        if(Vector3Distance(player.pos, ciblePos) <= player.size/2 + cibleRadius){
+        if(Vector3Distance(player.pos, bot.pos) <= player.size/2 + cibleRadius){
             score++;
-            ciblePos.x = (float)(rand()%20-10);
-            ciblePos.z = (float)(rand()%20-10);
+            bot.pos.x = (float)(rand()%20-10);
+            bot.pos.y = (float)(rand()%20-10);
         }
 
         // --- ETAPE DRAW ---
@@ -132,7 +131,6 @@ int main(void){
             DrawLevel(blocks);
             DrawCube(player.pos, player.size, player.size, player.size, BLUE);
             DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);  // Bot en rouge
-            DrawSphere(ciblePos, cibleRadius, RED);
             DrawProjectiles(projs);
         EndMode3D();
 	// --- UI 2D (Après la 3D) ---
