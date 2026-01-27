@@ -118,9 +118,9 @@ int main(void){
         UpdateProjectiles(projs, blocks, &(bot.pos), cibleRadius, &score);
 
         if(Vector3Distance(player.pos, bot.pos) <= player.size/2 + cibleRadius){
-            score++;
-            bot.pos.x = (float)(rand()%20-10);
-            bot.pos.y = (float)(rand()%20-10);
+            score = 0;
+            //bot.pos.x = (float)(rand()%20-10);
+            //bot.pos.y = (float)(rand()%20-10);
         }
 
         // --- ETAPE DRAW ---
