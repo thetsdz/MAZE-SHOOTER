@@ -20,8 +20,6 @@ void UpdateBot(Bot *bot, Block blocks[N][M], Camera3D *camera) {
     float speed = 0.1f;
     float gravity = 0.02f;
     float jumpStrength = 0.4f;
-    float normalHeight = 0.5f;
-    float crouchHeight = 0.2f;
 
     // --- Gestion de la Caméra ---
     // Simuler les mouvements de souris du bot pour une rotation réaliste
@@ -45,8 +43,6 @@ void UpdateBot(Bot *bot, Block blocks[N][M], Camera3D *camera) {
     
     // --- Accroupissement ---
     float botHalf = bot->size/2;
-    float baseY = normalHeight; // Hauteur minimale du sol
-    // Le bot ne s'accroupit pas pour maintenant
 
     // --- Saut ---
     // Le bot saute occasionnellement

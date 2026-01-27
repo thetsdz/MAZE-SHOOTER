@@ -6,22 +6,20 @@
 
 void InitPlayer(Player *player) {
     player->pos = (Vector3){0, 10.0f, 0};
-    player->yaw = 0.0f;
-    player->pitch = 0.0f;
-    player->velocityY = 0.0f;
-    player->onGround = true;
-    player->size = 1.0f;
+    player->yaw = 0.0f; //
+    player->pitch = 0.0f; //
+    player->velocityY = 0.0f; //vitesse du joeur
+    player->onGround = true; //est-ce que le joueur est au sol
+    player->size = 1.0f; //taille
     player->ammo = 10;     // Commence avec 10 balles
     player->maxAmmo = 10;  // Capacité de base de 10
 }
 
 void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
     // Constantes de gameplay
-    float speed = 0.1f;
-    float gravity = 0.02f;
-    float jumpStrength = 0.4f;
-    float normalHeight = 0.5f;
-    float crouchHeight = 0.2f;
+    float speed = 0.1f; //vitesse par défaut
+    float gravity = 0.02f; //gravité par defaut
+    float jumpStrength = 0.4f; //force de saut
 
     // --- Gestion de la Caméra (Souris) ---
     // On récupère le déplacement de la souris depuis la dernière frame
@@ -42,8 +40,7 @@ void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
     
     // --- Accroupissement ---
     float playerHalf = player->size/2;
-    float baseY = normalHeight; // Hauteur minimale du sol
-    if(IsKeyDown(KEY_LEFT_SHIFT) && player->onGround) baseY = crouchHeight;
+    
 
     // --- Saut ---
     if(IsKeyPressed(KEY_SPACE) && player->onGround){
@@ -59,13 +56,13 @@ void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
     Vector3 move = {0, 0, 0};
     
     // On ajoute les vecteurs directionnels selon les touches
-    if(IsKeyDown(KEY_W)){ move.x += forward.x; move.z += forward.z; }
-    if(IsKeyDown(KEY_S)){ move.x -= forward.x; move.z -= forward.z; }
+    if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)){ move.x += forward.x; move.z += forward.z; }
+    if(IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)){ move.x -= forward.x; move.z -= forward.z; }
     
     // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
     // (Mathématiquement : vecteur orthogonal)
-    if(IsKeyDown(KEY_A)){ move.x += forward.z; move.z -= forward.x; }
-    if(IsKeyDown(KEY_D)){ move.x -= forward.z; move.z += forward.x; }
+    if(IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)){ move.x += forward.z; move.z -= forward.x; }
+    if(IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)){ move.x -= forward.z; move.z += forward.x; }
 
     // Normalisation : Si on appuie sur W et D en même temps, la longueur du vecteur est 1.41 (racine de 2).
     // On doit le ramener à 1.0 pour ne pas courir plus vite en diagonale.

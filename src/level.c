@@ -1,38 +1,25 @@
 #include "level.h"
-#include "pile.h"   // empiler / depiler
+#include "pile.h"   
 #include <stdlib.h>
 #include <time.h>
 
-// --------------------------------------------------
-// Initialisation : tout en murs
-// --------------------------------------------------
-void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
-{
-    float halfSize = 1.0f; // 1 unité = moitié de l'épaisseur pour centrer
-    float offset = (NUM_BLOCKS - 1); // on gardera le centre plus tard
-
+//initialisation du labyrinthe composé de bloc géant
+void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]){
+    float offset = NUM_BLOCKS - 1; // on gardera le centre plus tard
     for (int i=0; i<NUM_BLOCKS; i++) {
         for (int j=0; j<NUM_BLOCKS; j++) {
-
-            // Centre du cube = i*2 et j*2 pour doubler la taille
-            blocks[i][j].pos = (Vector3){ i*3 - offset, 1.0f, j*3 - offset };
-
-            blocks[i][j].width  = 3.0f;
-            blocks[i][j].height = 5.0f;
-            blocks[i][j].depth  = 3.0f;
-
-            blocks[i][j].color = BLACK;
-            blocks[i][j].isWall = 1;
+            blocks[i][j].pos = (Vector3){ i*3 - offset, 1.0f, j*3 - offset }; // Centre du cube = i*2 et j*2 pour doubler la taille
+            blocks[i][j].width  = 3.0f; //largeur du bloc
+            blocks[i][j].height = 6.0f; //hauteur du bloc
+            blocks[i][j].depth  = 3.0f; //profondeur du bloc
+            blocks[i][j].color = BLACK; //couleur du bloc
+            blocks[i][j].isWall = 1; //est-ce que le bloc est un mur
         }
     }
 }
 
-
-// --------------------------------------------------
-// Vérifie si la case est valide
-// --------------------------------------------------
-static int valides(int i, int j)
-{
+//verifie si la case est valide
+static int valides(int i, int j){
     return i > 0 && i < NUM_BLOCKS-1 && j > 0 && j < NUM_BLOCKS-1;
 }
 
