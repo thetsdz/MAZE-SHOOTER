@@ -1,24 +1,54 @@
+# ======================
+# Project configuration
+# ======================
 PROJECT_NAME = game
 CC = gcc
 BIN_DIR = ../bin
-SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c
+LIB_DIR = ../lib/linux/raylib-5.5_linux_amd64
+BIN = $(BIN_DIR)/$(PROJECT_NAME)
 
-CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I../lib/linux/raylib-5.5_linux_amd64/include
-LDFLAGS = -L../lib/linux/raylib-5.5_linux_amd64/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+SRCS = main.c \
+       level.c \
+       player.c \
+       bot.c \
+       projectile.c \
+       asset.c \
+       pile.c
 
-all: $(BIN_DIR)/$(PROJECT_NAME)
+OBJS = $(SRCS:.c=.o)
 
-$(BIN_DIR)/$(PROJECT_NAME): $(SRCS)
+# ======================
+# Compiler & linker flags
+# ======================
+CFLAGS  = -Wall -Wextra -std=c99 -Wno-missing-braces
+CFLAGS += -I$(LIB_DIR)/include
+CFLAGS += -I../lib/headers
+CFLAGS += -O2 -g
+
+LDFLAGS  = -L$(LIB_DIR)/lib
+LDFLAGS += -Wl,-rpath,'$$ORIGIN/../lib/linux/raylib-5.5_linux_amd64/lib'
+LDFLAGS += -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
+# ======================
+# Rules
+# ======================
+all: $(BIN)
+
+$(BIN): $(OBJS)
 	mkdir -p $(BIN_DIR)
-	$(CC) $^ -o $@ $(CFLAGS) $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	rm -f $(OBJS)   # supprime les fichiers .o juste après la compilation
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: all
-	./$<
+	$(BIN)
 
 clean:
-	rm -f $(BIN_DIR)/$(PROJECT_NAME)
+	rm -f $(BIN)
 
 info:
-	@echo "Platform: LINUX"
-	@echo "Raylib:   ../lib/linux/raylib"
-	@echo "Binary:   $(BIN_DIR)/$(PROJECT_NAME)"
+	@echo "Platform : Linux"
+	@echo "Raylib   : local ($(LIB_DIR))"
+	@echo "Binary   : $(BIN)"
