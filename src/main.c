@@ -13,9 +13,6 @@
 #include "asset.h"
 #include "pile.h"
 
-#define TRUE 1
-#define FALSE 0
-
 int main(void){
     // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);

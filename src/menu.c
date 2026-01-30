@@ -1,7 +1,8 @@
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 
-typedef enum GameScreen { MENU, TEST } GameScreen;
+#include "../lib/headers/types.h"
+
 
 int main(void) {
     InitWindow(800, 450, "Menu de Test");

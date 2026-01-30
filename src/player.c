@@ -1,9 +1,6 @@
 #include "player.h"
 #include <math.h>
 
-#define N 101  // Impair
-#define M 101  // Impair
-
 void InitPlayer(Player *player) {
     player->pos = (Vector3){0, 10.0f, 0};
     player->yaw = 0.0f; //
@@ -15,7 +12,7 @@ void InitPlayer(Player *player) {
     player->maxAmmo = 10;  // Capacité de base de 10
 }
 
-void UpdatePlayer(Player *player, Block blocks[N][M], Camera3D *camera) {
+void UpdatePlayer(Player *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {
     // Constantes de gameplay
     float speed = 0.1f; //vitesse par défaut
     float gravity = 0.02f; //gravité par defaut

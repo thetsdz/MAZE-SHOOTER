@@ -7,6 +7,11 @@
 #define MAX_PROJ 50
 #define SCORE_TRADE 100
 
+#define TRUE 1
+#define FALSE 0
+
+typedef enum GameScreen { MENU, TEST } GameScreen;
+
 // Structure représentant un obstacle (mur, sol, plateforme)
 // Bloc du labyrinthe
 typedef struct {

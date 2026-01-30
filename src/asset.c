@@ -53,11 +53,3 @@ void DessinerArme(Texture2D texture, int screenWidth, int screenHeight) {
     // Rotation 0.0f (pas de rotation), Scale calculé, couleur WHITE (normal)
     DrawTextureEx(texture, position, rotation, scale, WHITE);
 }
-
-
-
-
-
-
-
-
