@@ -1,8 +1,6 @@
 #include "projectile.h"
 #include <stdlib.h> // pour rand()
 
-
-
 void InitProjectiles(Projectile *projs) {
     // On marque tous les slots comme inactifs
     // Cela évite d'utiliser malloc/free à chaque tir (plus performant)

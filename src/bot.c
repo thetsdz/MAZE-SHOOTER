@@ -1,9 +1,6 @@
 #include "bot.h"
 #include <math.h>
 
-#define N 101
-#define M 101
-
 void InitBot(Bot *bot) {
     bot->pos = (Vector3){0, 10.0f, 0}; //initialisation de la position du robot
     bot->yaw = 0.0f; //angle du bot
@@ -15,7 +12,7 @@ void InitBot(Bot *bot) {
     bot->maxAmmo = 10;  // Capacité de base de 10
 }
 
-void UpdateBot(Bot *bot, Block blocks[N][M], Camera3D *camera) {
+void UpdateBot(Bot *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {
     float speed = 0.1f;
     float gravity = 0.02f;
     float jumpStrength = 0.4f;

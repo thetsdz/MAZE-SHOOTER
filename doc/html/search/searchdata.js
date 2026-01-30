@@ -1,30 +1,18 @@
 var indexSectionsWithContent =
 {
-  0: "bcdehmnpw",
-  1: "be",
-  2: "m",
-  3: "m",
-  4: "cdhpw",
-  5: "n"
+  0: "e",
+  1: "e"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "classes",
-  2: "files",
-  3: "functions",
-  4: "variables",
-  5: "defines"
+  1: "classes"
 };
 
 var indexSectionLabels =
 {
   0: "All",
-  1: "Classes",
-  2: "Files",
-  3: "Functions",
-  4: "Variables",
-  5: "Macros"
+  1: "Classes"
 };
 
