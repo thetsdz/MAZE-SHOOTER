@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <stdarg.h>
+
 
 // Inclusion Raylib
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
@@ -16,8 +18,33 @@
 #include "../lib/headers/asset.h"
 #include "../lib/headers/pile.h"
 
+static FILE *logFile = NULL;
+
+void LogToFile(int logLevel, const char *text, va_list args){
+    if (!logFile) return;
+
+    // Préfixe lisible
+    const char *levels[] = {
+        "ALL", "TRACE", "DEBUG", "INFO",
+        "WARNING", "ERROR", "FATAL", "NONE"
+    };
+
+    fprintf(logFile, "[%s] ", levels[logLevel]);
+    vfprintf(logFile, text, args);
+    fprintf(logFile, "\n");
+    fflush(logFile);
+}
+
 
 int main(void){
+
+    // --- Initialisation du log ---
+    logFile = fopen("log.txt", "w");
+    if (!logFile) return 1;
+
+    SetTraceLogCallback(LogToFile);
+    SetTraceLogLevel(LOG_INFO);
+
     // --- Initialisation Fenêtre & Raylib ---
     int screenWidth = GetMonitorWidth(0);
     int screenHeight = GetMonitorHeight(0);
@@ -58,7 +85,6 @@ int main(void){
     Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
     // Fichier de log
-    FILE *f = fopen("log.txt", "w");
     // --- 3. Boucle Principale ---
     while(!WindowShouldClose()){
         
@@ -83,14 +109,21 @@ int main(void){
         }
 
         // charger les informations joueur depuis le fichier de sauvegarde
-        if(IsKeyPressed(KEY_U)){
-            FILE * fr = fopen("save.txt", "r");
-            if(fr){
-                fscanf(fr, "%d\n", &score);
-                fscanf(fr, "%d\n", &player.maxAmmo);
-                fclose(fr);
+        if (IsKeyPressed(KEY_U)) {
+        FILE *fr = fopen("save.txt", "r");
+        if (fr) {
+            if (fscanf(fr, "%d", &score) != 1) {
+                TraceLog(LOG_WARNING, "Erreur lecture score dans save.txt");
             }
+            if (fscanf(fr, "%d", &player.maxAmmo) != 1) {
+                TraceLog(LOG_WARNING, "Erreur lecture ammo max dans save.txt");
+            }
+            fclose(fr);
+        } else {
+            TraceLog(LOG_ERROR, "Impossible d'ouvrir save.txt en lecture");
         }
+        }
+
         // --- GESTION MUNITIONS & AMELIORATIONS ---
 
         if(IsKeyPressed(KEY_R)){
@@ -169,13 +202,11 @@ int main(void){
         EndDrawing();
     }
 
-    // --- Enregistrement des informations de fin de partie ---
-    if(f){
-        fprintf(f, "%d\n", score);
-        fprintf(f, "%d\n", player.maxAmmo);
-    }
-    // --- Nettoyage ---
-    if(f) fclose(f);
+
+    TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d",score, player.maxAmmo);
+    if (logFile) fclose(logFile);
+
+
     UnloadTexture(viseur);
     UnloadTexture(armeTex);
     CloseWindow(); // Ferme la fenêtre OpenGL
