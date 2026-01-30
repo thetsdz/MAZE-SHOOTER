@@ -1,22 +1,21 @@
 #include "bot.h"
 #include <math.h>
 
-#define N 101  // Impair
-#define M 101  // Impair
+#define N 101
+#define M 101
 
 void InitBot(Bot *bot) {
-    bot->pos = (Vector3){0, 10.0f, 0};
-    bot->yaw = 0.0f;
-    bot->pitch = 0.0f;
-    bot->velocityY = 0.0f;
-    bot->onGround = true;
-    bot->size = 1.0f;
+    bot->pos = (Vector3){0, 10.0f, 0}; //initialisation de la position du robot
+    bot->yaw = 0.0f; //angle du bot
+    bot->pitch = 0.0f; //angle du bot
+    bot->velocityY = 0.0f; //vitesse du bot
+    bot->onGround = true; //le bot est initialisée au sol
+    bot->size = 1.0f; //taille du bot
     bot->ammo = 10;     // Commence avec 10 balles
     bot->maxAmmo = 10;  // Capacité de base de 10
 }
 
 void UpdateBot(Bot *bot, Block blocks[N][M], Camera3D *camera) {
-    // Constantes de gameplay
     float speed = 0.1f;
     float gravity = 0.02f;
     float jumpStrength = 0.4f;

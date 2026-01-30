@@ -1,7 +1,7 @@
 #ifndef ASSET_H
 #define ASSET_H
 
-#include <raylib.h>
+#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 
 // Charge une image depuis le disque et la transforme en Texture optimisée GPU
 Texture2D ChargerTexture(const char *fileName);
