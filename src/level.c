@@ -1,7 +1,10 @@
-#include "level.h"
-#include "pile.h"   
+// Inclusion librairies 
 #include <stdlib.h>
 #include <time.h>
+
+// Inclusion headers
+#include "../lib/headers/level.h"
+#include "../lib/headers/pile.h"  
 
 //initialisation du labyrinthe composé de bloc géant
 void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]){
@@ -28,7 +31,8 @@ static int valides(int i, int j){
 // --------------------------------------------------
 void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
 {
-    int i = 1, j = 1;
+    int i = 1;
+    int j = 1;
 
     initpile();
     blocks[i][j].isWall = 0;
@@ -36,7 +40,6 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
     empiler(i,j);
 
     while(!pilevide()) {
-
         int voisins[4][2] = {
             { i+2, j },
             { i-2, j },

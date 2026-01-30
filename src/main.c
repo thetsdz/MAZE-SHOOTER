@@ -1,17 +1,21 @@
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
+// Inclusion libairies
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
+// Inclusion Raylib
+#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
+#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
+
 // Inclusion de nos propres modules
-#include "types.h"
-#include "level.h"
-#include "player.h"
-#include "bot.h"
-#include "projectile.h"
-#include "asset.h"
-#include "pile.h"
+#include "../lib/headers/types.h"
+#include "../lib/headers/level.h"
+#include "../lib/headers/player.h"
+#include "../lib/headers/bot.h"
+#include "../lib/headers/projectile.h"
+#include "../lib/headers/asset.h"
+#include "../lib/headers/pile.h"
+
 
 int main(void){
     // --- Initialisation Fenêtre & Raylib ---
@@ -19,7 +23,7 @@ int main(void){
     int screenHeight = GetMonitorHeight(0);
     InitWindow(screenWidth, screenHeight, "JEU");
     ToggleFullscreen();
-    SetTargetFPS(60);   // Essaye de maintenir 60 images/seconde
+    SetTargetFPS(1000);   // Essaye de maintenir 60 images/seconde
     DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
     srand(time(NULL));  // Initialise le générateur aléatoire
 

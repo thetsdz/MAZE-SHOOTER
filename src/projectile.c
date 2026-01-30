@@ -1,5 +1,8 @@
-#include "projectile.h"
-#include <stdlib.h> // pour rand()
+// Inclusion librairies
+#include <stdlib.h>
+
+// Inclusion headers
+#include "../lib/headers/projectile.h"
 
 void InitProjectiles(Projectile *projs) {
     // On marque tous les slots comme inactifs

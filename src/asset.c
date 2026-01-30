@@ -1,5 +1,8 @@
-#include "asset.h"
-#include <stdio.h> // Pour printf en cas d'erreur
+// Inclusion librairies
+#include <stdio.h> 
+
+// Inclusion headers
+#include "../lib/headers/asset.h"
 
 Texture2D ChargerTexture(const char *fileName) {
     // 1. On charge l'image
