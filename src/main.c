@@ -53,8 +53,8 @@ int main(void){
     camera.projection = CAMERA_PERSPECTIVE;
 
     // Initialisation des textures
-    Texture2D viseur = ChargerTexture("../assets/crosshair.png");
-    Texture2D armeTex = ChargerTexture("../assets/weapon_placeholder.png");
+    Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
+    Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
     // Fichier de log
     FILE *f = fopen("log.txt", "w");
@@ -162,7 +162,7 @@ int main(void){
             DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
         }
 	//Dessin du viseur et de l'arme
-        DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());  
+    DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());  
 	DessinerArme(armeTex, GetScreenWidth(), GetScreenHeight());
 
         EndDrawing();
