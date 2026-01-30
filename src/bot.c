@@ -1,5 +1,8 @@
-#include "bot.h"
+// Inclusion librairies
 #include <math.h>
+
+// Inclusion headers
+#include "../lib/headers/bot.h"
 
 void InitBot(Bot *bot) {
     bot->pos = (Vector3){0, 10.0f, 0}; //initialisation de la position du robot
