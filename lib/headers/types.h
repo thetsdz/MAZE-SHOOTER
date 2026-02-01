@@ -29,6 +29,12 @@ typedef struct {
     int j;
 } Coord;
 
+// Type du propriétaire du projectile
+typedef enum {
+    OWNER_PLAYER, // Projectile tiré par le joueur
+    OWNER_BOT     // Projectile tiré par un bot
+} OwnerType;
+
 // Structure pour une balle/projectile
 typedef struct {
     Vector3 pos;    // Position actuelle
@@ -36,6 +42,7 @@ typedef struct {
     float radius;   // Rayon de la sphère (hitbox)
     bool active;    // Si false, le projectile est "mort" et peut être réutilisé
     float life;     // Temps de vie restant en secondes
+    OwnerType owner; // Type du propriétaire (Joueur ou Bot)
 } Projectile;
 
 // Structure regroupant tout l'état du joueur pour éviter de passer 10 variables

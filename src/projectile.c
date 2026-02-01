@@ -1,81 +1,80 @@
-// Inclusion librairies
 #include <stdlib.h>
-
-// Inclusion headers
 #include "../lib/headers/projectile.h"
 
 void InitProjectiles(Projectile *projs) {
-    // On marque tous les slots comme inactifs
-    // Cela évite d'utiliser malloc/free à chaque tir (plus performant)
     for(int i=0; i<MAX_PROJ; i++) projs[i].active = false;
 }
 
-void ShootProjectile(Projectile *projs, Player p) {
-    
-    // 1. Calcul de la direction du tir
-    // C'est la même formule que pour la caméra dans player.c
-    Vector3 camDir = { sinf(p.yaw)*cosf(p.pitch), sinf(p.pitch), cosf(p.yaw)*cosf(p.pitch) };
-    camDir = Vector3Normalize(camDir); // On s'assure que la longueur du vecteur est 1
+// Fonction générique pour tirer (Bot ou Joueur)
+void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner) {
+    // Normalisation de la direction par sécurité
+    Vector3 dir = Vector3Normalize(direction);
 
-    // 2. Point d'apparition
-    // On fait apparaître la balle un peu devant le joueur (Vector3Scale)
-    // Sinon la balle spawnerait DANS le joueur et pourrait causer des bugs
-    Vector3 spawn = Vector3Add((Vector3){p.pos.x, p.pos.y + 0.5f, p.pos.z}, Vector3Scale(camDir, p.size));
+    // Point d'apparition un peu devant pour ne pas se tirer dessus
+    Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
 
-    // 3. Recherche d'un slot libre dans le tableau (Object Pooling)
     for(int i=0; i<MAX_PROJ; i++){
         if(!projs[i].active){
             projs[i].active = true;
             projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(camDir, 50.0f); // Direction * Vitesse (20.0f)
+            projs[i].vel = Vector3Scale(dir, 50.0f); // Vitesse du projectile
             projs[i].radius = 0.2f;
-            projs[i].life = 5.0f; // Disparaît après 5 secondes
-            TraceLog(LOG_INFO, "Spawn projectile at (%f,%f,%f)", projs[i].pos.x, projs[i].pos.y, projs[i].pos.z);
-            break; // On a tiré une balle, on arrête la boucle
+            projs[i].life = 5.0f;
+            projs[i].owner = owner; // <-- On définit le propriétaire
+            break;
         }
     }
 }
 
-void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 *targetPos, float targetRadius, int *score) {
-    float dt = GetFrameTime(); // Temps écoulé depuis la dernière frame (ex: 0.016s)
+void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Bot *bot, Player *player, int *score) {
+    float dt = GetFrameTime();
     
     for(int i=0; i<MAX_PROJ; i++){
-        if(!projs[i].active) continue; // On ignore les balles mortes
+        if(!projs[i].active) continue;
         
-        // Mouvement : Position = Position + (Vitesse * Temps)
         projs[i].pos = Vector3Add(projs[i].pos, Vector3Scale(projs[i].vel, dt));
-        
-        // Gestion de la vie
         projs[i].life -= dt;
         if(projs[i].life <= 0.0f){ projs[i].active = false; continue; }
 
-        // --- Collision avec la Cible (Sphère contre Sphère) ---
-        // Si Distance < Rayon1 + Rayon2, alors ça touche
-        if(Vector3Distance(projs[i].pos, *targetPos) <= projs[i].radius + targetRadius){
-            TraceLog(LOG_INFO, "Projectile hit target!");
-            (*score)++;
-            // Déplace la cible aléatoirement
-            targetPos->x = (float)(rand()%20-10);
-            targetPos->z = (float)(rand()%20-10);
-            projs[i].active = false; // Détruit la balle
-            continue;
+        // --- COLLISIONS ---
+
+        // 1. Si c'est un tir du JOUEUR -> Vérifie collision avec le BOT
+        if(projs[i].owner == OWNER_PLAYER) {
+            float botRadius = bot->size / 2.0f;
+            if(Vector3Distance(projs[i].pos, bot->pos) <= projs[i].radius + botRadius){
+                TraceLog(LOG_INFO, "Le joueur a touche le bot !");
+                (*score)++;
+                // Respawn du bot
+                bot->pos.x = (float)(rand()%20 - 10);
+                bot->pos.z = (float)(rand()%20 - 10);
+                projs[i].active = false;
+                continue;
+            }
+        }
+        
+        // 2. Si c'est un tir du BOT -> Vérifie collision avec le JOUEUR
+        else if(projs[i].owner == OWNER_BOT) {
+            float playerRadius = player->size / 2.0f;
+            // On vise le centre du corps du joueur (pos.y + 0.5f pour le torse)
+            Vector3 playerCenter = {player->pos.x, player->pos.y, player->pos.z};
+            
+            if(Vector3Distance(projs[i].pos, playerCenter) <= projs[i].radius + playerRadius){
+                TraceLog(LOG_INFO, "Le bot a touche le joueur ! Score Reset.");
+                *score = 0; // Remise à zéro du score
+                projs[i].active = false;
+                continue;
+            }
         }
 
-        // --- Collision avec les Blocs (Point dans AABB) ---
-        // Simplifié : on considère la balle comme un point pour collision avec murs
-        for(int i=0; i<NUM_BLOCKS; i++){
-            for(int j = 0; j <NUM_BLOCKS; j++){
-                Block b = blocks[i][j];
-                float halfX = b.width/2;
-                float halfY = b.height/2;
-                float halfZ = b.depth/2;
-                
-                // Vérifie si le point (balle) est à l'intérieur du rectangle (mur)
+        // 3. Collision avec les Murs
+        for(int x=0; x<NUM_BLOCKS; x++){
+            for(int y = 0; y <NUM_BLOCKS; y++){
+                Block b = blocks[x][y];
+                float halfX = b.width/2; float halfY = b.height/2; float halfZ = b.depth/2;
                 if(projs[i].pos.x > b.pos.x - halfX && projs[i].pos.x < b.pos.x + halfX &&
-                projs[i].pos.y > b.pos.y - halfY && projs[i].pos.y < b.pos.y + halfY &&
-                projs[i].pos.z > b.pos.z - halfZ && projs[i].pos.z < b.pos.z + halfZ){
-                    
-                    projs[i].active = false; // La balle touche un mur et disparaît
+                   projs[i].pos.y > b.pos.y - halfY && projs[i].pos.y < b.pos.y + halfY &&
+                   projs[i].pos.z > b.pos.z - halfZ && projs[i].pos.z < b.pos.z + halfZ){
+                    projs[i].active = false;
                     break;
                 }
             }
@@ -85,6 +84,10 @@ void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], 
 
 void DrawProjectiles(Projectile *projs) {
     for(int i=0; i<MAX_PROJ; i++){
-        if(projs[i].active) DrawSphere(projs[i].pos, projs[i].radius, MAGENTA);
+        if(projs[i].active) {
+            // Couleur différente pour différencier les tirs
+            Color c = (projs[i].owner == OWNER_PLAYER) ? MAGENTA : ORANGE;
+            DrawSphere(projs[i].pos, projs[i].radius, c);
+        }
     }
 }

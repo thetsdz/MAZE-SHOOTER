@@ -1,6 +1,6 @@
 // Inclusion librairies
 #include <math.h>
-
+#include <stdlib.h>
 // Inclusion headers
 #include "../lib/headers/bot.h"
 
@@ -11,146 +11,135 @@ void InitBot(Bot *bot) {
     bot->velocityY = 0.0f; //vitesse du bot
     bot->onGround = true; //le bot est initialisée au sol
     bot->size = 1.0f; //taille du bot
-    bot->ammo = 10;     // Commence avec 10 balles
-    bot->maxAmmo = 10;  // Capacité de base de 10
 }
 
-void UpdateBot(Bot *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {
-    float speed = 0.1f;
+void UpdateBot(Bot *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 targetPos, Projectile *projs) {
+    
+    // --- Paramètres du Bot ---
+    float speed = 0.08f;
     float gravity = 0.02f;
-    float jumpStrength = 0.4f;
-
-    // --- Gestion de la Caméra ---
-    // Simuler les mouvements de souris du bot pour une rotation réaliste
-    float time = GetFrameTime();
-    static float scanTimer = 0.0f;
-    scanTimer += time;
-    
-    // Modification des angles (sensibilité 0.003f)
-    // Le bot tourne sa tête de façon réaliste (balayage lent)
-    bot->yaw += sinf(scanTimer * 0.5f) * 0.02f;    // Tourner gauche/droite lentement
-    bot->pitch = cosf(scanTimer * 0.3f) * 0.3f;    // Regarder haut/bas légèrement
-    
-    // Clamp (limitation) du pitch pour ne pas lui tordre le cou
-    // 1.5 radians correspond environ à 85 degrés (presque à la verticale)
-    if(bot->pitch > 1.5f) bot->pitch = 1.5f;
-    if(bot->pitch < -1.5f) bot->pitch = -1.5f;
-
-    // Calcul du vecteur "Devant" (Forward) uniquement sur le plan horizontal (XZ)
-    // Utile pour se déplacer sans s'envoler quand il regarde en l'air
-    Vector3 forward = {sinf(bot->yaw), 0, cosf(bot->yaw)};
-    
-    // --- Accroupissement ---
     float botHalf = bot->size/2;
+    float dt = GetFrameTime();
 
-    // --- Saut ---
-    // Le bot saute occasionnellement
-    if(fmodf(scanTimer, 5.0f) < 0.1f && bot->onGround) {
-        bot->velocityY = jumpStrength;
+    // --- Orientation (Viser le joueur) ---
+    // Calcul de l'angle pour regarder le joueur sur le plan horizontal (XZ)
+    float dx = targetPos.x - bot->pos.x;
+    float dz = targetPos.z - bot->pos.z;
+    
+    // atan2f renvoie l'angle en radians
+    bot->yaw = atan2f(dx, dz); 
+    
+    // Viser en hauteur 
+    float dist = sqrtf(dx*dx + dz*dz);
+    float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f); // Vise la tête
+    bot->pitch = atan2f(dy, dist);
+
+
+    // --- Tir ---
+    static float shootTimer = 0.0f;
+    shootTimer += dt;
+
+    // Le bot tire toutes les 1.5 à 2.5 secondes (aléatoire un peu)
+    if(shootTimer > 2.0f && dist < 30.0f) { // Ne tire que si < 30 mètres
+        
+        // Calcul du vecteur de visée parfait
+        Vector3 aimDir = Vector3Subtract(targetPos, bot->pos);
+        aimDir = Vector3Normalize(aimDir);
+
+        // --- Ajout de l'IMPRÉCISION ---
+        // On modifie légèrement le vecteur direction avec des valeurs aléatoires
+        // Plus le diviseur est petit, plus le bot est imprécis
+        float spread = 0.15f; 
+        aimDir.x += ((float)(rand()%100)/50.0f - 1.0f) * spread;
+        aimDir.y += ((float)(rand()%100)/50.0f - 1.0f) * spread;
+        aimDir.z += ((float)(rand()%100)/50.0f - 1.0f) * spread;
+
+        // Position de départ (au niveau des yeux du bot)
+        Vector3 shootOrigin = { bot->pos.x, bot->pos.y + 0.5f, bot->pos.z };
+
+        // Tir avec propriétaire BOT
+        ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT);
+        
+        // Reset timer (avec une petite variation aléatoire)
+        shootTimer = (float)(rand()%100) / 200.0f; // Reset à 0.0 - 0.5s
+    }
+
+
+    // --- Physique & Mouvement (Gravité) ---
+    // Le bot saute s'il est bloqué ou aléatoirement
+    static float moveTimer = 0.0f;
+    moveTimer += dt;
+    
+    if(fmodf(moveTimer, 4.0f) < 0.1f && bot->onGround) {
+        bot->velocityY = 0.35f; // Petit saut
         bot->onGround = false;
     }
 
-    // --- Gravité ---
-    bot->velocityY -= gravity; // On réduit la vitesse Y à chaque frame
+    bot->velocityY -= gravity; // Application gravité
 
-    // --- Calcul du Mouvement ---
-    Vector3 nextPos = bot->pos; // Position hypothétique future
-    Vector3 move = {0, 0, 0};
+    // Calcul position future
+    Vector3 nextPos = bot->pos;
     
-    // Le bot avance régulièrement
-    if(fmodf(scanTimer, 4.0f) < 2.0f) {
-        move.x += forward.x;
-        move.z += forward.z; 
+    // Déplacement basique : Le bot avance doucement vers le joueur (zombie style)
+    // Mais s'arrête s'il est trop près (pour tirer)
+    if(dist > 5.0f) {
+        nextPos.x += sinf(bot->yaw) * speed;
+        nextPos.z += cosf(bot->yaw) * speed;
     }
-    
-    // Normalisation : Si on avance et on va a droite en même temps, la longueur du vecteur est 1.41 (racine de 2).
-    // On doit le ramener à 1.0 pour ne pas courir plus vite en diagonale.
-    float moveLen = sqrtf(move.x*move.x + move.z*move.z);
-    if(moveLen > 0.00001f){
-        move.x = (move.x / moveLen) * speed;
-        move.z = (move.z / moveLen) * speed;
-        nextPos.x += move.x;
-        nextPos.z += move.z;
-    }
-    
-    // On applique le mouvement vertical
+
     nextPos.y += bot->velocityY;
 
-    // --- Collisions avec les Blocs (AABB) ---
-    // AABB = Axis Aligned Bounding Box (Boîte englobante alignée sur les axes)
-    bot->onGround = false; // On suppose qu'on est en l'air avant de vérifier
+
+    // --- Collisions (AABB) ---
+    bot->onGround = false; 
     
     for(int i=0; i<NUM_BLOCKS; i++){
         for(int j=0; j<NUM_BLOCKS; j++){  
             Block b = blocks[i][j];
-            float halfX = b.width/2;
-            float halfY = b.height/2;
-            float halfZ = b.depth/2;
+            float halfX = b.width/2; float halfY = b.height/2; float halfZ = b.depth/2;
 
-            // Vérification : Est-ce que le cube "bot" chevauche le cube "bloc" sur TOUS les axes ?
             bool collideX = nextPos.x + botHalf > b.pos.x - halfX && nextPos.x - botHalf < b.pos.x + halfX;
             bool collideY = nextPos.y + botHalf > b.pos.y - halfY && nextPos.y - botHalf < b.pos.y + halfY;
             bool collideZ = nextPos.z + botHalf > b.pos.z - halfZ && nextPos.z - botHalf < b.pos.z + halfZ;
 
             if(collideX && collideY && collideZ){
-                // Collision détectée ! On doit résoudre le conflit.
                 float top = b.pos.y + halfY;
                 float bottom = b.pos.y - halfY;
 
-                // CAS 1 : On tombe sur le bloc (Vélocité négative et on était au-dessus)
                 if(bot->velocityY < 0 && bot->pos.y - botHalf >= top){ 
-                    nextPos.y = top + botHalf; // On se pose pile dessus
-                    bot->velocityY = 0;        // On arrête de tomber
-                    bot->onGround = true;      // On peut sauter à nouveau
+                    nextPos.y = top + botHalf; 
+                    bot->velocityY = 0;        
+                    bot->onGround = true;      
                 }
-                // CAS 2 : On cogne le bloc par le bas (Saut)
                 else if(bot->velocityY > 0 && bot->pos.y + botHalf <= bottom){ 
                     nextPos.y = bottom - botHalf;
-                    bot->velocityY = 0;        // On s'arrête net (on se cogne la tête)
+                    bot->velocityY = 0;        
                 } 
-                // CAS 3 : Collision latérale (Mur)
                 else {
-                    // Calcule du taux de penetration dans le bloc sur chaque axe
-                    // fabsf() donne la valeur absolue
                     float overlapX = (halfX + botHalf) - fabsf(nextPos.x - b.pos.x);
                     float overlapZ = (halfZ + botHalf) - fabsf(nextPos.z - b.pos.z);
 
-                    // Choix de l'axe de moindre pénétration
-                    // "sortie la plus rapide" pour ne plus être en collision
                     if (overlapX < overlapZ) {
-                        // --- CHOC SUR L'AXE X (Mur à gauche ou à droite) ---
-                        // Si on est à gauche du mur, on se met à sa gauche, sinon à sa droite
-                        if (nextPos.x < b.pos.x) 
-                            nextPos.x = b.pos.x - halfX - botHalf;
-                        else 
-                            nextPos.x = b.pos.x + halfX + botHalf;
-                            
-                        // IMPORTANT : On ne touche PAS à nextPos.z !
+                        if (nextPos.x < b.pos.x) nextPos.x = b.pos.x - halfX - botHalf;
+                        else nextPos.x = b.pos.x + halfX + botHalf;
                     } 
                     else {
-                        // --- CHOC SUR L'AXE Z (Mur devant ou derrière) ---
-                        if (nextPos.z < b.pos.z)
-                            nextPos.z = b.pos.z - halfZ - botHalf;
-                        else
-                            nextPos.z = b.pos.z + halfZ + botHalf;
-
-                        // IMPORTANT : On ne touche PAS à nextPos.x !(idem)
+                        if (nextPos.z < b.pos.z) nextPos.z = b.pos.z - halfZ - botHalf;
+                        else nextPos.z = b.pos.z + halfZ + botHalf;
                     }
                 }
             }
         }
     }
 
-    // --- Gravité et sol réel (inclut les couloirs) ---
+    // --- Gravité et Sol Raylib (Sécurité) ---
     float botBottom = nextPos.y - botHalf;
-    float closestGround = 0.0f; // Sol Raylib par défaut
+    float closestGround = 0.0f; // Sol par défaut
 
     for(int i = 0; i < NUM_BLOCKS; i++){
         for(int j = 0; j < NUM_BLOCKS; j++){
             Block b = blocks[i][j];
-            // On tombe sur tous les blocs "vides" (couloirs)
-            if(b.color.a != 0) continue; 
-
+            if(b.color.a != 0) continue; // Ignore les murs pleins, cherche les sols
             float top = b.pos.y + b.height / 2.0f; 
             if(botBottom >= top && nextPos.y - botHalf <= top){
                 if(top > closestGround) closestGround = top;
@@ -158,30 +147,12 @@ void UpdateBot(Bot *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera)
         }
     }
 
-    // Appliquer la gravité et la position sur le sol le plus haut sous le bot
     if(botBottom <= closestGround){
         nextPos.y = closestGround + botHalf;
         bot->velocityY = 0;
         bot->onGround = true;
     }
 
-    // Validation finale de la position
+    // Validation finale
     bot->pos = nextPos;
-
-    // --- Mise à jour de la Caméra Raylib ---
-    // Calcul du vecteur direction 3D complet (sphérique -> cartésien)
-    Vector3 camForward = {
-        sinf(bot->yaw) * cosf(bot->pitch), // X
-        sinf(bot->pitch),                  // Y
-        cosf(bot->yaw) * cosf(bot->pitch)  // Z
-    };
-    
-    // La caméra est placée sur le bot (+0.5f pour être au niveau des yeux)
-    camera->position = (Vector3){bot->pos.x, bot->pos.y + 0.5f, bot->pos.z};
-    // Le point visé est : Position + Direction
-    camera->target = (Vector3){
-        camera->position.x + camForward.x,
-        camera->position.y + camForward.y,
-        camera->position.z + camForward.z
-    };
 }
