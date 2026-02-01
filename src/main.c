@@ -50,7 +50,7 @@ int main(void){
     int screenHeight = GetMonitorHeight(0);
     InitWindow(screenWidth, screenHeight, "JEU");
     ToggleFullscreen();
-    SetTargetFPS(1000);   // Essaye de maintenir 60 images/seconde
+    SetTargetFPS(60);   // Essaye de maintenir 60 images/seconde
     DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
     srand(time(NULL));  // Initialise le générateur aléatoire
 
@@ -62,7 +62,6 @@ int main(void){
     InitBot(&bot);
 
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];
-    srand(time(NULL));
     init_lab(blocks);
     creer_lab(blocks);
 
@@ -70,8 +69,6 @@ int main(void){
     Projectile projs[MAX_PROJ];
     InitProjectiles(projs);
 
-    // Setup de la cible rouge
-    float cibleRadius = 0.5f;
     int score = 0;
 
     // Setup Caméra Raylib standard
@@ -85,7 +82,7 @@ int main(void){
     Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
     // Fichier de log
-    // --- 3. Boucle Principale ---
+    // --- Boucle Principale ---
     while(!WindowShouldClose()){
         
         if(IsKeyPressed(KEY_ESCAPE)) break;
@@ -95,8 +92,7 @@ int main(void){
         UpdatePlayer(&player, blocks, &camera);
         
         // Update du bot (sans affichage pour maintenant)
-        Camera3D botCamera = camera; // Caméra du bot
-        UpdateBot(&bot, blocks, &botCamera);
+        UpdateBot(&bot, blocks,player.pos, projs);
 
         // enregistrer les informations joueur dans le fichier de sauvegarde
         if(IsKeyPressed(KEY_Y)){
@@ -105,6 +101,7 @@ int main(void){
                 fprintf(fw, "%d\n", score);
                 fprintf(fw, "%d\n", player.maxAmmo);
                 fclose(fw);
+                
             }
         }
 
@@ -139,23 +136,25 @@ int main(void){
             TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d", player.maxAmmo);
         }
 
-        // Tirer (Clic Gauche)
+        // --- Tir du joueur ---
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(player.ammo > 0) {
-                ShootProjectile(projs, player); 
-                player.ammo--; // On décrémente une balle
-            } else {
-                TraceLog(LOG_INFO, "Clic! Plus de munitions.");
+                // 1. Calcul direction tir (Où regarde le joueur ?)
+                Vector3 camDir = { 
+                    sinf(player.yaw)*cosf(player.pitch), 
+                    sinf(player.pitch), 
+                    cosf(player.yaw)*cosf(player.pitch) 
+                };
+                
+                // 2. Position de départ (Yeux du joueur)
+                Vector3 startPos = {player.pos.x, player.pos.y + 0.5f, player.pos.z};
+                ShootProjectile(projs, startPos, camDir, OWNER_PLAYER);
+                
+                player.ammo--; 
             }
         }
 
-        UpdateProjectiles(projs, blocks, &(bot.pos), cibleRadius, &score);
-
-        if(Vector3Distance(player.pos, bot.pos) <= player.size/2 + cibleRadius){
-            score = 0;
-            //bot.pos.x = (float)(rand()%20-10);
-            //bot.pos.y = (float)(rand()%20-10);
-        }
+        UpdateProjectiles(projs, blocks, &bot, &player, &score);
 
         // --- ETAPE DRAW ---
         BeginDrawing();
@@ -163,8 +162,13 @@ int main(void){
 
         BeginMode3D(camera);
             DrawLevel(blocks);
-            DrawCube(player.pos, player.size, player.size, player.size, BLUE);
-            DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);  // Bot en rouge
+            DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);  
+            // Petits yeux noirs pour voir où il regarde
+            Vector3 lookDir = { sinf(bot.yaw), 0, cosf(bot.yaw) };
+            Vector3 eyePos = Vector3Add(bot.pos, Vector3Scale(lookDir, 0.5f));
+            eyePos.y += 0.3f;
+            DrawCube(eyePos, 0.2f, 0.2f, 0.2f, BLACK);
+
             DrawProjectiles(projs);
         EndMode3D();
 	// --- UI 2D (Après la 3D) ---
