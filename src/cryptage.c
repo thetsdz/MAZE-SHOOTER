@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "../lib/headers/cryptage.h"
 
-// --- PARTIE 1 : L'Algorithme de cryptage RC4 ---
+// -- PARTIE 1 : L'Algorithme de cryptage RC4 --
 
 // Echange les valeurs des deux pointeurs
 static void swap(unsigned char *a, unsigned char *b) {

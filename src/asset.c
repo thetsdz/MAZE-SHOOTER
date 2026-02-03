@@ -1,7 +1,4 @@
-// Inclusion librairies
 #include <stdio.h> 
-
-// Inclusion headers
 #include "../lib/headers/asset.h"
 
 Texture2D ChargerTexture(const char *fileName) {

@@ -3,13 +3,13 @@
 
 #include "types.h"
 
-// Initialisation du labyrinthe (tout murs)
+/** @brief Initialisation du labyrinthe (tout murs)*/
 void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
-// Génération du labyrinthe
+/** @brief Génération du labyrinthe*/
 void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
-// Affichage du labyrinthe
+/** @brief Affichage du labyrinthe*/
 void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
 #endif

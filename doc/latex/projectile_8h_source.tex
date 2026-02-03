@@ -9,16 +9,12 @@
 \DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../linux/raylib-\/5.5\_linux\_amd64/include/raymath.h"{}}}
 \DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stdio.h>}\ \textcolor{comment}{//\ Nécessaire\ pour\ le\ type\ FILE*}}
 \DoxyCodeLine{00007\ }
-\DoxyCodeLine{00008\ \textcolor{comment}{//\ Initialise\ le\ tableau\ de\ projectiles\ (tous\ inactifs\ au\ début)}}
 \DoxyCodeLine{00009\ \textcolor{keywordtype}{void}\ InitProjectiles(\mbox{\hyperlink{structProjectile}{Projectile}}\ *projs);}
 \DoxyCodeLine{00010\ }
-\DoxyCodeLine{00011\ \textcolor{comment}{//\ Trouve\ un\ slot\ libre\ et\ tire\ un\ projectile\ dans\ la\ direction\ où\ regarde\ le\ joueur\ ou\ le\ bot}}
 \DoxyCodeLine{00012\ \textcolor{keywordtype}{void}\ ShootProjectile(\mbox{\hyperlink{structProjectile}{Projectile}}\ *projs,\ Vector3\ startPos,\ Vector3\ direction,\ OwnerType\ owner);}
 \DoxyCodeLine{00013\ }
-\DoxyCodeLine{00014\ \textcolor{comment}{//\ Met\ à\ jour\ la\ position,\ la\ durée\ de\ vie\ et\ les\ collisions\ de\ tous\ les\ tirs\ actifs}}
 \DoxyCodeLine{00015\ \textcolor{keywordtype}{void}\ UpdateProjectiles(\mbox{\hyperlink{structProjectile}{Projectile}}\ *projs,\ \mbox{\hyperlink{structBlock}{Block}}\ blocks[NUM\_BLOCKS][NUM\_BLOCKS],\ Bot\ *bot,\ Player\ *player,\ \textcolor{keywordtype}{int}\ *score);}
 \DoxyCodeLine{00016\ }
-\DoxyCodeLine{00017\ \textcolor{comment}{//\ Affiche\ les\ projectiles\ actifs}}
 \DoxyCodeLine{00018\ \textcolor{keywordtype}{void}\ DrawProjectiles(\mbox{\hyperlink{structProjectile}{Projectile}}\ *projs);}
 \DoxyCodeLine{00019\ }
 \DoxyCodeLine{00020\ \textcolor{preprocessor}{\#endif}}

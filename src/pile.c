@@ -1,7 +1,4 @@
-// Inclusion librairies
 #include <stdlib.h>
-
-// Inclusion headers
 #include "../lib/headers/pile.h"
 
 typedef struct Element {

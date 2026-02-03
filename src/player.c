@@ -1,7 +1,4 @@
-// Inclusion librairies
 #include <math.h>
-
-// Inclusion headers
 #include "../lib/headers/player.h"
 
 void InitPlayer(Player *player) {

@@ -1,7 +1,5 @@
-// Inclusion librairies
 #include <math.h>
 #include <stdlib.h>
-// Inclusion headers
 #include "../lib/headers/bot.h"
 
 void InitBot(Bot *bot) {

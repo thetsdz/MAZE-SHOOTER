@@ -1,8 +1,5 @@
-// Inclusion librairies 
 #include <stdlib.h>
 #include <time.h>
-
-// Inclusion headers
 #include "../lib/headers/level.h"
 #include "../lib/headers/pile.h"  
 
