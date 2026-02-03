@@ -60,7 +60,7 @@ void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], 
             
             if(Vector3Distance(projs[i].pos, playerCenter) <= projs[i].radius + playerRadius){
                 TraceLog(LOG_INFO, "Le bot a touche le joueur ! Score Reset.");
-                *score = 0; // Remise à zéro du score
+                *score = 0;
                 projs[i].active = false;
                 continue;
             }

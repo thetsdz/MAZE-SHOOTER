@@ -3,14 +3,14 @@
 
 #include "../linux/raylib-5.5_linux_amd64/include/raylib.h"
 
-/** @brief Nombre total de blocs dans le labyrinthe. */
+/** @brief Nombre total de blocs dans le labyrinthe*/
 #define NUM_BLOCKS 101
-/** @brief Nombre maximal de projectiles actifs simultanément. */
+/** @brief Nombre maximal de projectiles actifs simultanément*/
 #define MAX_PROJ 50
-/** @brief Score obtenu par échange ou action spécifique. */
+/** @brief Score obtenu par échange ou action spécifique*/
 #define SCORE_TRADE 100
 
-/** @brief Valeurs booléennes personnalisées. */
+/** @brief Valeurs booléennes personnalisées*/
 #define TRUE 1
 #define FALSE 0
 

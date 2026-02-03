@@ -1,21 +1,9 @@
-/**
-* @file main.c
-* @brief fichier principal
-*/
-
-
-// Inclusion libairies
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdarg.h>
-
-
-// Inclusion Raylib
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
-
-// Inclusion de nos propres modules
 #include "../lib/headers/types.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/player.h"
