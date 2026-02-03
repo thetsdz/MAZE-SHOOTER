@@ -1,3 +1,9 @@
+/**
+* @file main.c
+* @brief fichier principal
+*/
+
+
 // Inclusion libairies
 #include <stdlib.h>
 #include <stdio.h>
@@ -69,7 +75,7 @@ int main(void){
     Projectile projs[MAX_PROJ];
     InitProjectiles(projs);
 
-    int score = 0;
+    int score = 0; /*! */
 
     // Setup Caméra Raylib standard
     Camera3D camera = {0};
