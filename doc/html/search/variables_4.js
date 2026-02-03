@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['width_0',['width',['../struct_block.html#a880d5d30dcac6ec7145f352b84e1c52e',1,'Block']]]
+  ['i_0',['i',['../structCoord.html#afa9c5b1cc5ac16b674407f135d6f2fc5',1,'Coord']]],
+  ['iswall_1',['isWall',['../structBlock.html#a71c7e82fddfbe592f3d5c9603e2e67fe',1,'Block']]]
 ];

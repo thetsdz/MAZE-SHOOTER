@@ -1,0 +1,20 @@
+\doxysection{player.\+h}
+\hypertarget{player_8h_source}{}\label{player_8h_source}\index{lib/headers/player.h@{lib/headers/player.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ PLAYER\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ PLAYER\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}types.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../linux/raylib-\/5.5\_linux\_amd64/include/raymath.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ Réinitialise\ les\ variables\ du\ joueur\ (position\ spawn,\ vitesse\ nulle)}}
+\DoxyCodeLine{00008\ \textcolor{keywordtype}{void}\ InitPlayer(Player\ *player);}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ C'est\ le\ cerveau\ du\ joueur\ :\ gère\ clavier,\ souris,\ physique\ et\ collisions}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ Modifie\ l'état\ du\ 'player'\ et\ met\ à\ jour\ la\ 'camera'}}
+\DoxyCodeLine{00012\ \textcolor{keywordtype}{void}\ UpdatePlayer(Player\ *player,\ \mbox{\hyperlink{structBlock}{Block}}\ blocks[NUM\_BLOCKS][NUM\_BLOCKS],\ Camera3D\ *camera);}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

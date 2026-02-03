@@ -1,0 +1,21 @@
+\doxysection{cryptage.\+h}
+\hypertarget{cryptage_8h_source}{}\label{cryptage_8h_source}\index{lib/headers/cryptage.h@{lib/headers/cryptage.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ CRYPTAGE\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ CRYPTAGE\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ convertie\ du\ texte\ en\ un\ texte\ illisible\ pour\ un\ etre\ humain}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ mais\ pouvant\ etre\ reconverti\ en\ texte\ lisible\ grace\ a\ la\ meme\ fonction\ du\ a\ la\ symetrie\ de\ l'algorithme\ RC4}}
+\DoxyCodeLine{00009\ \textcolor{keywordtype}{void}\ rc4\_crypt(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *data,\ \textcolor{keywordtype}{size\_t}\ data\_len,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len);}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ calcule\ un\ checksum\ pour\ verifier\ l'integrite\ des\ donnees}}
+\DoxyCodeLine{00012\ uint32\_t\ calculate\_checksum(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *data,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ }
+
+\end{DoxyCode}
