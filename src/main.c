@@ -49,10 +49,10 @@ int main(void){
     srand(time(NULL));  // Initialise le générateur aléatoire
 
     // --- Initialisation des Objets ---
-    Player player;
+    Entity player;
     InitPlayer(&player);
 
-    Bot bot;
+    Entity bot;
     InitBot(&bot);
 
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];

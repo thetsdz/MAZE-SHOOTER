@@ -1,7 +1,7 @@
 #include <math.h>
 #include "../lib/headers/player.h"
 
-void InitPlayer(Player *player) {
+void InitPlayer(Entity *player) {
     player->pos = (Vector3){0, 10.0f, 0};
     player->yaw = 0.0f; //
     player->pitch = 0.0f; //
@@ -10,9 +10,10 @@ void InitPlayer(Player *player) {
     player->size = 1.0f; //taille
     player->ammo = 10;     // Commence avec 10 balles
     player->maxAmmo = 10;  // Capacité de base de 10
+    player->type = ENTITY_PLAYER; //type de l'entité
 }
 
-void UpdatePlayer(Player *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {
+void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {
     // Constantes de gameplay
     float speed = 0.1f; //vitesse par défaut
     float gravity = 0.02f; //gravité par defaut

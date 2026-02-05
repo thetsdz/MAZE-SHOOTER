@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include "../lib/headers/bot.h"
 
-void InitBot(Bot *bot) {
+void InitBot(Entity *bot) {
     bot->pos = (Vector3){0, 10.0f, 0}; //initialisation de la position du robot
     bot->yaw = 0.0f; //angle du bot
     bot->pitch = 0.0f; //angle du bot
     bot->velocityY = 0.0f; //vitesse du bot
     bot->onGround = true; //le bot est initialisée au sol
     bot->size = 1.0f; //taille du bot
+    bot->type = ENTITY_BOT; //type de l'entité
 }
 
-void UpdateBot(Bot *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 targetPos, Projectile *projs) {
+void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 targetPos, Projectile *projs) {
     
     // --- Paramètres du Bot ---
     float speed = 0.08f;
