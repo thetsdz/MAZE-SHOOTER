@@ -20,7 +20,8 @@ static void swap(unsigned char *a, unsigned char *b) {
 // key_len: longueur du mdp
 void rc4_crypt(unsigned char *data, size_t data_len, const char *key, size_t key_len) {
     unsigned char S[256];
-    int i, j = 0, k;
+    int i, j = 0;
+    size_t k; 
 
     // 1. Initialisation du tableau d'état (KSA)
     for (i = 0; i < 256; i++) {
