@@ -11,7 +11,9 @@ SRCS = main.c \
        bot.c \
        projectile.c \
        asset.c \
-       pile.c
+       pile.c \
+	   cryptage.c \
+	   sauvegarde.c
 
 OBJS = $(SRCS:.c=.o)
 
