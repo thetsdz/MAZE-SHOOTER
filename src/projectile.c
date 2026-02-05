@@ -26,7 +26,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
     }
 }
 
-void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Bot *bot, Player *player, int *score) {
+void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity *bot, Entity *player, int *score) {
     float dt = GetFrameTime();
     
     for(int i=0; i<MAX_PROJ; i++){

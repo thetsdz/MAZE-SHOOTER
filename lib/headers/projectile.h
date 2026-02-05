@@ -12,7 +12,7 @@ void InitProjectiles(Projectile *projs);
 void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner);
 
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les tirs actifs*/
-void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Bot *bot, Player *player, int *score);
+void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity *bot, Entity *player, int *score);
 
 /** @brief Affiche les projectiles actifs*/
 void DrawProjectiles(Projectile *projs);
