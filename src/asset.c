@@ -1,32 +1,28 @@
+/** \file asset.c
+    \brief Gère les textures
+*/
+
 #include <stdio.h> 
 #include "../lib/headers/asset.h"
 
-Texture2D ChargerTexture(const char *fileName) {
-    // 1. On charge l'image
-    Texture2D texture = LoadTexture(fileName);
 
-    // 2. Vérification de sécurité (Bonne pratique)
+Texture2D ChargerTexture(const char *fileName) {
+    Texture2D texture = LoadTexture(fileName);
     if (texture.id == 0) {
         printf("ERREUR: Impossible de charger l'image : %s\n", fileName);
-        // On pourrait renvoyer une texture violette "missing texture" ici
     }
-
     return texture;
 }
 
+
 void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight) {
-    // Calcul pour centrer l'image exactement
-    // Position X = (LargeurEcran / 2) - (LargeurImage / 2)
     int posX = (screenWidth / 2) - (texture.width / 2);
     int posY = (screenHeight / 2) - (texture.height / 2);
-
-    // Couleur WHITE signifie "pas de filtre couleur", on affiche l'image telle quelle
     DrawTexture(texture, posX, posY, WHITE);
 }
 
 
 void DessinerArme(Texture2D texture, int screenWidth, int screenHeight) {
-    // Sécurité
     if (texture.id <= 0) return;
 
     // --- 1. Calcul de l'ÉCHELLE (Scaling) ---

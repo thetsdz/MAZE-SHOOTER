@@ -1,3 +1,8 @@
+/** \file bot.c
+    \brief Gère les robots
+*/
+
+
 #include <math.h>
 #include <stdlib.h>
 #include "../lib/headers/bot.h"
@@ -14,23 +19,42 @@ void InitBot(Entity *bot) {
 
 void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 targetPos, Projectile *projs) {
     
-    // --- Paramètres du Bot ---
+    /** \brief Paramètres du Bot
+        \code  
+        float speed = 0.08f;
+        float gravity = 0.02f;
+        float botHalf = bot->size/2;
+        float dt = GetFrameTime();
+        \endcode
+    */
     float speed = 0.08f;
     float gravity = 0.02f;
     float botHalf = bot->size/2;
     float dt = GetFrameTime();
 
-    // --- Orientation (Viser le joueur) ---
-    // Calcul de l'angle pour regarder le joueur sur le plan horizontal (XZ)
+
+
+    /** \brief Calcul de l'angle pour regarder le joueur sur le plan horizontal (XZ)
+        \code
+        float dx = targetPos.x - bot->pos.x;
+        float dz = targetPos.z - bot->pos.z;
+        bot->yaw = atan2f(dx, dz); 
+        \endcode 
+    */ 
     float dx = targetPos.x - bot->pos.x;
     float dz = targetPos.z - bot->pos.z;
-    
-    // atan2f renvoie l'angle en radians
     bot->yaw = atan2f(dx, dz); 
     
-    // Viser en hauteur 
+
+    /** \brief Viser en hauteur
+        \code
+        float dist = sqrtf(dx*dx + dz*dz);
+        float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f);
+        bot->pitch = atan2f(dy, dist);
+        \endcode 
+    */   
     float dist = sqrtf(dx*dx + dz*dz);
-    float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f); // Vise la tête
+    float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f); 
     bot->pitch = atan2f(dy, dist);
 
 
