@@ -1,0 +1,82 @@
+\doxysection{src/asset.c File Reference}
+\hypertarget{asset_8c}{}\label{asset_8c}\index{src/asset.c@{src/asset.c}}
+
+
+Gère les textures.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include "{}../lib/headers/asset.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Texture2D \mbox{\hyperlink{asset_8c_a668c95ae27f97abb633ca0bcb6e05ef7}{Charger\+Texture}} (const char \texorpdfstring{$\ast$}{*}file\+Name)
+\begin{DoxyCompactList}\small\item\em Charge la texture passé en paramètre. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{asset_8c_aa9990038dc27fd675472eda6f90584f6}{Dessiner\+Viseur}} (Texture2D texture, int screen\+Width, int screen\+Height)
+\begin{DoxyCompactList}\small\item\em Dessine la viseur. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{asset_8c_a0943c068e0b5531ce70ce8b438d7a1a0}{Dessiner\+Arme}} (Texture2D texture, int screen\+Width, int screen\+Height)
+\begin{DoxyCompactList}\small\item\em Dessine l\textquotesingle{}arme. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Gère les textures. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{asset_8c_a668c95ae27f97abb633ca0bcb6e05ef7}\label{asset_8c_a668c95ae27f97abb633ca0bcb6e05ef7} 
+\index{asset.c@{asset.c}!ChargerTexture@{ChargerTexture}}
+\index{ChargerTexture@{ChargerTexture}!asset.c@{asset.c}}
+\doxysubsubsection{\texorpdfstring{ChargerTexture()}{ChargerTexture()}}
+{\footnotesize\ttfamily Texture2D Charger\+Texture (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{file\+Name }\end{DoxyParamCaption})}
+
+
+
+Charge la texture passé en paramètre. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Nom} & de la texture \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+La texture chargé 
+\end{DoxyReturn}
+\Hypertarget{asset_8c_a0943c068e0b5531ce70ce8b438d7a1a0}\label{asset_8c_a0943c068e0b5531ce70ce8b438d7a1a0} 
+\index{asset.c@{asset.c}!DessinerArme@{DessinerArme}}
+\index{DessinerArme@{DessinerArme}!asset.c@{asset.c}}
+\doxysubsubsection{\texorpdfstring{DessinerArme()}{DessinerArme()}}
+{\footnotesize\ttfamily void Dessiner\+Arme (\begin{DoxyParamCaption}\item[{Texture2D}]{texture,  }\item[{int}]{screen\+Width,  }\item[{int}]{screen\+Height }\end{DoxyParamCaption})}
+
+
+
+Dessine l\textquotesingle{}arme. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Texture} & de l\textquotesingle{}arme \\
+\hline
+{\em Largeur} & de la fenètre \\
+\hline
+{\em Hauteur} & de la fenètre \\
+\hline
+\end{DoxyParams}
+\Hypertarget{asset_8c_aa9990038dc27fd675472eda6f90584f6}\label{asset_8c_aa9990038dc27fd675472eda6f90584f6} 
+\index{asset.c@{asset.c}!DessinerViseur@{DessinerViseur}}
+\index{DessinerViseur@{DessinerViseur}!asset.c@{asset.c}}
+\doxysubsubsection{\texorpdfstring{DessinerViseur()}{DessinerViseur()}}
+{\footnotesize\ttfamily void Dessiner\+Viseur (\begin{DoxyParamCaption}\item[{Texture2D}]{texture,  }\item[{int}]{screen\+Width,  }\item[{int}]{screen\+Height }\end{DoxyParamCaption})}
+
+
+
+Dessine la viseur. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Texture} & du viseur \\
+\hline
+{\em Largeur} & de la fenètre \\
+\hline
+{\em Hauteur} & de la fenètre \\
+\hline
+\end{DoxyParams}
