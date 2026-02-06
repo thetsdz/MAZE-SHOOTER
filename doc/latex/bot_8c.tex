@@ -1,0 +1,85 @@
+\doxysection{src/bot.c File Reference}
+\hypertarget{bot_8c}{}\label{bot_8c}\index{src/bot.c@{src/bot.c}}
+
+
+Gère les robots.  
+
+
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include "{}../lib/headers/bot.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{bot_8c_a0aa53a688fa6599ffe11dbaf29a34c92}{Init\+Bot}} (\mbox{\hyperlink{structEntity}{Entity}} \texorpdfstring{$\ast$}{*}bot)
+\begin{DoxyCompactList}\small\item\em Initialise le robot. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{bot_8c_aa6d043fa6b630abae9a8ab9b2cb554bb}{Update\+Bot}} (\mbox{\hyperlink{structEntity}{Entity}} \texorpdfstring{$\ast$}{*}bot, \mbox{\hyperlink{structBlock}{Block}} blocks\mbox{[}NUM\+\_\+\+BLOCKS\mbox{]}\mbox{[}NUM\+\_\+\+BLOCKS\mbox{]}, Vector3 target\+Pos, \mbox{\hyperlink{structProjectile}{Projectile}} \texorpdfstring{$\ast$}{*}projs)
+\begin{DoxyCompactList}\small\item\em Mise à jour du robot. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Gère les robots. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{bot_8c_a0aa53a688fa6599ffe11dbaf29a34c92}\label{bot_8c_a0aa53a688fa6599ffe11dbaf29a34c92} 
+\index{bot.c@{bot.c}!InitBot@{InitBot}}
+\index{InitBot@{InitBot}!bot.c@{bot.c}}
+\doxysubsubsection{\texorpdfstring{InitBot()}{InitBot()}}
+{\footnotesize\ttfamily void Init\+Bot (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structEntity}{Entity}} \texorpdfstring{$\ast$}{*}}]{bot }\end{DoxyParamCaption})}
+
+
+
+Initialise le robot. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Le} & robot passé en paramètre \\
+\hline
+\end{DoxyParams}
+\Hypertarget{bot_8c_aa6d043fa6b630abae9a8ab9b2cb554bb}\label{bot_8c_aa6d043fa6b630abae9a8ab9b2cb554bb} 
+\index{bot.c@{bot.c}!UpdateBot@{UpdateBot}}
+\index{UpdateBot@{UpdateBot}!bot.c@{bot.c}}
+\doxysubsubsection{\texorpdfstring{UpdateBot()}{UpdateBot()}}
+{\footnotesize\ttfamily void Update\+Bot (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structEntity}{Entity}} \texorpdfstring{$\ast$}{*}}]{bot,  }\item[{\mbox{\hyperlink{structBlock}{Block}}}]{blocks\mbox{[}\+NUM\+\_\+\+BLOCKS\mbox{]}\mbox{[}\+NUM\+\_\+\+BLOCKS\mbox{]},  }\item[{Vector3}]{target\+Pos,  }\item[{\mbox{\hyperlink{structProjectile}{Projectile}} \texorpdfstring{$\ast$}{*}}]{projs }\end{DoxyParamCaption})}
+
+
+
+Mise à jour du robot. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Labyrinthe} & \\
+\hline
+{\em Position} & du joueur \\
+\hline
+{\em Tableau} & de projectiles \\
+\hline
+\end{DoxyParams}
+Paramètres du Bot 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ speed\ =\ 0.08f;}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ gravity\ =\ 0.02f;}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ botHalf\ =\ bot-\/>size/2;}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ dt\ =\ GetFrameTime();}
+
+\end{DoxyCode}
+
+
+Calcul de l\textquotesingle{}angle pour regarder le joueur sur le plan horizontal (XZ) 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ dx\ =\ targetPos.x\ -\/\ bot-\/>pos.x;}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ dz\ =\ targetPos.z\ -\/\ bot-\/>pos.z;}
+\DoxyCodeLine{bot-\/>yaw\ =\ atan2f(dx,\ dz);\ }
+
+\end{DoxyCode}
+
+
+Viser en hauteur 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ dist\ =\ sqrtf(dx*dx\ +\ dz*dz);}
+\DoxyCodeLine{\textcolor{keywordtype}{float}\ dy\ =\ (targetPos.y\ +\ 0.5f)\ -\/\ (bot-\/>pos.y\ +\ 0.5f);}
+\DoxyCodeLine{bot-\/>pitch\ =\ atan2f(dy,\ dist);}
+
+\end{DoxyCode}
