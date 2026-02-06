@@ -18,7 +18,12 @@
  * @enum GameScreen
  * @brief Définit les écrans disponibles dans le jeu.
  */
-typedef enum GameScreen { MENU, JEU, OPTIONS } GameScreen;
+// types.h
+
+
+typedef enum GameScreen { MENU, TEST, OPTIONS, EXIT } GameScreen;  // Ajoute EXIT
+
+
 
 /**
  * @enum EntityType

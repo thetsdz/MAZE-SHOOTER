@@ -9,186 +9,181 @@
 #include "../lib/headers/level.h"
 #include "../lib/headers/pile.h"
 #include "../lib/headers/player.h"
+#include "../lib/headers/menu.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 
+
 static FILE* logFile = NULL;
 
 void LogToFile(int logLevel, const char* text, va_list args) {
-  if (!logFile) return;
-
-  // Préfixe lisible
-  const char* levels[] = {"ALL",     "TRACE", "DEBUG", "INFO",
-                          "WARNING", "ERROR", "FATAL", "NONE"};
-
-  fprintf(logFile, "[%s] ", levels[logLevel]);
-  vfprintf(logFile, text, args);
-  fprintf(logFile, "\n");
-  fflush(logFile);
+    if (!logFile) return;
+    const char* levels[] = {"ALL", "TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "FATAL", "NONE"};
+    fprintf(logFile, "[%s] ", levels[logLevel]);
+    vfprintf(logFile, text, args);
+    fprintf(logFile, "\n");
+    fflush(logFile);
 }
 
 int main(void) {
-  // --- Initialisation du log ---
-  logFile = fopen("log.txt", "w");
-  if (!logFile) return 1;
+    // --- Initialisation du log ---
+    logFile = fopen("log.txt", "w");
+    if (!logFile) return 1;
+    SetTraceLogCallback(LogToFile);
+    SetTraceLogLevel(LOG_INFO);
 
-  SetTraceLogCallback(LogToFile);
-  SetTraceLogLevel(LOG_INFO);
+    // --- Initialisation Fenêtre & Raylib ---
+    int screenWidth = GetMonitorWidth(0);
+    int screenHeight = GetMonitorHeight(0);
+    InitWindow(screenWidth, screenHeight, "JEU");
+    ToggleFullscreen();
+    SetTargetFPS(60);
+    DisableCursor();
+    srand(time(NULL));
+    int etat = 1;
 
-  // --- Initialisation Fenêtre & Raylib ---
-  int screenWidth = GetMonitorWidth(0);
-  int screenHeight = GetMonitorHeight(0);
-  InitWindow(screenWidth, screenHeight, "JEU");
-  ToggleFullscreen();
-  SetTargetFPS(60);   // Essaye de maintenir 60 images/seconde
-  DisableCursor();    // Bloque la souris dans la fenêtre pour la visée
-  srand(time(NULL));  // Initialise le générateur aléatoire
+    // --- Variables pour la gestion des états ---
+    GameScreen currentScreen = MENU;
+    bool jeuInitialise = false;
 
-  // --- Initialisation des Objets ---
-  Entity player;
-  InitPlayer(&player);
+    // --- Variables du jeu (initialisées plus tard) ---
+    Entity player;
+    Entity bot;
+    Block blocks[NUM_BLOCKS][NUM_BLOCKS];
+    Projectile projs[MAX_PROJ];
+    int score = 0;
 
-  Entity bot;
-  InitBot(&bot);
+    // --- Caméra ---
+    Camera3D camera = {0};
+    camera.up = (Vector3){0, 1, 0};
+    camera.fovy = 60;
+    camera.projection = CAMERA_PERSPECTIVE;
 
-  Block blocks[NUM_BLOCKS][NUM_BLOCKS];
-  init_lab(blocks);
-  creer_lab(blocks);
+    // --- Textures ---
+    Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
+    Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
-  Projectile projs[MAX_PROJ];
-  InitProjectiles(projs);
+    // --- Boucle Principale ---
+    while (!WindowShouldClose() ||etat == 1 ) {
+        if (IsKeyPressed(KEY_ESCAPE)) break;
 
-  int score = 0; /*! */
+        // --- Initialisation des objets du jeu (une seule fois) ---
+        if (currentScreen == TEST && !jeuInitialise) {
+            InitPlayer(&player);
+            InitBot(&bot);
+            init_lab(blocks);
+            creer_lab(blocks);
+            InitProjectiles(projs);
+            jeuInitialise = true;
+        }
 
-  // Setup Caméra Raylib standard
-  Camera3D camera = {0};
-  camera.up = (Vector3){0, 1, 0};  // L'axe Y pointe vers le haut
-  camera.fovy = 60;                // Champ de vision (Field of View)
-  camera.projection = CAMERA_PERSPECTIVE;
+        // --- Logique selon l'état ---
+        switch (currentScreen) {
+            case MENU: {
+                GererMenu(&currentScreen);
+                break;
+            }
+            case TEST: {
+                // --- Logique du jeu ---
+                UpdatePlayer(&player, blocks, &camera);
+                UpdateBot(&bot, blocks, player.pos, projs);
 
-  // Initialisation des textures
-  Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
-  Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
+                if (IsKeyPressed(KEY_Y)) sauvegarder(&player, &score);
+                if (IsKeyPressed(KEY_U)) chargerSauvegarde(&player, &score);
 
-  // Fichier de log
-  // --- Boucle Principale ---
-  while (!WindowShouldClose()) {
-    if (IsKeyPressed(KEY_ESCAPE)) break;
+                if (IsKeyPressed(KEY_R)) player.ammo = player.maxAmmo;
 
-    // --- ETAPE UPDATE ---
+                if (IsKeyPressed(KEY_E) && score >= SCORE_TRADE && player.maxAmmo < MAX_PROJ) {
+                    score -= SCORE_TRADE;
+                    player.maxAmmo += 2;
+                    TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d", player.maxAmmo);
+                }
 
-    UpdatePlayer(&player, blocks, &camera);
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && player.ammo > 0) {
+                    Vector3 camDir = {sinf(player.yaw) * cosf(player.pitch), sinf(player.pitch), cosf(player.yaw) * cosf(player.pitch)};
+                    Vector3 startPos = {player.pos.x, player.pos.y + 0.5f, player.pos.z};
+                    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER);
+                    player.ammo--;
+                }
 
-    // Update du bot (sans affichage pour maintenant)
-    UpdateBot(&bot, blocks, player.pos, projs);
+                UpdateProjectiles(projs, blocks, &bot, &player, &score);
 
-    // enregistrer les informations joueur dans le fichier de sauvegarde
-    if (IsKeyPressed(KEY_Y)) {
-      sauvegarder(&player, &score);
+                // Retour au menu
+                if (IsKeyPressed(KEY_BACKSPACE)) {
+                    currentScreen = MENU;
+                    jeuInitialise = false;
+                }
+                break;
+            }
+            case OPTIONS: {
+                // À implémenter
+                DrawText("ÉCRAN D'OPTIONS", GetScreenWidth()/2 - MeasureText("ÉCRAN D'OPTIONS", 20)/2, GetScreenHeight()/2, 20, BLUE);
+                if (IsKeyPressed(KEY_BACKSPACE)) currentScreen = MENU;
+                break;
+            }
+            case EXIT:{
+                etat = 0;
+                break;
+            }
+        }
+
+        // --- Dessin selon l'état ---
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        switch (currentScreen) {
+            case MENU: {
+                // Le dessin est géré dans GererMenu
+                break;
+            }
+            case TEST: {
+                // --- Dessin 3D ---
+                BeginMode3D(camera);
+                DrawLevel(blocks);
+                DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);
+                Vector3 lookDir = {sinf(bot.yaw), 0, cosf(bot.yaw)};
+                Vector3 eyePos = Vector3Add(bot.pos, Vector3Scale(lookDir, 0.5f));
+                eyePos.y += 0.3f;
+                DrawCube(eyePos, 0.2f, 0.2f, 0.2f, BLACK);
+                DrawProjectiles(projs);
+                EndMode3D();
+
+                // --- UI 2D ---
+                DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20, DARKGRAY);
+                Color ammoColor = (player.ammo == 0) ? RED : DARKGREEN;
+                DrawText(TextFormat("Munitions: %d / %d", player.ammo, player.maxAmmo), 10, 40, 20, ammoColor);
+                if (player.ammo < player.maxAmmo) DrawText("Appuyez sur [R] pour Recharger", 10, 65, 10, GRAY);
+                if (player.maxAmmo < MAX_PROJ) {
+                    if (score >= SCORE_TRADE) {
+                        DrawText("Appuyez sur [E] pour +2 Munitions Max (-100 pts)", 10, 90, 20, GOLD);
+                    } else {
+                        DrawText(TextFormat("Prochaine amélioration: 100 pts (Actuel: %d)", score), 10, 90, 10, LIGHTGRAY);
+                    }
+                } else {
+                    DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
+                }
+                DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
+                DessinerArme(armeTex, GetScreenWidth(), GetScreenHeight());
+                break;
+            }
+            case OPTIONS: {
+                // À implémenter
+                break;
+            }
+            case EXIT:{
+                break;
+            }
+        }
+
+        EndDrawing();
     }
 
-    // charger les informations joueur depuis le fichier de sauvegarde
-    if (IsKeyPressed(KEY_U)) {
-      chargerSauvegarde(&player, &score);
-    }
-
-    // --- GESTION MUNITIONS & AMELIORATIONS ---
-
-    if (IsKeyPressed(KEY_R)) {
-      player.ammo = player.maxAmmo;
-    }
-
-    // Acheter Amélioration (Touche E)
-    // Condition : Avoir assez de score ET ne pas dépasser 50 de capacité max
-    if (IsKeyPressed(KEY_E) && score >= SCORE_TRADE &&
-        player.maxAmmo < MAX_PROJ) {
-      score -= SCORE_TRADE;  // Coût
-      player.maxAmmo += 2;   // Bonus
-      TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d",
-               player.maxAmmo);
-    }
-
-    // --- Tir du joueur ---
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      if (player.ammo > 0) {
-        // 1. Calcul direction tir (Où regarde le joueur ?)
-        Vector3 camDir = {sinf(player.yaw) * cosf(player.pitch),
-                          sinf(player.pitch),
-                          cosf(player.yaw) * cosf(player.pitch)};
-
-        // 2. Position de départ (Yeux du joueur)
-        Vector3 startPos = {player.pos.x, player.pos.y + 0.5f, player.pos.z};
-        ShootProjectile(projs, startPos, camDir, OWNER_PLAYER);
-
-        player.ammo--;
-      }
-    }
-
-    UpdateProjectiles(projs, blocks, &bot, &player, &score);
-
-    // --- ETAPE DRAW ---
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-
-    BeginMode3D(camera);
-    DrawLevel(blocks);
-    DrawCube(bot.pos, bot.size, bot.size, bot.size, RED);
-    // Petits yeux noirs pour voir où il regarde
-    Vector3 lookDir = {sinf(bot.yaw), 0, cosf(bot.yaw)};
-    Vector3 eyePos = Vector3Add(bot.pos, Vector3Scale(lookDir, 0.5f));
-    eyePos.y += 0.3f;
-    DrawCube(eyePos, 0.2f, 0.2f, 0.2f, BLACK);
-
-    DrawProjectiles(projs);
-    EndMode3D();
-    // --- UI 2D (Après la 3D) ---
-
-    // --- INTERFACE UTILISATEUR (UI) MISE A JOUR ---
-
-    // Affichage Score et FPS
-    DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20,
-             DARKGRAY);
-
-    // Affichage Munitions (Rouge si vide, Vert sinon)
-    Color ammoColor = (player.ammo == 0) ? RED : DARKGREEN;
-    DrawText(TextFormat("Munitions: %d / %d", player.ammo, player.maxAmmo), 10,
-             40, 20, ammoColor);
-
-    // Affichage instruction Recharge
-    if (player.ammo < player.maxAmmo) {
-      DrawText("Appuyez sur [R] pour Recharger", 10, 65, 10, GRAY);
-    }
-
-    // Affichage Magasin (Upgrade)
-    if (player.maxAmmo < MAX_PROJ) {
-      if (score >= SCORE_TRADE) {
-        // Le joueur peut acheter : Texte en Or/Orange
-        DrawText("Appuyez sur [E] pour +2 Munitions Max (-100 pts)", 10, 90, 20,
-                 GOLD);
-      } else {
-        // Pas assez de points : Texte gris
-        DrawText(
-            TextFormat("Prochaine amélioration: 100 pts (Actuel: %d)", score),
-            10, 90, 10, LIGHTGRAY);
-      }
-    } else {
-      DrawText("Capacité MAX atteinte (50)", 10, 90, 20, MAROON);
-    }
-    // Dessin du viseur et de l'arme
-    DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
-    DessinerArme(armeTex, GetScreenWidth(), GetScreenHeight());
-
-    EndDrawing();
-  }
-
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo);
-  if (logFile) fclose(logFile);
-
-  UnloadTexture(viseur);
-  UnloadTexture(armeTex);
-  CloseWindow();  // Ferme la fenêtre OpenGL
-  return 0;
+    TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score, player.maxAmmo);
+    if (logFile) fclose(logFile);
+    UnloadTexture(viseur);
+    UnloadTexture(armeTex);
+    CloseWindow();
+    return 0;
 }
