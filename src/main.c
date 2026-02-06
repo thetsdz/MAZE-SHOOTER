@@ -40,7 +40,8 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "JEU");
     ToggleFullscreen();
     SetTargetFPS(60);
-    DisableCursor();
+    void ShowCursor(void);
+
     srand(time(NULL));
     int etat = 1;
 
@@ -70,7 +71,7 @@ int main(void) {
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         // --- Initialisation des objets du jeu (une seule fois) ---
-        if (currentScreen == TEST && !jeuInitialise) {
+        if (currentScreen == GAME && !jeuInitialise) {
             InitPlayer(&player);
             InitBot(&bot);
             init_lab(blocks);
@@ -85,7 +86,7 @@ int main(void) {
                 GererMenu(&currentScreen);
                 break;
             }
-            case TEST: {
+            case GAME: {
                 // --- Logique du jeu ---
                 UpdatePlayer(&player, blocks, &camera);
                 UpdateBot(&bot, blocks, player.pos, projs);
@@ -138,7 +139,7 @@ int main(void) {
                 // Le dessin est géré dans GererMenu
                 break;
             }
-            case TEST: {
+            case GAME: {
                 // --- Dessin 3D ---
                 BeginMode3D(camera);
                 DrawLevel(blocks);

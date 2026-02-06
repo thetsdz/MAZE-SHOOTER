@@ -5,7 +5,6 @@ var NAVTREEINDEX0 =
 "bot_8h_source.html":[1,0,0,0,1],
 "classes.html":[0,1],
 "cryptage_8h_source.html":[1,0,0,0,2],
-"dir_68267d1309a1af8e8297ef4c3efbcdba.html":[1,0,1],
 "dir_6c53b035f36830854f983e52e14ea439.html":[1,0,0,0],
 "dir_97aefd0d527b934f1d99a682da8fe6a9.html":[1,0,0],
 "files.html":[1,0],
@@ -13,11 +12,12 @@ var NAVTREEINDEX0 =
 "functions_vars.html":[0,2,1],
 "index.html":[],
 "level_8h_source.html":[1,0,0,0,3],
-"main_8c.html":[1,0,1,0],
+"menu_8h_source.html":[1,0,0,0,4],
 "pages.html":[],
-"pile_8h_source.html":[1,0,0,0,4],
-"player_8h_source.html":[1,0,0,0,5],
-"projectile_8h_source.html":[1,0,0,0,6],
+"pile_8h_source.html":[1,0,0,0,5],
+"player_8h_source.html":[1,0,0,0,6],
+"projectile_8h_source.html":[1,0,0,0,7],
+"sauvegarde_8h_source.html":[1,0,0,0,8],
 "structBlock.html":[0,0,0],
 "structBlock.html#a119f68c99415609639a11c7605677572":[0,0,0,2],
 "structBlock.html#a33ea73e756e0ee4e98a7b4a8fc04fd6e":[0,0,0,4],
@@ -46,5 +46,7 @@ var NAVTREEINDEX0 =
 "structProjectile.html#a45be2a49d7819778e572a93411d40a66":[0,0,4,1],
 "structProjectile.html#aaae5471ca99c442e2a59bcd59388caa5":[0,0,4,4],
 "structProjectile.html#abaa5fff35c6e5054a9de0690a1580081":[0,0,4,3],
-"types_8h_source.html":[1,0,0,0,7]
+"structSaveData.html":[0,0,5],
+"structSaveFile.html":[0,0,6],
+"types_8h_source.html":[1,0,0,0,9]
 };
