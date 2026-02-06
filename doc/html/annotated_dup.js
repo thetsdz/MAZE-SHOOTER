@@ -4,5 +4,7 @@ var annotated_dup =
     [ "Coord", "structCoord.html", "structCoord" ],
     [ "Element", "structElement.html", null ],
     [ "Entity", "structEntity.html", "structEntity" ],
-    [ "Projectile", "structProjectile.html", "structProjectile" ]
+    [ "Projectile", "structProjectile.html", "structProjectile" ],
+    [ "SaveData", "structSaveData.html", null ],
+    [ "SaveFile", "structSaveFile.html", null ]
 ];

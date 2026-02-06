@@ -4,7 +4,7 @@
 #include "../lib/headers/menu.h"
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;  // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
-static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
+static const char* texteBoutons[3] = {"LANCER PARTIE", "CHARGER UNE PARTIE", "MULTIJOUEUR" "OPTIONS", "QUITTER", ""};
 
 
 bool DessinerBouton(Rectangle rect, const char* texte) {
