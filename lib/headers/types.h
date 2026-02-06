@@ -18,7 +18,7 @@
  * @enum GameScreen
  * @brief Définit les écrans disponibles dans le jeu.
  */
-typedef enum GameScreen { MENU, TEST } GameScreen;
+typedef enum GameScreen { MENU, JEU, OPTIONS } GameScreen;
 
 /**
  * @enum EntityType
