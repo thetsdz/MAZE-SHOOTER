@@ -96,7 +96,7 @@ void GererMenu(GameScreen* currentScreen) {
         Rectangle rect = {posX, departY + i * 70, btnW, btnH};
 
         // Dessin du bouton
-        DrawRectangleRec(rect, couleurFond);
+        DrawRectangleRec(rect, couleurFond);  //permet de dessiner le fon de la fenetre
         
         // Choix de
         if ( i == selectedButton){
