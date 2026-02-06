@@ -1,0 +1,56 @@
+\@ifundefined {etoctocstyle}{\let \etoc@startlocaltoc \@gobble \let \etoc@settocdepth \@gobble \let \etoc@depthtag \@gobble \let \etoc@setlocaltop \@gobble }{}
+\contentsline {chapter}{\numberline {1}Class Index}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Class List}{1}{section.1.1}%
+\contentsline {chapter}{\numberline {2}File Index}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}File List}{3}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Class Documentation}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Block Struct Reference}{5}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Detailed Description}{5}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Member Data Documentation}{5}{subsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.1}color}{5}{subsubsection.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {3.1.2.2}depth}{5}{subsubsection.3.1.2.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.3}height}{6}{subsubsection.3.1.2.3}%
+\contentsline {subsubsection}{\numberline {3.1.2.4}isWall}{6}{subsubsection.3.1.2.4}%
+\contentsline {subsubsection}{\numberline {3.1.2.5}pos}{6}{subsubsection.3.1.2.5}%
+\contentsline {subsubsection}{\numberline {3.1.2.6}width}{6}{subsubsection.3.1.2.6}%
+\contentsline {section}{\numberline {3.2}Coord Struct Reference}{6}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Detailed Description}{6}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Member Data Documentation}{7}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}i}{7}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}j}{7}{subsubsection.3.2.2.2}%
+\contentsline {section}{\numberline {3.3}Element Struct Reference}{7}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Entity Struct Reference}{7}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Detailed Description}{8}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Member Data Documentation}{8}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}ammo}{8}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}maxAmmo}{8}{subsubsection.3.4.2.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.3}onGround}{8}{subsubsection.3.4.2.3}%
+\contentsline {subsubsection}{\numberline {3.4.2.4}pitch}{8}{subsubsection.3.4.2.4}%
+\contentsline {subsubsection}{\numberline {3.4.2.5}pos}{8}{subsubsection.3.4.2.5}%
+\contentsline {subsubsection}{\numberline {3.4.2.6}size}{8}{subsubsection.3.4.2.6}%
+\contentsline {subsubsection}{\numberline {3.4.2.7}type}{9}{subsubsection.3.4.2.7}%
+\contentsline {subsubsection}{\numberline {3.4.2.8}velocityY}{9}{subsubsection.3.4.2.8}%
+\contentsline {subsubsection}{\numberline {3.4.2.9}yaw}{9}{subsubsection.3.4.2.9}%
+\contentsline {section}{\numberline {3.5}Projectile Struct Reference}{9}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Detailed Description}{9}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Member Data Documentation}{9}{subsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.1}active}{9}{subsubsection.3.5.2.1}%
+\contentsline {subsubsection}{\numberline {3.5.2.2}life}{10}{subsubsection.3.5.2.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.3}owner}{10}{subsubsection.3.5.2.3}%
+\contentsline {subsubsection}{\numberline {3.5.2.4}pos}{10}{subsubsection.3.5.2.4}%
+\contentsline {subsubsection}{\numberline {3.5.2.5}radius}{10}{subsubsection.3.5.2.5}%
+\contentsline {subsubsection}{\numberline {3.5.2.6}vel}{10}{subsubsection.3.5.2.6}%
+\contentsline {section}{\numberline {3.6}Save\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Data Struct Reference}{10}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Save\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}File Struct Reference}{11}{section.3.7}%
+\contentsline {chapter}{\numberline {4}File Documentation}{13}{chapter.4}%
+\contentsline {section}{\numberline {4.1}asset.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{13}{section.4.1}%
+\contentsline {section}{\numberline {4.2}bot.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{13}{section.4.2}%
+\contentsline {section}{\numberline {4.3}cryptage.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{13}{section.4.3}%
+\contentsline {section}{\numberline {4.4}level.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{14}{section.4.4}%
+\contentsline {section}{\numberline {4.5}menu.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{14}{section.4.5}%
+\contentsline {section}{\numberline {4.6}pile.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{14}{section.4.6}%
+\contentsline {section}{\numberline {4.7}player.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{14}{section.4.7}%
+\contentsline {section}{\numberline {4.8}projectile.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{14}{section.4.8}%
+\contentsline {section}{\numberline {4.9}sauvegarde.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{15}{section.4.9}%
+\contentsline {section}{\numberline {4.10}types.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{15}{section.4.10}%
+\contentsline {chapter}{Index}{17}{section*.8}%

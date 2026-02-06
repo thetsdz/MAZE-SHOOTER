@@ -3,7 +3,7 @@
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
 // Variables statiques pour gérer la sélection
-static int selectedButton = 0;  // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
+static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
 static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
 
 
@@ -34,6 +34,8 @@ bool DessinerBouton(Rectangle rect, const char* texte) {
 void GererMenu(GameScreen* currentScreen) {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
+    void ShowCursor(void);
+    
 
     // Fond sombre
     DrawRectangle(0, 0, sw, sh, (Color){20, 20, 40, 255});
@@ -53,11 +55,16 @@ void GererMenu(GameScreen* currentScreen) {
     } else if (IsKeyPressed(KEY_ENTER)) {
         // Action en fonction du bouton sélectionné
         switch (selectedButton) {
-            case 0: *currentScreen = TEST; break;  // LANCER PARTIE
+            case 0: *currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
             case 1: *currentScreen = OPTIONS; break;  // OPTIONS
             case 2: *currentScreen = EXIT; break;  // QUITTER
         }
     }
+
+
+
+
+
 
     // --- Dessin des boutons ---
     float btnW = 300;
@@ -66,20 +73,42 @@ void GererMenu(GameScreen* currentScreen) {
     float departY = sh/2 - 30;  // Position centrée verticalement
 
     for (int i = 0; i < 3; i++) {
+
         // Couleur du bouton : bleu clair si sélectionné, bleu foncé sinon
-        Color couleurFond = (i == selectedButton) ? (Color){50, 50, 80, 255} : (Color){30, 30, 50, 255};
-        Color couleurTexte = (i == selectedButton) ? WHITE : LIGHTGRAY;
+        Color couleurFond;
+        Color couleurTexte;
+        Color couleurBordure;
+
+        if (i == selectedButton) {
+        // État : Bouton sélectionné
+        couleurFond = (Color){50, 50, 80, 255};
+        couleurTexte = WHITE;
+        } 
+        else {
+        // État : Bouton normal
+            couleurFond = (Color){30, 30, 50, 255};
+            couleurTexte = LIGHTGRAY;
+        }
 
         // Position du bouton i
         Rectangle rect = {posX, departY + i * 70, btnW, btnH};
 
         // Dessin du bouton
         DrawRectangleRec(rect, couleurFond);
-        DrawRectangleLinesEx(rect, 2, (i == selectedButton) ? WHITE : DARKGRAY);
+        
+        // Choix de
+        if ( i == selectedButton){
+            couleurBordure=WHITE;
+        }
+        else {
+            couleurBordure=DARKGRAY;
+        }
+        DrawRectangleLinesEx(rect,2,couleurBordure);
 
         // Dessin du texte centré
         int textWidth = MeasureText(texteBoutons[i], 20);
         DrawText(texteBoutons[i], rect.x + (rect.width - textWidth)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
+        DrawFPS(10, 10);
     }
 }
 
