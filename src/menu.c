@@ -9,108 +9,102 @@ static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
 
 
 
-bool DessinerBouton(Rectangle rect, const char* texte) {
+void DessinerBouton(Rectangle rect, const char* texte, int indice) {
+   
+    int textWidth = MeasureText(texte, 20);         // taille longeur en pixels du texte de police 20
+    // Couleurs pour le mode sombre
+    Color couleurFond ;
+    Color couleurTexte ;
+    Color couleurBordure;
+                                                                     
+    couleurFond=(Color){30, 30, 50, 255};       //bleu très foncé
+    couleurTexte=LIGHTGRAY;                     // gris clair 
+    couleurBordure=DARKGRAY;
+
+    // Dessin du bouton (rempli, pas juste les contours)  + Dessin du texte centré
+    DrawRectangleRec(rect, couleurFond);
+    DrawRectangleLinesEx(rect,2,couleurBordure);
+    DrawText(texte, rect.x + (rect.width - textWidth)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
+
+
+    return ;
+}
+void ChangementCouleurBouton(rect,)
+
+void GestionEvenement(GameScreen ** currentScreen,Rectangle rect, int num_bouton){
     Vector2 mousePos = GetMousePosition();
     bool survol = CheckCollisionPointRec(mousePos, rect);
 
-    // Couleurs pour le mode sombre
-    Color couleurFond = (survol) ? (Color){50, 50, 80, 255} : (Color){30, 30, 50, 255};  // Bleu foncé clair/bleu très foncé
-    Color couleurTexte = (survol) ? WHITE : LIGHTGRAY;  // Blanc ou gris clair
+    if (IsKeyPressed(KEY_DOWN )) {
+        selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
+    } 
+    else if (IsKeyPressed(KEY_UP)) {
+        selectedButton = (selectedButton - 1 + 3) % 3;  // Passe au bouton précédent
+    } 
+    else {
+        //Gestion souris et action en fonction du bouton cliquer
+        if (survol && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        
+            switch (num_bouton){ 
+                case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
+                case 1: **currentScreen = OPTIONS; break;  // OPTIONS
+                case 2: **currentScreen = EXIT; break;  // QUITTER
+            }
+        }
 
-    // Dessin du bouton (rempli, pas juste les contours)
-    DrawRectangleRec(rect, couleurFond);
-    DrawRectangleLinesEx(rect, 2, (survol) ? WHITE : DARKGRAY);  // Contour blanc ou gris foncé
-
-    // Dessin du texte centré
-    int textWidth = MeasureText(texte, 20);
-    DrawText(texte, rect.x + (rect.width - textWidth)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
-
-    // Retourne vrai si la souris est sur le bouton ET qu'on clique
-    return (survol && IsMouseButtonPressed(MOUSE_LEFT_BUTTON));
+        //Gestion clavier et Action en fonction du bouton sélectionné
+        if (IsKeyPressed(KEY_ENTER)) { 
+            switch (selectedButton) {
+                case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
+                case 1: **currentScreen = OPTIONS; break;  // OPTIONS
+                case 2: **currentScreen = EXIT; break;  // QUITTER
+            }
+        }
+    else {
+        if (survol  || indice==selectedButton){
+        couleurFond=(Color){50, 50, 80, 255};       // Bleu foncé clair     Cette affecattion dit : Color monBleu; monBleu.r = 30; monBleu.g = 30; monBleu.b = 50; monBleu.a = 255;
+        couleurTexte=WHITE;                         // Blanc                avec monBleu structure temmporaire faite pour affectation avec CouleurTexte
+        couleurBordure=WHITE;
+    } 
+    }
 }
 
 
 
-
-
 void GererMenu(GameScreen* currentScreen) {
-    int sw = GetScreenWidth();
-    int sh = GetScreenHeight();
+    int sw = GetScreenWidth();  //largeur ecran/fenetre de jeu sur l'horizontale
+    int sh = GetScreenHeight(); //longueur ecran/fenetre de jeu sur la verticale
     void ShowCursor(void);
+    bool action_souris=FALSE;
     
+
+    // --- Gestion des entrées clavier ---
+    GestionClavier(&currentScreen);
+
+
+    //Partie Dessin :
 
     // Fond sombre
     DrawRectangle(0, 0, sw, sh, (Color){20, 20, 40, 255});
-
-    // Titre et sous-titre
-    DrawText("MAZE SHOOTER", sw/2 - MeasureText("MAZE SHOOTER", 40)/2, sh/4 - 50, 40, WHITE);
-    DrawText("MENU PRINCIPAL", sw/2 - MeasureText("MENU PRINCIPAL", 25)/2, sh/4, 25, LIGHTGRAY);
-
-    // Instructions pour le clavier
-    DrawText("Utilise les flèches et Entrée pour naviguer", sw/2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15)/2, sh - 50, 15, LIGHTGRAY);
-
-    // --- Gestion des entrées clavier ---
-    if (IsKeyPressed(KEY_DOWN)) {
-        selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
-    } else if (IsKeyPressed(KEY_UP)) {
-        selectedButton = (selectedButton - 1 + 3) % 3;  // Passe au bouton précédent
-    } else if (IsKeyPressed(KEY_ENTER)) {
-        // Action en fonction du bouton sélectionné
-        switch (selectedButton) {
-            case 0: *currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
-            case 1: *currentScreen = OPTIONS; break;  // OPTIONS
-            case 2: *currentScreen = EXIT; break;  // QUITTER
-        }
-    }
-
-
-
-
-
-
     // --- Dessin des boutons ---
-    float btnW = 300;
-    float btnH = 50;
+    float btnW = 300;   // largeur bouton horizontal
+    float btnH = 50;    // longueur bouton vertical
     float posX = (sw - btnW) / 2.0f;
     float departY = sh/2 - 30;  // Position centrée verticalement
 
-    for (int i = 0; i < 3; i++) {
-
-        // Couleur du bouton : bleu clair si sélectionné, bleu foncé sinon
-        Color couleurFond;
-        Color couleurTexte;
-        Color couleurBordure;
-
-        if (i == selectedButton) {
-        // État : Bouton sélectionné
-        couleurFond = (Color){50, 50, 80, 255};
-        couleurTexte = WHITE;
-        } 
-        else {
-        // État : Bouton normal
-            couleurFond = (Color){30, 30, 50, 255};
-            couleurTexte = LIGHTGRAY;
+    
+    for (int i=0;i<3;i++){
+        Rectangle rect = {posX, departY + i * 70, btnW, btnH};       // Position du bouton numero i
+        CreerBouton(rect,texteBoutons[i],i);
+        GestionEvenement(&currentScreen,rect,i);
         }
 
-        // Position du bouton i
-        Rectangle rect = {posX, departY + i * 70, btnW, btnH};
-
-        // Dessin du bouton
-        DrawRectangleRec(rect, couleurFond);  //permet de dessiner le fon de la fenetre
-        
-        // Choix de
-        if ( i == selectedButton){
-            couleurBordure=WHITE;
-        }
-        else {
-            couleurBordure=DARKGRAY;
-        }
-        DrawRectangleLinesEx(rect,2,couleurBordure);
-
-        // Dessin du texte centré
-        int textWidth = MeasureText(texteBoutons[i], 20);
-        DrawText(texteBoutons[i], rect.x + (rect.width - textWidth)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
         DrawFPS(10, 10);
+         // Titre, sous-titre et instructions pour le clavier
+        DrawText("MAZE SHOOTER", sw/2 - MeasureText("MAZE SHOOTER", 40)/2, sh/4 - 50, 40, WHITE);
+        DrawText("MENU PRINCIPAL", sw/2 - MeasureText("MENU PRINCIPAL", 25)/2, sh/4, 25, LIGHTGRAY);
+        DrawText("Utilise les flèches et Entrée pour naviguer", sw/2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15)/2, sh - 50, 15, LIGHTGRAY);
+
     }
 }
 
