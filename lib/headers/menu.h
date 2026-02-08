@@ -10,5 +10,6 @@ bool DessinerBouton(Rectangle rect, const char* texte);
 
 // Fonction pour gérer la logique du menu
 void GererMenu(GameScreen* currentScreen);
+void GererOption(GameScreen* currentScreen);
 
 #endif
