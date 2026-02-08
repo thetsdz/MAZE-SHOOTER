@@ -67,7 +67,7 @@ int main(void) {
     Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
     // --- Boucle Principale ---
-    while (!WindowShouldClose() ||etat == 1 ) {
+    while (!WindowShouldClose() && etat == 1 ) {
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         // --- Initialisation des objets du jeu (une seule fois) ---
@@ -112,16 +112,14 @@ int main(void) {
                 UpdateProjectiles(projs, blocks, &bot, &player, &score);
 
                 // Retour au menu
-                if (IsKeyPressed(KEY_BACKSPACE)) {
+                if (IsKeyPressed( KEY_BACKSPACE )) {
                     currentScreen = MENU;
                     jeuInitialise = false;
                 }
                 break;
             }
             case OPTIONS: {
-                // À implémenter
-                DrawText("ÉCRAN D'OPTIONS", GetScreenWidth()/2 - MeasureText("ÉCRAN D'OPTIONS", 20)/2, GetScreenHeight()/2, 20, BLUE);
-                if (IsKeyPressed(KEY_BACKSPACE)) currentScreen = MENU;
+                GererOption(&currentScreen);
                 break;
             }
             case EXIT:{
@@ -170,7 +168,7 @@ int main(void) {
                 break;
             }
             case OPTIONS: {
-                // À implémenter
+                // Le dessin est geré dans GererOption
                 break;
             }
             case EXIT:{

@@ -2,39 +2,14 @@
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
-// Variables statiques pour gérer la sélection
 
+// Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
 static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
+static const char* texteBoutonsOption[7]= {"Z/Fleche haut : avancer","S/Fleche Bas : Reculer", "Q/Fleche Gauche : Gauche","D/Fleche Droite : Droite","R : recharger ","Retour Arriere : Revient au menu precedent","Echap : Quitter le jeux"};
 
 
-
-void DessinerBouton(Rectangle rect, const char* texte, int indice) {
-   
-    int textWidth = MeasureText(texte, 20);         // taille longeur en pixels du texte de police 20
-    // Couleurs pour le mode sombre
-    Color couleurFond ;
-    Color couleurTexte ;
-    Color couleurBordure;
-                                                                     
-    couleurFond=(Color){30, 30, 50, 255};       //bleu très foncé
-    couleurTexte=LIGHTGRAY;                     // gris clair 
-    couleurBordure=DARKGRAY;
-
-    // Dessin du bouton (rempli, pas juste les contours)  + Dessin du texte centré
-    DrawRectangleRec(rect, couleurFond);
-    DrawRectangleLinesEx(rect,2,couleurBordure);
-    DrawText(texte, rect.x + (rect.width - textWidth)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
-
-
-    return ;
-}
-void ChangementCouleurBouton(rect,)
-
-void GestionEvenement(GameScreen ** currentScreen,Rectangle rect, int num_bouton){
-    Vector2 mousePos = GetMousePosition();
-    bool survol = CheckCollisionPointRec(mousePos, rect);
-
+void Gestionclavier(GameScreen ** currentScreen){
     if (IsKeyPressed(KEY_DOWN )) {
         selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
     } 
@@ -42,17 +17,6 @@ void GestionEvenement(GameScreen ** currentScreen,Rectangle rect, int num_bouton
         selectedButton = (selectedButton - 1 + 3) % 3;  // Passe au bouton précédent
     } 
     else {
-        //Gestion souris et action en fonction du bouton cliquer
-        if (survol && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        
-            switch (num_bouton){ 
-                case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
-                case 1: **currentScreen = OPTIONS; break;  // OPTIONS
-                case 2: **currentScreen = EXIT; break;  // QUITTER
-            }
-        }
-
-        //Gestion clavier et Action en fonction du bouton sélectionné
         if (IsKeyPressed(KEY_ENTER)) { 
             switch (selectedButton) {
                 case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
@@ -60,51 +24,152 @@ void GestionEvenement(GameScreen ** currentScreen,Rectangle rect, int num_bouton
                 case 2: **currentScreen = EXIT; break;  // QUITTER
             }
         }
-    else {
-        if (survol  || indice==selectedButton){
-        couleurFond=(Color){50, 50, 80, 255};       // Bleu foncé clair     Cette affecattion dit : Color monBleu; monBleu.r = 30; monBleu.g = 30; monBleu.b = 50; monBleu.a = 255;
-        couleurTexte=WHITE;                         // Blanc                avec monBleu structure temmporaire faite pour affectation avec CouleurTexte
-        couleurBordure=WHITE;
-    } 
+    }
+}
+
+void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton) {
+    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        selectedButton = indice_bouton; // La souris met à jour le bouton sélectionné au survol
+        
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            switch (indice_bouton) {
+                case 0: **currentScreen = GAME; DisableCursor(); break;
+                case 1: **currentScreen = OPTIONS; break;
+                case 2: **currentScreen = EXIT; break;
+                default : **currentScreen = MENU;
+            }
+        }
     }
 }
 
 
-
-void GererMenu(GameScreen* currentScreen) {
-    int sw = GetScreenWidth();  //largeur ecran/fenetre de jeu sur l'horizontale
-    int sh = GetScreenHeight(); //longueur ecran/fenetre de jeu sur la verticale
-    void ShowCursor(void);
-    bool action_souris=FALSE;
+void GererMenu(GameScreen *currentScreen) {
     
+    ShowCursor();
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+    DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255}); 
+    // 1. Gestion des entrées
+    Gestionclavier(&currentScreen);
 
-    // --- Gestion des entrées clavier ---
-    GestionClavier(&currentScreen);
-
-
-    //Partie Dessin :
-
-    // Fond sombre
-    DrawRectangle(0, 0, sw, sh, (Color){20, 20, 40, 255});
-    // --- Dessin des boutons ---
-    float btnW = 300;   // largeur bouton horizontal
-    float btnH = 50;    // longueur bouton vertical
+    
+    // 2. Paramètres des boutons
+    float btnW = 300;
+    float btnH = 50;
     float posX = (sw - btnW) / 2.0f;
-    float departY = sh/2 - 30;  // Position centrée verticalement
+    float departY = sh/2 - 30;
 
+    for (int i = 0; i < 3; i++) {
+        Rectangle rect = {posX, departY + i * 70, btnW, btnH};
+
+        // 3. Gestion souris pour ce bouton précis
+        GestionSouris(&currentScreen, rect, i);
     
-    for (int i=0;i<3;i++){
-        Rectangle rect = {posX, departY + i * 70, btnW, btnH};       // Position du bouton numero i
-        CreerBouton(rect,texteBoutons[i],i);
-        GestionEvenement(&currentScreen,rect,i);
+
+        // 4. Préparation des couleurs avec des if/else
+        Color couleurFond;
+        Color couleurTexte;
+        Color couleurBordure;
+
+        if (i == selectedButton) {
+            // Apparence du bouton sélectionné (Clavier ou Souris)
+            couleurFond = (Color){50, 50, 80, 255}; // Bleu plus clair
+            couleurTexte = WHITE;
+            couleurBordure = WHITE;
+        } 
+        else {
+            // Apparence du bouton normal
+            couleurFond = (Color){30, 30, 50, 255}; // Bleu très foncé
+            couleurTexte = LIGHTGRAY;
+            couleurBordure = DARKGRAY;
         }
 
-        DrawFPS(10, 10);
-         // Titre, sous-titre et instructions pour le clavier
-        DrawText("MAZE SHOOTER", sw/2 - MeasureText("MAZE SHOOTER", 40)/2, sh/4 - 50, 40, WHITE);
-        DrawText("MENU PRINCIPAL", sw/2 - MeasureText("MENU PRINCIPAL", 25)/2, sh/4, 25, LIGHTGRAY);
-        DrawText("Utilise les flèches et Entrée pour naviguer", sw/2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15)/2, sh - 50, 15, LIGHTGRAY);
-
+        // 5. DESSIN
+        DrawRectangleRec(rect, couleurFond);
+        DrawRectangleLinesEx(rect, 2, couleurBordure);
+        
+        int tW = MeasureText(texteBoutons[i], 20);
+        DrawText(texteBoutons[i], rect.x + (rect.width - tW)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
     }
+    // Titres et textes fixes
+    DrawText("MAZE SHOOTER", sw/2 - MeasureText("MAZE SHOOTER", 40)/2, sh/4 - 50, 40, WHITE);
+    DrawText("MENU PRINCIPAL", sw/2 - MeasureText("MENU PRINCIPAL", 25)/2, sh/4, 25, LIGHTGRAY);
+    DrawText("Utilise les flèches et Entrée pour naviguer", sw/2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15)/2, sh - 50, 15, LIGHTGRAY);
+  
 }
 
+
+
+void GererOption(GameScreen *currentScreen) {
+    if (IsKeyPressed(KEY_BACKSPACE)) *currentScreen = MENU;
+    ShowCursor();
+    
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+
+    // Fond d'écran
+    DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255}); 
+
+    Rectangle rectRetour = { 50, 50, 280, 70 };
+    
+    // --- CORRECTION ICI ---
+    // 1. On déclare les variables couleur
+    Color couleurFondR;
+    Color couleurTexteR;
+    Color couleurBordureR;
+
+    // 2. On vérifie DIRECTEMENT si la souris est dessus
+    bool survol = CheckCollisionPointRec(GetMousePosition(), rectRetour);
+
+    if (survol) {
+        // Cas : Souris dessus -> Blanc / Allumé
+        couleurFondR = (Color){50, 50, 80, 255}; 
+        couleurTexteR = WHITE;
+        couleurBordureR = WHITE;
+        
+        // Clic pour sortir (On gère le clic ici aussi, c'est plus propre)
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            *currentScreen = MENU;
+        }
+    }
+    else {
+        // Cas : Souris ailleurs -> Bleu Foncé / Éteint
+        couleurFondR = (Color){30, 30, 50, 255};
+        couleurTexteR = LIGHTGRAY;
+        couleurBordureR = DARKGRAY;
+    }
+
+    
+    // 2. Paramètres des options
+    float btnW = 500;
+    float btnH = 60;
+    float posX = (sw - btnW) / 2.0f;
+    float departY = sh/2 - 150;
+
+    for (int i = 0; i < 7; i++) {
+        Rectangle rect = {posX, departY + i * 70, btnW, btnH};
+    
+        // 4. Préparation des couleurs avec des if/else
+        Color couleurFond= (Color){30, 30, 50, 255}; // Bleu très foncé
+        Color couleurTexte= LIGHTGRAY;
+        Color couleurBordure= DARKGRAY;
+        
+
+        // 5. DESSIN 7 options
+        DrawRectangleRec(rect, couleurFond);
+        DrawRectangleLinesEx(rect, 2, couleurBordure);
+        
+        int tW = MeasureText(texteBoutonsOption[i], 20);
+        DrawText(texteBoutonsOption[i], rect.x + (rect.width - tW)/2, rect.y + (rect.height - 20)/2, 20, couleurTexte);
+    }
+
+    // 5. DESSIN Bouton retour
+    DrawRectangleRec(rectRetour, couleurFondR);
+    DrawRectangleLinesEx(rectRetour, 2, couleurBordureR);
+    int tW = MeasureText("Retour au menu", 30);
+    DrawText("Retour au menu", rectRetour.x + (rectRetour.width - tW)/2, rectRetour.y + (rectRetour.height - 30)/2, 30, couleurTexteR);
+}
+
+
+
+    
