@@ -10,6 +10,8 @@
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 
+
+
 void UpdateGame(Entity* player, Entity* bot,
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], int* score, Camera3D* camera) {
@@ -17,7 +19,7 @@ void UpdateGame(Entity* player, Entity* bot,
   UpdatePlayer(player, blocks, camera);
   UpdateBot(bot, blocks, player->pos, projs);
   if (IsKeyPressed(KEY_Y)) sauvegarder(player, score);
-  if (IsKeyPressed(KEY_U)) chargerSauvegarde(player, score);
+  
 
   if (IsKeyPressed(KEY_R)) player->ammo = player->maxAmmo;
 

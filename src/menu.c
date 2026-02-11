@@ -19,7 +19,7 @@
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
-static const char* texteBoutons[5] = {"LANCER PARTIE", "MULTIJOUEUR","CHARGER PARTIE","OPTIONS", "QUITTER"};
+static const char* texteBoutons[5] = {"NOUVELLE PARTIE", "MULTIJOUEUR","CHARGER DERNIERE PARTIE SAUVEGARDÉE","OPTIONS", "QUITTER"};
 
 
 /**
@@ -29,17 +29,20 @@ static const char* texteBoutons[5] = {"LANCER PARTIE", "MULTIJOUEUR","CHARGER PA
 */
 void GestionClavier(GameScreen ** currentScreen){
     if (IsKeyPressed(KEY_DOWN )) {
-        selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
+        selectedButton = (selectedButton + 1) % 5;  // Passe au bouton suivant
     } 
     else if (IsKeyPressed(KEY_UP)) {
-        selectedButton = (selectedButton - 1 + 3) % 3;  // Passe au bouton précédent
+        selectedButton = (selectedButton - 1 + 5) % 5;  // Passe au bouton précédent
     } 
     else {
         if (IsKeyPressed(KEY_ENTER)) { 
             switch (selectedButton) {
-                case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
-                case 1: **currentScreen = OPTIONS; break;  // OPTIONS
-                case 2: **currentScreen = EXIT; break;  // QUITTER
+                case 0: **currentScreen = NOUVELLE_PARTIE; DisableCursor(); break;  // LANCER PARTIE
+                case 1: **currentScreen = MULTIJOUEUR; break;
+                case 2: **currentScreen = CHARGER_PARTIE; break;
+                case 3: **currentScreen = OPTIONS; break;
+                case 4: **currentScreen = EXIT; break;
+                default : **currentScreen = MENU; break;
             }
         }
     }
@@ -57,10 +60,12 @@ void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton
         
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             switch (indice_bouton) {
-                case 0: **currentScreen = GAME; DisableCursor(); break;
-                case 1: **currentScreen = OPTIONS; break;
-                case 2: **currentScreen = EXIT; break;
-                default : **currentScreen = MENU;
+                case 0: **currentScreen = NOUVELLE_PARTIE; DisableCursor(); break;
+                case 1: **currentScreen = MULTIJOUEUR; break;
+                case 2: **currentScreen = CHARGER_PARTIE; break;
+                case 3: **currentScreen = OPTIONS; break;
+                case 4: **currentScreen = EXIT; break;
+                default : **currentScreen = MENU; break;
             }
         }
     }
@@ -83,7 +88,7 @@ void GererMenu(GameScreen *currentScreen) {
 
     
     // 2. Paramètres des boutons
-    float btnW = 300;
+    float btnW = 500;
     float btnH = 50;
     float posX = (sw - btnW) / 2.0f;
     float departY = sh/2 - 30;
