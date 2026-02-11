@@ -14,7 +14,10 @@ SRCS = main.c \
        pile.c \
 	   cryptage.c \
 	   sauvegarde.c \
-	   menu.c 
+	   menu.c \
+	   log.c \
+	   updategame.c \
+	   dessin.c
 
 OBJS = $(SRCS:.c=.o)
 
