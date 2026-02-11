@@ -10,6 +10,7 @@
 #include "../lib/headers/pile.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/menu.h"
+#include "../lib/headers/option.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
