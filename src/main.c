@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+
 #include "../lib/headers/asset.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
@@ -83,6 +85,12 @@ int main(void) {
           currentScreen = MENU;
           jeuInitialise = false;
         }
+        break;
+      }
+      case MULTIJOUEUR : {
+        break;
+      }
+      case CHARGER_PARTIE : {
         break;
       }
       case OPTIONS: {

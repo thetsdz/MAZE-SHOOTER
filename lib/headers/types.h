@@ -21,7 +21,7 @@
 // types.h
 
 
-typedef enum GameScreen { MENU, GAME, MULTIJOUEUR, CHARGER8PARTIE,OPTIONS, EXIT } GameScreen;  // Ajoute EXIT
+typedef enum GameScreen { MENU, GAME, MULTIJOUEUR, CHARGER_PARTIE,OPTIONS, EXIT } GameScreen;  // Ajoute EXIT
 
 
 

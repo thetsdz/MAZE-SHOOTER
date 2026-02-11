@@ -1,5 +1,5 @@
-#ifndef MENU_H
-#define MENU_H
+#ifndef OPTION_H
+#define OPTION_H
 
 #include "raylib.h"
 #include "types.h"

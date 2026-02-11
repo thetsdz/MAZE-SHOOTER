@@ -19,7 +19,7 @@
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
-static const char* texteBoutons[5] = {"LANCER PARTIE", "MULTIGEUR","CHARGER PARTIE","OPTIONS", "QUITTER"};
+static const char* texteBoutons[5] = {"LANCER PARTIE", "MULTIJOUEUR","CHARGER PARTIE","OPTIONS", "QUITTER"};
 
 
 /**
