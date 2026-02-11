@@ -1,3 +1,15 @@
+/**
+* \file menu.c
+* \brief Contient les fonctions de gestion du menu principal
+* \author Hugues Astier
+*/
+
+
+
+
+
+
+
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 #include "../lib/headers/types.h"
@@ -8,8 +20,12 @@ static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
 static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
 
 
-
-void Gestionclavier(GameScreen ** currentScreen){
+/**
+*   \brief GestionClavier() gere en fonction de si les touches haut,bas,droite,gauche ou entrée sont utiliser
+*   \param <Game screen **currentScreen> etat de l'ecran à modifier en question
+*   
+*/
+void GestionClavier(GameScreen ** currentScreen){
     if (IsKeyPressed(KEY_DOWN )) {
         selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
     } 
@@ -27,6 +43,12 @@ void Gestionclavier(GameScreen ** currentScreen){
     }
 }
 
+/**
+*   \brief  gere en fonction de si les boutons lancer partie, OPTION, QUITTER sont cliqué
+*   \param <Game screen **currentScreen> etat de l'ecran actuel à modifier en question du clic
+*   \param <Rectangle rect>, rect represente un des boutons (plus precisement sa zone)
+    \param <int indice bouton>
+*/
 void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton) {
     if (CheckCollisionPointRec(GetMousePosition(), rect)) {
         selectedButton = indice_bouton; // La souris met à jour le bouton sélectionné au survol
