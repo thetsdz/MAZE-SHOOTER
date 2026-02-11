@@ -8,6 +8,7 @@
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/menu.h"
+#include "../lib/headers/option.h"
 #include "../lib/headers/pile.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
