@@ -1,0 +1,21 @@
+#ifndef DESSIN_H
+#define DESSIN_H
+
+#include "types.h"
+
+/**
+ * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
+ * @param bot Pointeur vers l'entité du bot (pour dessiner sa position)
+ * @param blocks Grille de blocs du niveau (pour dessiner les murs et couloirs)
+ * @param camera Caméra 3D (pour dessiner la scène en perspective)
+ * @param projs Tableau de projectiles actifs (pour les dessiner)
+ * @param score Score actuel du joueur (pour l'afficher à l'écran)
+ * @param player Entité du joueur (pour afficher les munitions)
+ * @param viseur Texture du viseur à dessiner au centre de l'écran
+ * @param armeTex Texture de l'arme à dessiner en bas de l'écran
+ */
+void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                      Camera3D camera, Projectile projs[MAX_PROJ], int score,
+                      Entity player, Texture2D viseur, Texture2D armeTex);
+
+#endif
