@@ -2,6 +2,8 @@
 * \file menu.c
 * \brief Contient les fonctions de gestion du menu principal
 * \author Hugues Astier
+* \version 1.0
+* \date 11/02.2026
 */
 
 
@@ -17,11 +19,11 @@
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
-static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
+static const char* texteBoutons[5] = {"LANCER PARTIE", "MULTIGEUR","CHARGER PARTIE","OPTIONS", "QUITTER"};
 
 
 /**
-*   \brief GestionClavier() gere en fonction de si les touches haut,bas,droite,gauche ou entrée sont utiliser
+*   \brief Gere en fonction de si les touches haut,bas,droite,gauche ou entrée sont utilisées
 *   \param <Game screen **currentScreen> etat de l'ecran à modifier en question
 *   
 */
@@ -44,8 +46,8 @@ void GestionClavier(GameScreen ** currentScreen){
 }
 
 /**
-*   \brief  gere en fonction de si les boutons lancer partie, OPTION, QUITTER sont cliqué
-*   \param <Game screen **currentScreen> etat de l'ecran actuel à modifier en question du clic
+*   \brief  Gère en fonction de si les boutons lancer partie, OPTION, QUITTER sont cliqués
+*   \param <Game screen **currentScreen> etat de l'ecran actuel à modifier en question du clique
 *   \param <Rectangle rect>, rect represente un des boutons (plus precisement sa zone)
     \param <int indice bouton>
 */
@@ -65,6 +67,11 @@ void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton
 }
 
 
+
+/**
+*   \brief  Gère le menu, ie, gestion de la logique de l'etat de l'ecran grace à GestionSouris(..) et GestionClavier(..) puis dessins des boutons 
+*   \param <Game screen *currentScreen> Etat de l'ecran actuel 
+*/
 void GererMenu(GameScreen *currentScreen) {
     
     ShowCursor();
@@ -72,7 +79,7 @@ void GererMenu(GameScreen *currentScreen) {
     int sh = GetScreenHeight();
     DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255}); 
     // 1. Gestion des entrées
-    Gestionclavier(&currentScreen);
+    GestionClavier(&currentScreen);
 
     
     // 2. Paramètres des boutons
@@ -81,7 +88,7 @@ void GererMenu(GameScreen *currentScreen) {
     float posX = (sw - btnW) / 2.0f;
     float departY = sh/2 - 30;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         Rectangle rect = {posX, departY + i * 70, btnW, btnH};
 
         // 3. Gestion souris pour ce bouton précis
