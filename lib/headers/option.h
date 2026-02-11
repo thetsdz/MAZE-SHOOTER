@@ -1,0 +1,1 @@
+void GererOption(GameScreen *currentScreen);

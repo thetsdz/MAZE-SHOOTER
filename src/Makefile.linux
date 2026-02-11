@@ -14,7 +14,8 @@ SRCS = main.c \
        pile.c \
 	   cryptage.c \
 	   sauvegarde.c \
-	   menu.c 
+	   menu.c \
+	   option.c \
 
 OBJS = $(SRCS:.c=.o)
 
