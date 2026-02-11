@@ -1,7 +1,7 @@
 PROJECT_NAME = game
 CC = gcc
 BIN_DIR = ..\bin
-SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c sauvegarde.c cryptage.c
+SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c sauvegarde.c cryptage.c menu.c log.c updategame.c dessin.c
 
 CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I..\lib\windows\raylib\include
 LDFLAGS = -L..\lib\windows\raylib\lib -lraylib -lopengl32 -lgdi32 -lwinmm
