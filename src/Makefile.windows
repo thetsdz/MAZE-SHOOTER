@@ -1,24 +1,21 @@
 PROJECT_NAME = game
 CC = gcc
 BIN_DIR = ..\bin
-SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c sauvegarde.c cryptage.c menu.c log.c updategame.c dessin.c
+SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c sauvegarde.c cryptage.c menu.c log.c updategame.c dessin.c option.c reseau.c multijoueur.c
 
 CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I..\lib\windows\raylib\include
-LDFLAGS = -L..\lib\windows\raylib\lib -lraylib -lopengl32 -lgdi32 -lwinmm
+
+# Options de liaison (Libraries)
+LDFLAGS = -L..\lib\windows\raylib\lib -lraylib -lopengl32 -lgdi32 -lwinmm -lws2_32
 
 all: $(BIN_DIR)\$(PROJECT_NAME).exe
 
 $(BIN_DIR)\$(PROJECT_NAME).exe: $(SRCS)
 	if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
-	$(CC) $^ -o $@ $(CFLAGS) $(LDFLAGS)
+	$(CC) $(SRCS) -o $@ $(CFLAGS) $(LDFLAGS)
 
-run: all
-	.$<
+run: $(BIN_DIR)\$(PROJECT_NAME).exe
+	$(BIN_DIR)\$(PROJECT_NAME).exe
 
 clean:
-	del /Q $(BIN_DIR)\$(PROJECT_NAME).exe
-
-info:
-	@echo Platform: WINDOWS
-	@echo Raylib:   ..\lib\windows\raylib
-	@echo Binary:   $(BIN_DIR)\$(PROJECT_NAME).exe
+	if exist "$(BIN_DIR)\$(PROJECT_NAME).exe" del /Q "$(BIN_DIR)\$(PROJECT_NAME).exe"

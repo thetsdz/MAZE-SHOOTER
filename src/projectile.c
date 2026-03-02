@@ -1,93 +1,136 @@
-#include <stdlib.h>
 #include "../lib/headers/projectile.h"
 
-void InitProjectiles(Projectile *projs) {
-    for(int i=0; i<MAX_PROJ; i++) projs[i].active = false;
+#include <stdio.h>  // Ajout pour printf/TraceLog si besoin
+#include <stdlib.h>
+
+void InitProjectiles(Projectile* projs) {
+  for (int i = 0; i < MAX_PROJ; i++) projs[i].active = false;
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner) {
-    // Normalisation de la direction par sécurité
-    Vector3 dir = Vector3Normalize(direction);
+void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
+                     OwnerType owner) {
+  // Normalisation de la direction par sécurité
+  Vector3 dir = Vector3Normalize(direction);
 
-    // Point d'apparition un peu devant pour ne pas se tirer dessus
-    Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
+  // Point d'apparition un peu devant pour ne pas se tirer dessus
+  Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
 
-    for(int i=0; i<MAX_PROJ; i++){
-        if(!projs[i].active){
-            projs[i].active = true;
-            projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(dir, 50.0f); // Vitesse du projectile
-            projs[i].radius = 0.2f;
-            projs[i].life = 5.0f;
-            projs[i].owner = owner; // <-- On définit le propriétaire
-            break;
-        }
+  for (int i = 0; i < MAX_PROJ; i++) {
+    if (!projs[i].active) {
+      projs[i].active = true;
+      projs[i].pos = spawn;
+      projs[i].vel = Vector3Scale(dir, 50.0f);  // Vitesse du projectile
+      projs[i].radius = 0.2f;
+      projs[i].life = 5.0f;
+      projs[i].owner = owner;  // <-- On définit le propriétaire
+      break;
     }
+  }
 }
+// ... (Début du fichier identique)
 
-void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity *bot, Entity *player, int *score) {
-    float dt = GetFrameTime();
+void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                       Entity* autre, Entity* player, int* score) {
+  float dt = GetFrameTime();
+
+  for (int i = 0; i < MAX_PROJ; i++) {
+    if (!projs[i].active) continue;
+
+    // Déplacement
+    projs[i].pos = Vector3Add(projs[i].pos, Vector3Scale(projs[i].vel, dt));
+    projs[i].life -= dt;
     
-    for(int i=0; i<MAX_PROJ; i++){
-        if(!projs[i].active) continue;
-        
-        projs[i].pos = Vector3Add(projs[i].pos, Vector3Scale(projs[i].vel, dt));
-        projs[i].life -= dt;
-        if(projs[i].life <= 0.0f){ projs[i].active = false; continue; }
+    if (projs[i].life <= 0.0f) {
+      projs[i].active = false;
+      continue;
+    }
 
-        // --- COLLISIONS ---
-
-        // 1. Si c'est un tir du JOUEUR -> Vérifie collision avec le BOT
-        if(projs[i].owner == OWNER_PLAYER) {
-            float botRadius = bot->size / 2.0f;
-            if(Vector3Distance(projs[i].pos, bot->pos) <= projs[i].radius + botRadius){
-                TraceLog(LOG_INFO, "Le joueur a touche le bot !");
-                (*score)++;
-                // Respawn du bot
-                bot->pos.x = (float)(rand()%20 - 10);
-                bot->pos.z = (float)(rand()%20 - 10);
-                projs[i].active = false;
-                continue;
-            }
-        }
-        
-        // 2. Si c'est un tir du BOT -> Vérifie collision avec le JOUEUR
-        else if(projs[i].owner == OWNER_BOT) {
-            float playerRadius = player->size / 2.0f;
-            // On vise le centre du corps du joueur (pos.y + 0.5f pour le torse)
-            Vector3 playerCenter = {player->pos.x, player->pos.y, player->pos.z};
+    // --- NOUVELLE LOGIQUE DE COLLISION AABB ---
+    // 1. MES BALLES touchent l'AUTRE (Bot ou RemotePlayer)
+    if (projs[i].owner == OWNER_PLAYER) {
+        float h = autre->size / 2.0f;
+        if (projs[i].pos.x > autre->pos.x - h && projs[i].pos.x < autre->pos.x + h &&
+            projs[i].pos.y > autre->pos.y && projs[i].pos.y < autre->pos.y + autre->size &&
+            projs[i].pos.z > autre->pos.z - h && projs[i].pos.z < autre->pos.z + h) {
             
-            if(Vector3Distance(projs[i].pos, playerCenter) <= projs[i].radius + playerRadius){
-                TraceLog(LOG_INFO, "Le bot a touche le joueur ! Score Reset.");
-                *score = 0;
-                projs[i].active = false;
-                continue;
-            }
-        }
+            autre->health -= 20;
+            projs[i].active = false;
 
-        // 3. Collision avec les Murs
-        for(int x=0; x<NUM_BLOCKS; x++){
-            for(int y = 0; y <NUM_BLOCKS; y++){
-                Block b = blocks[x][y];
-                float halfX = b.width/2; float halfY = b.height/2; float halfZ = b.depth/2;
-                if(projs[i].pos.x > b.pos.x - halfX && projs[i].pos.x < b.pos.x + halfX &&
-                   projs[i].pos.y > b.pos.y - halfY && projs[i].pos.y < b.pos.y + halfY &&
-                   projs[i].pos.z > b.pos.z - halfZ && projs[i].pos.z < b.pos.z + halfZ){
-                    projs[i].active = false;
-                    break;
+            if (autre->health <= 0) {
+                *score += 1;
+                // Si c'est le BOT, on le fait respawn ailleurs
+                if (autre->type == ENTITY_BOT) {
+                    autre->health = autre->maxHealth;
+                    autre->pos = (Vector3){(float)(rand()%NUM_BLOCKS), 10.0f, (float)(rand()%NUM_BLOCKS)};
+                    autre->velocityY = 0;
                 }
             }
+            continue;
         }
     }
+    
+
+    // 2. LES BALLES ENNEMIES (Bot ou Remote) me touchent MOI
+    else if (projs[i].owner == OWNER_BOT || projs[i].owner == OWNER_REMOTE_PLAYER) {
+        if (player->health <= 0) continue; // Sécurité : on ne touche pas un mort
+
+        float h = player->size / 2.0f;
+        if (projs[i].pos.x > player->pos.x - h && projs[i].pos.x < player->pos.x + h &&
+            projs[i].pos.y > player->pos.y && projs[i].pos.y < player->pos.y + player->size &&
+            projs[i].pos.z > player->pos.z - h && projs[i].pos.z < player->pos.z + h) 
+        {
+            player->health -= 20;
+            projs[i].active = false;
+
+            // --- GESTION DE LA MORT EN SOLO ---
+            if (projs[i].owner == OWNER_BOT && player->health <= 0) {
+                player->health = player->maxHealth;
+                player->ammo = player->maxAmmo;
+                player->pos = (Vector3){1.5f, 10.0f, 1.5f}; // Position de respawn solo
+                player->velocityY = 0; // IMPORTANT : stop la chute
+                TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
+            }
+            continue;
+        }
+    }
+
+    // 4. Murs (Identique)
+    for (int x = 0; x < NUM_BLOCKS; x++) {
+      for (int y = 0; y < NUM_BLOCKS; y++) {
+        Block b = blocks[x][y];
+        if (b.color.a == 0) continue;  // Ignore l'air
+
+        float halfX = b.width / 2;
+        float halfY = b.height / 2;
+        float halfZ = b.depth / 2;
+        if (projs[i].pos.x > b.pos.x - halfX &&
+            projs[i].pos.x < b.pos.x + halfX &&
+            projs[i].pos.y > b.pos.y - halfY &&
+            projs[i].pos.y < b.pos.y + halfY &&
+            projs[i].pos.z > b.pos.z - halfZ &&
+            projs[i].pos.z < b.pos.z + halfZ) {
+          projs[i].active = false;
+          break;
+        }
+      }
+      if (!projs[i].active) break;
+    }
+  }
 }
 
-void DrawProjectiles(Projectile *projs) {
-    for(int i=0; i<MAX_PROJ; i++){
-        if(projs[i].active) {
-            // Couleur différente pour différencier les tirs
-            Color c = (projs[i].owner == OWNER_PLAYER) ? MAGENTA : ORANGE;
-            DrawSphere(projs[i].pos, projs[i].radius, c);
-        }
+void DrawProjectiles(Projectile* projs) {
+  for (int i = 0; i < MAX_PROJ; i++) {
+    if (projs[i].active) {
+      Color c = RED;
+      if (projs[i].owner == OWNER_PLAYER)
+        c = MAGENTA;
+      else if (projs[i].owner == OWNER_BOT)
+        c = ORANGE;
+      else if (projs[i].owner == OWNER_REMOTE_PLAYER)
+        c = YELLOW;
+
+      DrawSphere(projs[i].pos, projs[i].radius, c);
     }
+  }
 }

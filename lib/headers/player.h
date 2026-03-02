@@ -9,6 +9,6 @@ void InitPlayer(Entity *player);
 
 /** @brief C'est le cerveau du joueur : gère clavier, souris, physique et collisions
  Modifie l'état du 'player' et met à jour la 'camera'*/
-void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera);
+void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera, Entity *ennemi);
 
 #endif
