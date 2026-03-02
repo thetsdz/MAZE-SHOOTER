@@ -12,7 +12,7 @@ Texture2D ChargerTexture(const char *fileName);
 
 
 
-/** \brief Dessine la viseur
+/** \brief Dessine le viseur
     \param Texture du viseur
     \param Largeur de la fenètre
     \param Hauteur de la fenètre
