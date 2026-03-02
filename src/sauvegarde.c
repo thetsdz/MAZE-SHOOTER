@@ -21,6 +21,9 @@ typedef struct {
   float yaw, pitch;
   int onGround;
   int ammo;
+  int health;
+  int maxHealth;
+  int life;
 } SaveData;
 
 // C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
@@ -45,6 +48,10 @@ void sauvegarder(Entity* player, int* score) {
 
   save.gameData.onGround = player->onGround;
   save.gameData.ammo = player->ammo;
+
+  save.gameData.health = player->health;
+  save.gameData.maxHealth = player->maxHealth;
+  save.gameData.life = player->life;
 
   // Calcul du Checksum (Sur les données EN CLAIR)
   save.checksum =
@@ -117,6 +124,10 @@ void chargerSauvegarde(Entity* player, int* score) {
 
   player->onGround = save.gameData.onGround;
   player->ammo = save.gameData.ammo;
+
+  player->health = save.gameData.health;
+  player->maxHealth = save.gameData.maxHealth;
+  player->life = save.gameData.life;
 
   printf("[Chargement] Partie chargée avec succès !\n");
 }

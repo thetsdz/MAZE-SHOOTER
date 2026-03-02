@@ -14,6 +14,9 @@ void InitBot(Entity *bot) {
     bot->velocityY = 0.0f; //vitesse du bot
     bot->onGround = true; //le bot est initialisée au sol
     bot->size = 1.0f; //taille du bot
+    bot->health = 20; // Points de vie du bot (plus faible que le joueur pour compenser l'IA)
+    bot ->maxHealth = 20; // Points de vie maximum du bot
+    bot->life = 10000; // Le bot a une vie très longue (definir le nombre de bot a éliminer pour gagner à l'avenir)
     bot->type = ENTITY_BOT; //type de l'entité
 }
 
