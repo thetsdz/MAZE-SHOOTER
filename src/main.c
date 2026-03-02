@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+
 #include "../lib/headers/asset.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
@@ -33,11 +35,13 @@ int main(void) {
   void ShowCursor(void);
 
   srand(time(NULL));
-  int etat = 1;
-
+  
   // --- Variables pour la gestion des états ---
   GameScreen currentScreen = MENU;
   bool jeuInitialise = false;
+  bool running=true;
+  bool chargement=false;
+  
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
@@ -57,16 +61,17 @@ int main(void) {
   Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
 
   // --- Boucle Principale ---
-  while (!WindowShouldClose() && etat == 1) {
+  while (!WindowShouldClose() && running) {
     if (IsKeyPressed(KEY_ESCAPE)) break;
 
     // --- Initialisation des objets du jeu (une seule fois) ---
-    if (currentScreen == GAME && !jeuInitialise) {
+    if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) || ( currentScreen==CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
       InitBot(&bot);
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
+      score=0; //Pour l'instant on remet le score à 0 chaque fois qu'on clique sur 
       jeuInitialise = true;
     }
 
@@ -76,7 +81,7 @@ int main(void) {
         GererMenu(&currentScreen);
         break;
       }
-      case GAME: {
+      case NOUVELLE_PARTIE: {
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
         // Retour au menu
         if (IsKeyPressed(KEY_BACKSPACE)) {
@@ -85,12 +90,36 @@ int main(void) {
         }
         break;
       }
+      case MULTIJOUEUR : {
+        //A implementer
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+          currentScreen = MENU;
+          jeuInitialise = false;
+        }
+        break;
+      }
+      case CHARGER_PARTIE : {
+        if (!chargement) {
+            chargerSauvegarde(&player,&score);
+            chargement=true;
+            DisableCursor();
+        }
+        
+        UpdateGame(&player, &bot, blocks, projs, &score, &camera);
+        // Retour au menu
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+          currentScreen = MENU;
+          jeuInitialise = false;
+          chargement=false;
+        }
+        break;
+      }
       case OPTIONS: {
         GererOption(&currentScreen);
         break;
       }
       case EXIT: {
-        etat = 0;
+        running=false;
         break;
       }
     }
@@ -104,7 +133,20 @@ int main(void) {
         // Le dessin est géré dans GererMenu
         break;
       }
-      case GAME: {
+      case NOUVELLE_PARTIE: {
+        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
+                         armeTex);
+        break;
+      }
+      case MULTIJOUEUR : {
+        //à implementer
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+          currentScreen = MENU;
+          jeuInitialise = false;
+        }
+        break;
+      }
+      case CHARGER_PARTIE : {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
                          armeTex);
         break;
@@ -114,6 +156,7 @@ int main(void) {
         break;
       }
       case EXIT: {
+        running=false;
         break;
       }
     }

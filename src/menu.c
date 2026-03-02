@@ -1,3 +1,17 @@
+/**
+* \file menu.c
+* \brief Contient les fonctions de gestion du menu principal
+* \author Hugues Astier
+* \version 1.0
+* \date 11/02.2026
+*/
+
+
+
+
+
+
+
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
 #include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
 #include "../lib/headers/types.h"
@@ -5,44 +19,64 @@
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
-static const char* texteBoutons[3] = {"LANCER PARTIE", "OPTIONS", "QUITTER"};
+static const char* texteBoutons[5] = {"NOUVELLE PARTIE", "MULTIJOUEUR","CHARGER DERNIERE PARTIE SAUVEGARDÉE","OPTIONS", "QUITTER"};
 
 
-
-void Gestionclavier(GameScreen ** currentScreen){
+/**
+*   \brief Gere en fonction de si les touches haut,bas,droite,gauche ou entrée sont utilisées
+*   \param <Game screen **currentScreen> etat de l'ecran à modifier en question
+*   
+*/
+void GestionClavier(GameScreen ** currentScreen){
     if (IsKeyPressed(KEY_DOWN )) {
-        selectedButton = (selectedButton + 1) % 3;  // Passe au bouton suivant
+        selectedButton = (selectedButton + 1) % 5;  // Passe au bouton suivant
     } 
     else if (IsKeyPressed(KEY_UP)) {
-        selectedButton = (selectedButton - 1 + 3) % 3;  // Passe au bouton précédent
+        selectedButton = (selectedButton - 1 + 5) % 5;  // Passe au bouton précédent
     } 
     else {
         if (IsKeyPressed(KEY_ENTER)) { 
             switch (selectedButton) {
-                case 0: **currentScreen = GAME; DisableCursor(); break;  // LANCER PARTIE
-                case 1: **currentScreen = OPTIONS; break;  // OPTIONS
-                case 2: **currentScreen = EXIT; break;  // QUITTER
+                case 0: **currentScreen = NOUVELLE_PARTIE; DisableCursor(); break;  // LANCER PARTIE
+                case 1: **currentScreen = MULTIJOUEUR; break;
+                case 2: **currentScreen = CHARGER_PARTIE; break;
+                case 3: **currentScreen = OPTIONS; break;
+                case 4: **currentScreen = EXIT; break;
+                default : **currentScreen = MENU; break;
             }
         }
     }
 }
 
+/**
+*   \brief  Gère en fonction de si les boutons lancer partie, OPTION, QUITTER sont cliqués
+*   \param <Game screen **currentScreen> etat de l'ecran actuel à modifier en question du clique
+*   \param <Rectangle rect>, rect represente un des boutons (plus precisement sa zone)
+    \param <int indice bouton>
+*/
 void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton) {
     if (CheckCollisionPointRec(GetMousePosition(), rect)) {
         selectedButton = indice_bouton; // La souris met à jour le bouton sélectionné au survol
         
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             switch (indice_bouton) {
-                case 0: **currentScreen = GAME; DisableCursor(); break;
-                case 1: **currentScreen = OPTIONS; break;
-                case 2: **currentScreen = EXIT; break;
-                default : **currentScreen = MENU;
+                case 0: **currentScreen = NOUVELLE_PARTIE; DisableCursor(); break;
+                case 1: **currentScreen = MULTIJOUEUR; break;
+                case 2: **currentScreen = CHARGER_PARTIE; break;
+                case 3: **currentScreen = OPTIONS; break;
+                case 4: **currentScreen = EXIT; break;
+                default : **currentScreen = MENU; break;
             }
         }
     }
 }
 
 
+
+/**
+*   \brief  Gère le menu, ie, gestion de la logique de l'etat de l'ecran grace à GestionSouris(..) et GestionClavier(..) puis dessins des boutons 
+*   \param <Game screen *currentScreen> Etat de l'ecran actuel 
+*/
 void GererMenu(GameScreen *currentScreen) {
     
     ShowCursor();
@@ -50,16 +84,16 @@ void GererMenu(GameScreen *currentScreen) {
     int sh = GetScreenHeight();
     DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255}); 
     // 1. Gestion des entrées
-    Gestionclavier(&currentScreen);
+    GestionClavier(&currentScreen);
 
     
     // 2. Paramètres des boutons
-    float btnW = 300;
+    float btnW = 500;
     float btnH = 50;
     float posX = (sw - btnW) / 2.0f;
     float departY = sh/2 - 30;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         Rectangle rect = {posX, departY + i * 70, btnW, btnH};
 
         // 3. Gestion souris pour ce bouton précis
