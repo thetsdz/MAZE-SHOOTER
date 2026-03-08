@@ -19,6 +19,7 @@ SRCS = main.c \
        updategame.c \
        dessin.c \
        option.c \
+	   arme.c \
 
 OBJS = $(SRCS:.c=.o)
 

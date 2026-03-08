@@ -1,5 +1,6 @@
 #include <math.h>
 #include "../lib/headers/player.h"
+#include "../lib/headers/arme.h"
 
 void InitPlayer(Entity *player) {
     player->pos = (Vector3){0, 10.0f, 0};
@@ -8,9 +9,11 @@ void InitPlayer(Entity *player) {
     player->velocityY = 0.0f; //vitesse du joeur
     player->onGround = true; //est-ce que le joueur est au sol
     player->size = 1.0f; //taille
-    player->ammo = 10;     // Commence avec 10 balles
-    player->maxAmmo = 10;  // Capacité de base de 10
+
     player->type = ENTITY_PLAYER; //type de l'entité
+    player->armeEquipee = ObtenirModeleArme(PISTOLET); //  On charge la "fiche technique" du pistolet
+    player->ammo = player->armeEquipee.munitionsMax;  // On remplit les munitions au maximum défini par le modèle (ici 12 ou 10 selon ton choix)
+    player->chronoTir = 0.0f;     // On initialise le chrono à 0 pour pouvoir tirer immédiatement
 }
 
 void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D *camera) {

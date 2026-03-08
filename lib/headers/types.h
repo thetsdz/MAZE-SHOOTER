@@ -78,6 +78,36 @@ typedef struct {
     OwnerType owner;/**< Propriétaire du projectile. */
 } Projectile;
 
+
+
+
+
+/**
+* @struct TypeArme
+* @brief Represente PISTOLET,FUSIL ou SNIPER
+*/
+typedef enum { 
+    PISTOLET, 
+    FUSIL, 
+    SNIPER 
+} TypeArme;
+
+/**
+* @struct ModeleArme
+* @brief Represente la fiche technique de chaque arme
+*/
+
+typedef struct {
+    TypeArme type;
+    int munitionsMax;      // Taille du chargeur (ex: 30)
+    float cadenceTir;      // Temps entre deux balles (ex: 0.1s)
+    float vitesseBalle;    // Vitesse du projectile
+    float degats;          // Puissance de l'arme
+    const char *nom;       // Pour afficher "AK-47" ou "Glock" à l'écran
+} ModeleArme;
+
+
+
 /**
  * @struct Entity
  * @brief Représente une entité du jeu (joueur ou bot).
@@ -90,7 +120,8 @@ typedef struct {
     bool onGround;    /**< true si l'entité est au sol. */
     float size;       /**< Taille de l'entité. */
     int ammo;         /**< Munitions actuelles. */
-    int maxAmmo;      /**< Capacité maximale du chargeur. */
+    ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
+    float chronoTir;   /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
     EntityType type;  /**< Type de l'entité. */
 } Entity;
 

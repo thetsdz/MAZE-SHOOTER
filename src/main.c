@@ -164,8 +164,8 @@ int main(void) {
     EndDrawing();
   }
 
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo);
+  /* TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
+           player.maxAmmo); */
   CloseLog();
   UnloadTexture(viseur);
   UnloadTexture(armeTex);
