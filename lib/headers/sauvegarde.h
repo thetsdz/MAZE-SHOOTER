@@ -8,9 +8,9 @@
 
 /** @brief Sauvegarde les données du joueur dans un fichier texte et l'encrypte
  * directement*/
-void sauvegarder(Entity* player, int* score);
+void sauvegarder(Entity* player, Entity* bot, int* score);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte*/
-void chargerSauvegarde(Entity* player, int* score);
+void chargerSauvegarde(Entity* player, Entity* bot, int* score);
 
 #endif
