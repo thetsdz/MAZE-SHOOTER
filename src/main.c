@@ -68,7 +68,7 @@ int main(void) {
     if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
         (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
-      InitBot(&bot);
+      InitBot(&bot, blocks);
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
@@ -98,7 +98,7 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          chargerSauvegarde(&player, &score);
+          chargerSauvegarde(&player, &bot, &score);
           chargement = true;
           DisableCursor();
         }
