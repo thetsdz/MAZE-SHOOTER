@@ -75,7 +75,8 @@ typedef struct {
     float radius;   /**< Rayon de la sphère (hitbox). */
     bool active;    /**< true si le projectile est actif. */
     float life;     /**< Temps de vie restant (en secondes). */
-    OwnerType owner;/**< Propriétaire du projectile. */
+    Color color;     /**<couleur du projectile */
+    OwnerType owner; /**< Propriétaire du projectile. */
 } Projectile;
 
 
@@ -89,7 +90,8 @@ typedef struct {
 typedef enum { 
     PISTOLET, 
     FUSIL, 
-    SNIPER 
+    SNIPER,
+    GRENADE
 } TypeArme;
 
 /**
@@ -99,11 +101,13 @@ typedef enum {
 
 typedef struct {
     TypeArme type;
-    int munitionsMax;      // Taille du chargeur (ex: 30)
+    int munitionsMax;      //Taille du chargeur (ex: 30)
     float cadenceTir;      // Temps entre deux balles (ex: 0.1s)
     float vitesseBalle;    // Vitesse du projectile
     float degats;          // Puissance de l'arme
     const char *nom;       // Pour afficher "AK-47" ou "Glock" à l'écran
+    float tailleProjectile; //taille du projectile
+    Color couleurProjectile; // couleur du projectile
 } ModeleArme;
 
 

@@ -57,8 +57,12 @@ int main(void) {
   camera.projection = CAMERA_PERSPECTIVE;
 
   // --- Textures ---
-  Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
-  Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
+  Texture2D tabArmes[4];
+  tabArmes[0] = LoadTexture("../assets/images/pistolet_placeholder.png");
+  tabArmes[1] = LoadTexture("../assets/images/fusil_assault.png");
+  tabArmes[2] = LoadTexture("../assets/images/sniper_placeholder.png");
+  tabArmes[3] = LoadTexture("../assets/images/grenade_placeholder.png");
+  Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
@@ -100,7 +104,7 @@ int main(void) {
       }
       case CHARGER_PARTIE : {
         if (!chargement) {
-            chargerSauvegarde(&player,&score);
+            //chargerSauvegarde(&player,&score);
             chargement=true;
             DisableCursor();
         }
@@ -135,7 +139,7 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex);
+                         tabArmes);
         break;
       }
       case MULTIJOUEUR : {
@@ -148,7 +152,7 @@ int main(void) {
       }
       case CHARGER_PARTIE : {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex);
+                         tabArmes);
         break;
       }
       case OPTIONS: {
@@ -165,10 +169,12 @@ int main(void) {
   }
 
   /* TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo); */
-  CloseLog();
+           player.maxAmmo); 
+  CloseLog();*/
   UnloadTexture(viseur);
-  UnloadTexture(armeTex);
+  for (int i=0;i<3;i++){
+    UnloadTexture(tabArmes[i]);
+  }
   CloseWindow();
   return 0;
 }

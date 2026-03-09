@@ -6,7 +6,7 @@ void InitProjectiles(Projectile *projs) {
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner) {
+void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, float speed, float radius, Color color) {
     // Normalisation de la direction par sécurité
     Vector3 dir = Vector3Normalize(direction);
 
@@ -17,8 +17,9 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
         if(!projs[i].active){
             projs[i].active = true;
             projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(dir, 50.0f); // Vitesse du projectile
-            projs[i].radius = 0.2f;
+            projs[i].vel = Vector3Scale(dir, speed); // Vitesse du projectile
+            projs[i].radius = radius;
+            projs[i].color=color;
             projs[i].life = 5.0f;
             projs[i].owner = owner; // <-- On définit le propriétaire
             break;
@@ -82,12 +83,13 @@ void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], 
     }
 }
 
+
+
 void DrawProjectiles(Projectile *projs) {
     for(int i=0; i<MAX_PROJ; i++){
         if(projs[i].active) {
-            // Couleur différente pour différencier les tirs
-            Color c = (projs[i].owner == OWNER_PLAYER) ? MAGENTA : ORANGE;
-            DrawSphere(projs[i].pos, projs[i].radius, c);
+            // On utilise la couleur qu'on a pris la peine d'enregistrer !
+            DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
         }
     }
 }

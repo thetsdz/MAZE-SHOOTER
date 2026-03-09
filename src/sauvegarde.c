@@ -29,6 +29,8 @@ typedef struct {
   uint32_t checksum;  // L'empreinte de sécurité
 } SaveFile;
 
+
+/* temporairement mis en pause pour tester les nouvelles armes
 void sauvegarder(Entity* player, int* score) {
   SaveFile save;
 
@@ -120,3 +122,4 @@ void chargerSauvegarde(Entity* player, int* score) {
 
   printf("[Chargement] Partie chargée avec succès !\n");
 }
+*/
