@@ -1,10 +1,10 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "../linux/raylib-5.5_linux_amd64/include/raylib.h"
+#include "raylib.h"
 
 /** @brief Nombre total de blocs dans le labyrinthe*/
-#define NUM_BLOCKS 101
+#define NUM_BLOCKS 51
 /** @brief Nombre maximal de projectiles actifs simultanément*/
 #define MAX_PROJ 50
 /** @brief Score obtenu par échange ou action spécifique*/
@@ -31,7 +31,8 @@ typedef enum GameScreen { MENU, NOUVELLE_PARTIE, MULTIJOUEUR, CHARGER_PARTIE,OPT
  */
 typedef enum {
     ENTITY_PLAYER,  /**< Entité contrôlée par le joueur. */
-    ENTITY_BOT      /**< Entité contrôlée par l'IA. */
+    ENTITY_BOT,      /**< Entité contrôlée par l'IA. */
+    ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
 } EntityType;
 
 /**
@@ -40,7 +41,8 @@ typedef enum {
  */
 typedef enum {
     OWNER_PLAYER,  /**< Projectile tiré par le joueur. */
-    OWNER_BOT      /**< Projectile tiré par un bot. */
+    OWNER_BOT,      /**< Projectile tiré par un bot. */
+    OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau). */
 } OwnerType;
 
 /**
@@ -124,9 +126,38 @@ typedef struct {
     bool onGround;    /**< true si l'entité est au sol. */
     float size;       /**< Taille de l'entité. */
     int ammo;         /**< Munitions actuelles. */
+<<<<<<< HEAD
     ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
     float chronoTir;   /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
+=======
+    int maxAmmo;      /**< Capacité maximale du chargeur. */
+    int health;       /**< Points de vie actuels. */
+    int maxHealth;    /**< Points de vie maximum. */
+    int life;         /**< Nombre de vies restantes. */
+>>>>>>> master
     EntityType type;  /**< Type de l'entité. */
 } Entity;
+
+/**
+ * @struct ReseauState
+ * @brief Contient l'état de la connexion réseau
+ */
+typedef struct {
+    int socket;      /**< Le socket de communication (-1 si déconnecté) */
+    int isServer;    /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
+    int connected;   /**< 1 si la partie a commencé, 0 sinon */
+} ReseauState;
+
+/**
+ * @struct PaquetReseau
+ * @brief Données échangées entre les joueurs à chaque frame
+ */
+typedef struct {
+    Vector3 pos;     /**< Position du joueur */
+    float yaw;       /**< Angle de vue horizontal */
+    float pitch;     /**< Angle de vue vertical (à ajouter pour gérer le tir en hauteur) */
+    int tir;         /**< 1 si le joueur tire, 0 sinon */
+    int estMort;     /**< 1 si le joueur est mort */
+} PaquetReseau;
 
 #endif

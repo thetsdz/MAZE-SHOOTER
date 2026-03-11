@@ -21,7 +21,7 @@ void UpdateGame(Entity* player, Entity* bot,
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], int* score, Camera3D* camera) {
   // --- Logique du jeu ---
-  UpdatePlayer(player, blocks, camera);
+  UpdatePlayer(player, blocks, camera, bot);
   UpdateBot(bot, blocks, player->pos, projs);
  // if (IsKeyPressed(KEY_Y)) sauvegarder(player, score);
 

@@ -8,8 +8,8 @@
 #include "../lib/headers/level.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
+#include "raylib.h"
+#include "raymath.h"
 
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
@@ -49,5 +49,9 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     DrawText("Capacité MAX atteinte (50)", 10, 100, 20, MAROON);
   }
   DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
+  
   DessinerArme(tabArmes[i], GetScreenWidth(), GetScreenHeight());
+
+  DrawText(TextFormat("Point de vie restant: %d", player.health), 10, 190, 20,
+           RED);
 }

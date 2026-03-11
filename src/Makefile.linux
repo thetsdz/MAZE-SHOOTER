@@ -19,7 +19,9 @@ SRCS = main.c \
        updategame.c \
        dessin.c \
        option.c \
-	   arme.c \
+	   reseau.c \
+	   multijoueur.c 
+		arme.c \
 
 OBJS = $(SRCS:.c=.o)
 

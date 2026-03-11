@@ -46,4 +46,3 @@
 [INFO] FILEIO: [../assets/images/weapon_placeholder.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (600x400 | R8G8B8A8 | 1 mipmaps)
 [INFO] TEXTURE: [ID 4] Texture loaded successfully (600x400 | R8G8B8A8 | 1 mipmaps)
-[INFO] Fin de partie | Score=0 | AmmoMax=0

@@ -5,8 +5,8 @@
 *   \version 1.0
 *   \date 11/02/2026
 */
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
+#include "raylib.h"
+#include "raymath.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
 

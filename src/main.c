@@ -2,23 +2,23 @@
 #include <stdlib.h>
 #include <time.h>
 
-
-
 #include "../lib/headers/asset.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/menu.h"
+#include "../lib/headers/multijoueur.h"
 #include "../lib/headers/option.h"
 #include "../lib/headers/pile.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
+#include "../lib/headers/reseau.h"
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/updategame.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raylib.h"
-#include "../lib/linux/raylib-5.5_linux_amd64/include/raymath.h"
+#include "raylib.h"
+#include "raymath.h"
 
 int main(void) {
   // --- Initialisation du log ---
@@ -32,23 +32,23 @@ int main(void) {
   InitWindow(screenWidth, screenHeight, "JEU");
   ToggleFullscreen();
   SetTargetFPS(60);
-  void ShowCursor(void);
 
   srand(time(NULL));
-  
+
   // --- Variables pour la gestion des états ---
   GameScreen currentScreen = MENU;
   bool jeuInitialise = false;
-  bool running=true;
-  bool chargement=false;
-  
+  bool running = true;
+  bool chargement = false;
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
   Entity bot;
+  Entity remotePlayer;  // L'HUMAIN ADVERSE (pour le mode Multi)
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
   int score = 0;
+  ReseauState netState = {-1, 0, 0};  // socket=-1, isServer=0, connected=0
 
   // --- Caméra ---
   Camera3D camera = {0};
@@ -69,13 +69,15 @@ int main(void) {
     if (IsKeyPressed(KEY_ESCAPE)) break;
 
     // --- Initialisation des objets du jeu (une seule fois) ---
-    if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) || ( currentScreen==CHARGER_PARTIE && !jeuInitialise)) {
+    if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
+        (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
       InitBot(&bot);
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
-      score=0; //Pour l'instant on remet le score à 0 chaque fois qu'on clique sur 
+      score = 0;  // Pour l'instant on remet le score à 0 chaque fois qu'on
+                  // clique sur
       jeuInitialise = true;
     }
 
@@ -94,27 +96,29 @@ int main(void) {
         }
         break;
       }
-      case MULTIJOUEUR : {
-        //A implementer
-        if (IsKeyPressed(KEY_BACKSPACE)) {
-          currentScreen = MENU;
-          jeuInitialise = false;
-        }
-        break;
+      case MULTIJOUEUR: {
+        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState,&jeuInitialise,&score,&currentScreen);
+          break;
       }
-      case CHARGER_PARTIE : {
+      case CHARGER_PARTIE: {
         if (!chargement) {
+<<<<<<< HEAD
             //chargerSauvegarde(&player,&score);
             chargement=true;
             DisableCursor();
+=======
+          chargerSauvegarde(&player, &score);
+          chargement = true;
+          DisableCursor();
+>>>>>>> master
         }
-        
+
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
         // Retour au menu
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
-          chargement=false;
+          chargement = false;
         }
         break;
       }
@@ -123,7 +127,7 @@ int main(void) {
         break;
       }
       case EXIT: {
-        running=false;
+        running = false;
         break;
       }
     }
@@ -142,15 +146,12 @@ int main(void) {
                          tabArmes);
         break;
       }
-      case MULTIJOUEUR : {
-        //à implementer
-        if (IsKeyPressed(KEY_BACKSPACE)) {
-          currentScreen = MENU;
-          jeuInitialise = false;
-        }
+      case MULTIJOUEUR: {
+        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                           viseur, armeTex, score, &netState);
         break;
       }
-      case CHARGER_PARTIE : {
+      case CHARGER_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
                          tabArmes);
         break;
@@ -160,7 +161,7 @@ int main(void) {
         break;
       }
       case EXIT: {
-        running=false;
+        running = false;
         break;
       }
     }
@@ -168,9 +169,19 @@ int main(void) {
     EndDrawing();
   }
 
+<<<<<<< HEAD
   /* TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
            player.maxAmmo); 
   CloseLog();*/
+=======
+  if (netState.socket != -1) {
+    FermerReseau(netState.socket);
+  }
+
+  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
+           player.maxAmmo);
+  CloseLog();
+>>>>>>> master
   UnloadTexture(viseur);
   for (int i=0;i<3;i++){
     UnloadTexture(tabArmes[i]);
