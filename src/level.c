@@ -87,26 +87,39 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
 // --------------------------------------------------
 // Affichage
 // --------------------------------------------------
-void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
+void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2D floorTex)
 {
-    DrawPlane((Vector3){0,0,0}, (Vector2){NUM_BLOCKS*2, NUM_BLOCKS*2}, DARKGREEN);
-    DrawGrid(NUM_BLOCKS*2, 1.0f);
+    // Sol
+    DrawPlane((Vector3){0, 0, 0}, (Vector2){NUM_BLOCKS*3, NUM_BLOCKS*3}, WHITE);
 
-    for(int i=0; i<NUM_BLOCKS; i++){
-        for(int j=0; j<NUM_BLOCKS; j++){
+    // Modèle mur
+    Mesh wallMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+    Model wallModel = LoadModelFromMesh(wallMesh);
+    wallModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = wallTex;
 
+    // Modèle sol
+    Mesh floorMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+    Model floorModel = LoadModelFromMesh(floorMesh);
+    floorModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = floorTex;
+
+    for(int i = 0; i < NUM_BLOCKS; i++){
+        for(int j = 0; j < NUM_BLOCKS; j++){
             Vector3 pos = blocks[i][j].pos;
-
             if(blocks[i][j].isWall){
-                DrawCube(pos,
-                         blocks[i][j].width,
-                         blocks[i][j].height,
-                         blocks[i][j].depth,
-                         blocks[i][j].color);
+                DrawModelEx(wallModel, pos,
+                    (Vector3){0, 1, 0}, 0.0f,
+                    (Vector3){blocks[i][j].width, blocks[i][j].height, blocks[i][j].depth},
+                    WHITE);
             } else {
-                // Dessiner le sol sous les couloirs
-                DrawCube((Vector3){pos.x, 0, pos.z}, 2, 0.2f, 2, GRAY);
+                DrawModelEx(floorModel,
+                    (Vector3){pos.x, 0.0f, pos.z},
+                    (Vector3){0, 1, 0}, 0.0f,
+                    (Vector3){2.0f, 0.2f, 2.0f},
+                    WHITE);
             }
         }
     }
+
+    UnloadModel(wallModel);
+    UnloadModel(floorModel);
 }

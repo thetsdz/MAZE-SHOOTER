@@ -9,14 +9,26 @@
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
 #include "raylib.h"
+#include "rlgl.h" 
 #include "raymath.h"
 
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-                      Entity player, Texture2D viseur, Texture2D armeTex) {
+                      Entity player, Texture2D viseur, Texture2D armeTex,
+                      Model skyModel, Texture2D wallTex, Texture2D floorTex) {
   // --- Dessin 3D ---
   BeginMode3D(camera);
-  DrawLevel(blocks);
+
+  // --- Skybox ---
+  // Skybox cubemap
+  rlDisableBackfaceCulling();
+  rlDisableDepthMask();
+  DrawModel(skyModel, camera.position, 1.0f, WHITE);  
+  rlEnableBackfaceCulling();
+  rlEnableDepthMask();
+
+
+  DrawLevel(blocks, wallTex, floorTex);
   DrawCube(bot->pos, bot->size, bot->size, bot->size, RED);
   Vector3 lookDir = {sinf(bot->yaw), 0, cosf(bot->yaw)};
   Vector3 eyePos = Vector3Add(bot->pos, Vector3Scale(lookDir, 0.5f));
