@@ -159,40 +159,40 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 }
 
 void DessinerLobbyMultijoueur(ReseauState* netState) {
-  DrawText("MODE MULTIJOUEUR", 100, 100, 30, DARKGRAY);
+  DrawText("MODE MULTIJOUEUR", 100, 100, 30, WHITE);
 
   if (netState->socket == -1) {
     if (saisieIP) {
       // Affichage du menu de saisie
-      DrawText("Entrez l'IP du serveur:", 100, 200, 20, BLACK);
+      DrawText("Entrez l'IP du serveur:", 100, 200, 20, WHITE);
 
       // Dessiner la boîte de saisie
-      DrawRectangleLines(100, 230, 300, 40, DARKGRAY);
-      DrawText(ipTampon, 110, 240, 20, MAROON);
+      DrawRectangleLines(100, 230, 300, 40, WHITE);
+      DrawText(ipTampon, 110, 240, 20, WHITE);
 
       // Curseur clignotant
       if ((GetTime() * 2.0f) - (int)(GetTime() * 2.0f) < 0.5f) {
         DrawText("_", 110 + MeasureText(ipTampon, 20), 240, 20, MAROON);
       }
 
-      DrawText("[ENTRÉE] Valider   [ECHAP] Annuler", 100, 300, 20, GRAY);
+      DrawText("[ENTRÉE] Valider   [ECHAP] Annuler", 100, 300, 20, WHITE);
     } else {
       // Affichage du menu normal
-      DrawText("[H] HEBERGER une partie (Serveur)", 100, 200, 20, BLACK);
-      DrawText("[C] REJOINDRE une partie (Client)", 100, 240, 20, BLACK);
-      DrawText("[BACKSPACE] Retour Menu Principal", 100, 500, 20, GRAY);
+      DrawText("[H] HEBERGER une partie (Serveur)", 100, 200, 20, WHITE);
+      DrawText("[C] REJOINDRE une partie (Client)", 100, 240, 20, WHITE);
+      DrawText("[BACKSPACE] Retour Menu Principal", 100, 500, 20, WHITE);
     }
   } else {
     // En attente de connexion (après validation ou hébergement)
     if (netState->isServer) {
       DrawText(TextFormat("IP Locale: %s - Port: 30000", "0.0.0.0"), 100, 160,
                20, BLUE);
-      DrawText("En attente d'un adversaire...", 100, 350, 20, MAROON);
+      DrawText("En attente d'un adversaire...", 100, 350, 20, WHITE);
     } else {
       DrawText(TextFormat("Connexion à %s...", ipTampon), 100, 350, 20,
                DARKGREEN);
     }
-    DrawText("[BACKSPACE] Annuler", 100, 500, 20, GRAY);
+    DrawText("[BACKSPACE] Annuler", 100, 500, 20, WHITE);
   }
 }
 
@@ -319,7 +319,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Texture2D armeTex, int score,
-                         ReseauState* netState) {
+                         ReseauState* netState, Model skyModel,
+                         Texture2D wallTex, Texture2D floorTex) {
   if (!netState->connected) {
     // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
     DessinerLobbyMultijoueur(netState);
@@ -327,7 +328,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     // --- DESSIN JEU MULTI ---
     // Code existant pour le jeu...
     UpdateDessinGame(remotePlayer, blocks, *camera, projs, score, *player,
-                     viseur, armeTex);
+                 viseur, armeTex, skyModel, wallTex, floorTex);
 
     DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
                         player->pos.y, player->pos.z),

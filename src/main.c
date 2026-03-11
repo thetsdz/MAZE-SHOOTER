@@ -19,6 +19,7 @@
 #include "../lib/headers/updategame.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "rlgl.h"
 
 int main(void) {
   // --- Initialisation du log ---
@@ -44,11 +45,11 @@ int main(void) {
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
   Entity bot;
-  Entity remotePlayer;  // L'HUMAIN ADVERSE (pour le mode Multi)
+  Entity remotePlayer;
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
   int score = 0;
-  ReseauState netState = {-1, 0, 0};  // socket=-1, isServer=0, connected=0
+  ReseauState netState = {-1, 0, 0};
 
   // --- Caméra ---
   Camera3D camera = {0};
@@ -59,6 +60,35 @@ int main(void) {
   // --- Textures ---
   Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
   Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
+
+  Texture2D wallTex = LoadTexture("../assets/images/brick.png");
+  Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
+
+
+
+  // --- Skybox (cross vertical 3x4) ---
+  Mesh skyMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model skyModel = LoadModelFromMesh(skyMesh);
+  skyModel.materials[0].shader = LoadShader(
+      "../assets/shaders/skybox.vs",
+      "../assets/shaders/skybox.fs"
+  );
+
+  Image skyImg = LoadImage("../assets/images/sky.png");
+  ImageFormat(&skyImg, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+  TextureCubemap cubemap = LoadTextureCubemap(skyImg, CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE);
+  UnloadImage(skyImg);
+
+  skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = cubemap;
+  int envMapLoc = GetShaderLocation(skyModel.materials[0].shader, "environmentMap");
+  SetShaderValue(skyModel.materials[0].shader, envMapLoc, (int[]){MATERIAL_MAP_CUBEMAP}, SHADER_UNIFORM_INT);
+
+  int doGammaLoc = GetShaderLocation(skyModel.materials[0].shader, "doGamma");
+  int vflippedLoc = GetShaderLocation(skyModel.materials[0].shader, "vflipped");
+  int val0 = 0;
+  SetShaderValue(skyModel.materials[0].shader, doGammaLoc, &val0, SHADER_UNIFORM_INT);
+  SetShaderValue(skyModel.materials[0].shader, vflippedLoc, &val0, SHADER_UNIFORM_INT);
+
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
@@ -72,8 +102,7 @@ int main(void) {
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
-      score = 0;  // Pour l'instant on remet le score à 0 chaque fois qu'on
-                  // clique sur
+      score = 0;
       jeuInitialise = true;
     }
 
@@ -85,7 +114,6 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
-        // Retour au menu
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -93,8 +121,8 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
-        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState,&jeuInitialise,&score,&currentScreen);
-          break;
+        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState, &jeuInitialise, &score, &currentScreen);
+        break;
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
@@ -102,9 +130,7 @@ int main(void) {
           chargement = true;
           DisableCursor();
         }
-
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
-        // Retour au menu
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -124,7 +150,7 @@ int main(void) {
 
     // --- Dessin selon l'état ---
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(BLANK);
 
     switch (currentScreen) {
       case MENU: {
@@ -132,22 +158,18 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
-        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex);
-        break;
+UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur, armeTex, skyModel, wallTex, floorTex);        break;
       }
       case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                           viseur, armeTex, score, &netState);
+DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                   viseur, armeTex, score, &netState, skyModel, wallTex, floorTex);
         break;
       }
       case CHARGER_PARTIE: {
-        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex);
-        break;
+UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur, armeTex, skyModel, wallTex, floorTex);        break;
       }
       case OPTIONS: {
-        // Le dessin est geré dans GererOption
+        // Le dessin est géré dans GererOption
         break;
       }
       case EXIT: {
@@ -163,11 +185,13 @@ int main(void) {
     FermerReseau(netState.socket);
   }
 
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo);
+  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score, player.maxAmmo);
   CloseLog();
   UnloadTexture(viseur);
   UnloadTexture(armeTex);
+  UnloadShader(skyModel.materials[0].shader);
+  UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
+  UnloadModel(skyModel);
   CloseWindow();
   return 0;
 }
