@@ -320,7 +320,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Texture2D armeTex, int score,
                          ReseauState* netState, Model skyModel,
-                         Texture2D wallTex, Texture2D floorTex) {
+                         Texture2D wallTex, Texture2D floorTex,
+                         Model botModel) {
   if (!netState->connected) {
     // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
     DessinerLobbyMultijoueur(netState);
@@ -328,7 +329,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     // --- DESSIN JEU MULTI ---
     // Code existant pour le jeu...
     UpdateDessinGame(remotePlayer, blocks, *camera, projs, score, *player,
-                 viseur, armeTex, skyModel, wallTex, floorTex);
+                     viseur, armeTex, skyModel, wallTex, floorTex, botModel);
 
     DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
                         player->pos.y, player->pos.z),

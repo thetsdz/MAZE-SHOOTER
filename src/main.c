@@ -64,31 +64,37 @@ int main(void) {
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
 
-
+  Model botModel = LoadModel("../assets/models/robot.dae");
+  Texture2D botTex = LoadTexture("../assets/models/gobot_main_tex.png");
+  for (int i = 0; i < botModel.materialCount; i++) {
+    botModel.materials[i].maps[MATERIAL_MAP_DIFFUSE].texture = botTex;
+  }
 
   // --- Skybox (cross vertical 3x4) ---
   Mesh skyMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   Model skyModel = LoadModelFromMesh(skyMesh);
-  skyModel.materials[0].shader = LoadShader(
-      "../assets/shaders/skybox.vs",
-      "../assets/shaders/skybox.fs"
-  );
+  skyModel.materials[0].shader =
+      LoadShader("../assets/shaders/skybox.vs", "../assets/shaders/skybox.fs");
 
   Image skyImg = LoadImage("../assets/images/sky.png");
   ImageFormat(&skyImg, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
-  TextureCubemap cubemap = LoadTextureCubemap(skyImg, CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE);
+  TextureCubemap cubemap =
+      LoadTextureCubemap(skyImg, CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE);
   UnloadImage(skyImg);
 
   skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = cubemap;
-  int envMapLoc = GetShaderLocation(skyModel.materials[0].shader, "environmentMap");
-  SetShaderValue(skyModel.materials[0].shader, envMapLoc, (int[]){MATERIAL_MAP_CUBEMAP}, SHADER_UNIFORM_INT);
+  int envMapLoc =
+      GetShaderLocation(skyModel.materials[0].shader, "environmentMap");
+  SetShaderValue(skyModel.materials[0].shader, envMapLoc,
+                 (int[]){MATERIAL_MAP_CUBEMAP}, SHADER_UNIFORM_INT);
 
   int doGammaLoc = GetShaderLocation(skyModel.materials[0].shader, "doGamma");
   int vflippedLoc = GetShaderLocation(skyModel.materials[0].shader, "vflipped");
   int val0 = 0;
-  SetShaderValue(skyModel.materials[0].shader, doGammaLoc, &val0, SHADER_UNIFORM_INT);
-  SetShaderValue(skyModel.materials[0].shader, vflippedLoc, &val0, SHADER_UNIFORM_INT);
-
+  SetShaderValue(skyModel.materials[0].shader, doGammaLoc, &val0,
+                 SHADER_UNIFORM_INT);
+  SetShaderValue(skyModel.materials[0].shader, vflippedLoc, &val0,
+                 SHADER_UNIFORM_INT);
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
@@ -121,7 +127,8 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
-        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState, &jeuInitialise, &score, &currentScreen);
+        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                           &netState, &jeuInitialise, &score, &currentScreen);
         break;
       }
       case CHARGER_PARTIE: {
@@ -158,15 +165,20 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
-UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur, armeTex, skyModel, wallTex, floorTex);        break;
+        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
+                         armeTex, skyModel, wallTex, floorTex, botModel);
+        break;
       }
       case MULTIJOUEUR: {
-DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                   viseur, armeTex, score, &netState, skyModel, wallTex, floorTex);
+        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                            viseur, armeTex, score, &netState, skyModel,
+                            wallTex, floorTex, botModel);
         break;
       }
       case CHARGER_PARTIE: {
-UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur, armeTex, skyModel, wallTex, floorTex);        break;
+        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
+                         armeTex, skyModel, wallTex, floorTex, botModel);
+        break;
       }
       case OPTIONS: {
         // Le dessin est géré dans GererOption
@@ -185,13 +197,16 @@ UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur, armeTex, sk
     FermerReseau(netState.socket);
   }
 
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score, player.maxAmmo);
+  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
+           player.maxAmmo);
   CloseLog();
   UnloadTexture(viseur);
   UnloadTexture(armeTex);
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
+  UnloadModel(botModel);
+  UnloadTexture(botTex);
   CloseWindow();
   return 0;
 }

@@ -114,7 +114,7 @@ void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2
                 DrawModelEx(floorModel,
                     (Vector3){pos.x, 0.0f, pos.z},
                     (Vector3){0, 1, 0}, 0.0f,
-                    (Vector3){2.0f, 0.2f, 2.0f},
+                    (Vector3){3.0f, 0.2f, 3.0f},
                     WHITE);
             }
         }
