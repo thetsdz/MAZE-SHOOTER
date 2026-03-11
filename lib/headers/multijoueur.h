@@ -27,5 +27,5 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Texture2D armeTex, int score,
                          ReseauState* netState, Model skyModel,
-                         Texture2D wallTex, Texture2D floorTex);
+                         Texture2D wallTex, Texture2D floorTex, Model botModel);
 #endif
