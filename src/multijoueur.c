@@ -20,7 +20,7 @@
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
-
+/* temporairement en pause
 // --- VARIABLES STATIQUES POUR LA SAISIE D'IP ---
 static bool saisieIP = false;
 static char ipTampon[20] = {
@@ -337,3 +337,6 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     DrawText(TextFormat("[%s] Ping: -- ms", role), 10, 160, 20, YELLOW);
   }
 }
+
+
+*/

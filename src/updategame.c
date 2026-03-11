@@ -76,9 +76,13 @@ if (IsKeyPressed(KEY_F3)) {
                       sinf(player->pitch),
                       cosf(player->yaw) * cosf(player->pitch)};
     Vector3 startPos = {player->pos.x, player->pos.y + 0.5f, player->pos.z};
-    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER,player->armeEquipee.vitesseBalle, 
+
+    
+    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee, player->armeEquipee.vitesseBalle, 
                 player->armeEquipee.tailleProjectile, 
                 player->armeEquipee.couleurProjectile);
+
+    
     player->ammo--;
     player->chronoTir = player->armeEquipee.cadenceTir; // On réinitialise le délai
   }

@@ -1,20 +1,6 @@
 #include "../lib/headers/player.h"
 #include "../lib/headers/arme.h"
 
-<<<<<<< HEAD
-void InitPlayer(Entity *player) {
-    player->pos = (Vector3){0, 10.0f, 0};
-    player->yaw = 0.0f; //
-    player->pitch = 0.0f; //
-    player->velocityY = 0.0f; //vitesse du joeur
-    player->onGround = true; //est-ce que le joueur est au sol
-    player->size = 1.0f; //taille
-
-    player->type = ENTITY_PLAYER; //type de l'entité
-    player->armeEquipee = ObtenirModeleArme(PISTOLET); //  On charge la "fiche technique" du pistolet
-    player->ammo = player->armeEquipee.munitionsMax;  // On remplit les munitions au maximum défini par le modèle (ici 12 ou 10 selon ton choix)
-    player->chronoTir = 0.0f;     // On initialise le chrono à 0 pour pouvoir tirer immédiatement
-=======
 #include <math.h>
 
 void InitPlayer(Entity* player) {
@@ -25,7 +11,7 @@ void InitPlayer(Entity* player) {
   player->onGround = true;       // est-ce que le joueur est au sol
   player->size = 1.0f;           // taille
   player->ammo = 10;             // Commence avec 10 balles
-  player->maxAmmo = 10;          // Capacité de base de 10
+
   player->health = 100;          // Points de vie de base
   player->maxHealth = 100;       // Points de vie maximum
   player->life = 3;              // Nombre de vies de base
@@ -33,7 +19,6 @@ void InitPlayer(Entity* player) {
   player->armeEquipee = ObtenirModeleArme(PISTOLET); //  On charge la "fiche technique" du pistolet
   player->ammo = player->armeEquipee.munitionsMax;  // On remplit les munitions au maximum défini par le modèle (ici 12 ou 10 selon ton choix)
   player->chronoTir = 0.0f;     // On initialise le chrono à 0 pour pouvoir tirer immédiatement
->>>>>>> master
 }
 
 void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],

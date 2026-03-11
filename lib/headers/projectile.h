@@ -9,7 +9,7 @@
 void InitProjectiles(Projectile *projs);
 
 /** @brief Trouve un slot libre et tire un projectile dans la direction où regarde le joueur ou le bot*/
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, float speed, float radius, Color colors);
+void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner,ModeleArme arme, float speed, float radius, Color colors);
 
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les tirs actifs*/
 void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity *bot, Entity *player, int *score);

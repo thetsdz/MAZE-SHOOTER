@@ -67,6 +67,16 @@ typedef struct {
     bool isWall;    /**< true si c'est un mur, false si c'est un couloir. */
 } Block;
 
+
+/**
+ * @struct type de balles
+ * @brief Représente soit PROJ_GRENADE et PROJ_NORMALE
+ */
+
+typedef enum{
+    PROJ_GRENADE,PROJ_NORMALE
+} type_projectile;
+
 /**
  * @struct Projectile
  * @brief Représente un projectile (balle) dans le jeu.
@@ -78,6 +88,7 @@ typedef struct {
     bool active;    /**< true si le projectile est actif. */
     float life;     /**< Temps de vie restant (en secondes). */
     Color color;     /**<couleur du projectile */
+    type_projectile type;     /**< en fonction balles classiques ou grenade */
     OwnerType owner; /**< Propriétaire du projectile. */
 } Projectile;
 
@@ -126,15 +137,11 @@ typedef struct {
     bool onGround;    /**< true si l'entité est au sol. */
     float size;       /**< Taille de l'entité. */
     int ammo;         /**< Munitions actuelles. */
-<<<<<<< HEAD
-    ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
-    float chronoTir;   /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
-=======
-    int maxAmmo;      /**< Capacité maximale du chargeur. */
     int health;       /**< Points de vie actuels. */
     int maxHealth;    /**< Points de vie maximum. */
     int life;         /**< Nombre de vies restantes. */
->>>>>>> master
+    ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
+    float chronoTir;   /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
     EntityType type;  /**< Type de l'entité. */
 } Entity;
 

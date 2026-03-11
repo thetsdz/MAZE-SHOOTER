@@ -8,21 +8,13 @@ void InitProjectiles(Projectile* projs) {
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-<<<<<<< HEAD
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, float speed, float radius, Color color) {
+void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, ModeleArme arme, float speed, float radius, Color color) {
     // Normalisation de la direction par sécurité
     Vector3 dir = Vector3Normalize(direction);
-=======
-void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
-                     OwnerType owner) {
-  // Normalisation de la direction par sécurité
-  Vector3 dir = Vector3Normalize(direction);
->>>>>>> master
 
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
 
-<<<<<<< HEAD
     for(int i=0; i<MAX_PROJ; i++){
         if(!projs[i].active){
             projs[i].active = true;
@@ -32,22 +24,14 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
             projs[i].color=color;
             projs[i].life = 5.0f;
             projs[i].owner = owner; // <-- On définit le propriétaire
+            if (arme.type==GRENADE) projs[i].type=PROJ_GRENADE;
+            else  projs[i].type=PROJ_NORMALE;
             break;
         }
-=======
-  for (int i = 0; i < MAX_PROJ; i++) {
-    if (!projs[i].active) {
-      projs[i].active = true;
-      projs[i].pos = spawn;
-      projs[i].vel = Vector3Scale(dir, 50.0f);  // Vitesse du projectile
-      projs[i].radius = 0.2f;
-      projs[i].life = 5.0f;
-      projs[i].owner = owner;  // <-- On définit le propriétaire
-      break;
->>>>>>> master
+
     }
   }
-}
+
 // ... (Début du fichier identique)
 
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
@@ -58,6 +42,9 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     if (!projs[i].active) continue;
 
     // Déplacement
+      if (projs[i].type==PROJ_GRENADE){
+        projs[i].vel.y -= 35.0f * dt;   //modifier ici pour plus de gravité de la grenade
+      }
     projs[i].pos = Vector3Add(projs[i].pos, Vector3Scale(projs[i].vel, dt));
     projs[i].life -= dt;
     
@@ -95,7 +82,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     else if (projs[i].owner == OWNER_BOT || projs[i].owner == OWNER_REMOTE_PLAYER) {
         if (player->health <= 0) continue; // Sécurité : on ne touche pas un mort
 
-        float h = player->size / 2.0f;
+        float h = player->size / 50.0f;
         if (projs[i].pos.x > player->pos.x - h && projs[i].pos.x < player->pos.x + h &&
             projs[i].pos.y > player->pos.y && projs[i].pos.y < player->pos.y + player->size &&
             projs[i].pos.z > player->pos.z - h && projs[i].pos.z < player->pos.z + h) 
@@ -106,7 +93,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             // --- GESTION DE LA MORT EN SOLO ---
             if (projs[i].owner == OWNER_BOT && player->health <= 0) {
                 player->health = player->maxHealth;
-                player->ammo = player->maxAmmo;
+                player->ammo = player->armeEquipee.munitionsMax;
                 player->pos = (Vector3){1.5f, 10.0f, 1.5f}; // Position de respawn solo
                 player->velocityY = 0; // IMPORTANT : stop la chute
                 TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
@@ -139,7 +126,6 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 }
 
-<<<<<<< HEAD
 
 
 void DrawProjectiles(Projectile *projs) {
@@ -148,20 +134,5 @@ void DrawProjectiles(Projectile *projs) {
             // On utilise la couleur qu'on a pris la peine d'enregistrer !
             DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
         }
-=======
-void DrawProjectiles(Projectile* projs) {
-  for (int i = 0; i < MAX_PROJ; i++) {
-    if (projs[i].active) {
-      Color c = RED;
-      if (projs[i].owner == OWNER_PLAYER)
-        c = MAGENTA;
-      else if (projs[i].owner == OWNER_BOT)
-        c = ORANGE;
-      else if (projs[i].owner == OWNER_REMOTE_PLAYER)
-        c = YELLOW;
-
-      DrawSphere(projs[i].pos, projs[i].radius, c);
->>>>>>> master
     }
   }
-}

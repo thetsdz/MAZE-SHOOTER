@@ -21,7 +21,7 @@ void InitBot(Entity *bot) {
 }
 
 void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 targetPos, Projectile *projs) {
-    
+  
     /** \brief Paramètres du Bot
         \code  
         float speed = 0.08f;
@@ -30,6 +30,8 @@ void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 target
         float dt = GetFrameTime();
         \endcode
     */
+
+
     float speed = 0.08f;
     float gravity = 0.02f;
     float botHalf = bot->size/2;
@@ -44,6 +46,8 @@ void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 target
         bot->yaw = atan2f(dx, dz); 
         \endcode 
     */ 
+
+
     float dx = targetPos.x - bot->pos.x;
     float dz = targetPos.z - bot->pos.z;
     bot->yaw = atan2f(dx, dz); 
@@ -55,7 +59,8 @@ void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 target
         float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f);
         bot->pitch = atan2f(dy, dist);
         \endcode 
-    */   
+    */  
+ 
     float dist = sqrtf(dx*dx + dz*dz);
     float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f); 
     bot->pitch = atan2f(dy, dist);
@@ -84,7 +89,7 @@ void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 target
         Vector3 shootOrigin = { bot->pos.x, bot->pos.y + 0.5f, bot->pos.z };
 
         // Tir avec propriétaire BOT
-        ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT, 40.0f, 0.2f, ORANGE);
+        ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT,bot->armeEquipee , 40.0f, 0.2f, ORANGE);
         
         // Reset timer (avec une petite variation aléatoire)
         shootTimer = (float)(rand()%100) / 200.0f; // Reset à 0.0 - 0.5s
@@ -182,3 +187,4 @@ void UpdateBot(Entity *bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Vector3 target
     // Validation finale
     bot->pos = nextPos;
 }
+

@@ -72,7 +72,7 @@ int main(void) {
     if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
         (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
-      InitBot(&bot);
+      //InitBot(&bot);   TEMPORAIIRE
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
@@ -97,20 +97,14 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
-        partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState,&jeuInitialise,&score,&currentScreen);
-          break;
+        /*partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera, &netState,&jeuInitialise,&score,&currentScreen);
+          break;*/
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-<<<<<<< HEAD
             //chargerSauvegarde(&player,&score);
             chargement=true;
             DisableCursor();
-=======
-          chargerSauvegarde(&player, &score);
-          chargement = true;
-          DisableCursor();
->>>>>>> master
         }
 
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
@@ -147,8 +141,8 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                           viseur, armeTex, score, &netState);
+        /*DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                           viseur, armeTex, score, &netState);*/
         break;
       }
       case CHARGER_PARTIE: {
@@ -169,19 +163,13 @@ int main(void) {
     EndDrawing();
   }
 
-<<<<<<< HEAD
-  /* TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo); 
-  CloseLog();*/
-=======
   if (netState.socket != -1) {
     FermerReseau(netState.socket);
   }
 
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
+  /*TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
            player.maxAmmo);
-  CloseLog();
->>>>>>> master
+  CloseLog();*/
   UnloadTexture(viseur);
   for (int i=0;i<3;i++){
     UnloadTexture(tabArmes[i]);
