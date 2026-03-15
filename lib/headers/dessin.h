@@ -16,6 +16,7 @@
  */
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-                      Entity player, Texture2D viseur, Texture2D armeTex);
-
+                      Entity player, Texture2D viseur, Texture2D armeTex,
+                      Model skyModel, Texture2D wallTex, Texture2D floorTex,
+                      Model botModel);
 #endif

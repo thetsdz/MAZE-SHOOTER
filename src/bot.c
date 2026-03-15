@@ -116,12 +116,16 @@ void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
   float offset = NUM_BLOCKS - 1;  // Le même offset que dans level.c
   int i, j;
 
+
+  
   // On boucle jusqu'à trouver une case qui N'EST PAS un mur
   do {
     // rand() % NUM_BLOCKS donne un nombre entre 0 et 50
     i = rand() % NUM_BLOCKS;
     j = rand() % NUM_BLOCKS;
   } while (blocks[i][j].isWall);
+  
+
 
   // Une fois la case vide trouvée, on convertit la position Grille en position
   // Monde 3D
