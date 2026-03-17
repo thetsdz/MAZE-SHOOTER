@@ -6,16 +6,22 @@
 * \date 11/02.2026
 */
 
-
-
-
-
-
-
 #include "raylib.h"
 #include "raymath.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
+
+static Music music;
+static int musicLoaded = 0;
+
+void UnloadMenuMusic() {
+    if (musicLoaded) {
+        UnloadMusicStream(music);
+        musicLoaded = 0;
+    }
+}
+
+
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;      // 0: LANCER PARTIE, 1: OPTIONS, 2: QUITTER
@@ -78,7 +84,17 @@ void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton
 *   \param <Game screen *currentScreen> Etat de l'ecran actuel 
 */
 void GererMenu(GameScreen *currentScreen) {
-    
+    if (!musicLoaded) {
+        music = LoadMusicStream("../assets/song/music.mp3");
+        PlayMusicStream(music);
+        musicLoaded = 1;
+    }
+    UpdateMusicStream(music);   
+
+
+
+
+
     ShowCursor();
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
@@ -129,12 +145,4 @@ void GererMenu(GameScreen *currentScreen) {
     DrawText("MAZE SHOOTER", sw/2 - MeasureText("MAZE SHOOTER", 40)/2, sh/4 - 50, 40, WHITE);
     DrawText("MENU PRINCIPAL", sw/2 - MeasureText("MENU PRINCIPAL", 25)/2, sh/4, 25, LIGHTGRAY);
     DrawText("Utilise les flèches et Entrée pour naviguer", sw/2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15)/2, sh - 50, 15, LIGHTGRAY);
-  
 }
-
-
-
-
-
-
-    
