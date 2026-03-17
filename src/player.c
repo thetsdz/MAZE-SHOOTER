@@ -1,4 +1,5 @@
 #include "../lib/headers/player.h"
+#include "../lib/headers/audio.h"
 
 #include <math.h>
 
@@ -58,21 +59,24 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
     move.x += forward.x;
     move.z += forward.z;
-  }
-  if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+    PlayWalk();
+  }else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
     move.x -= forward.x;
     move.z -= forward.z;
+    PlayWalk();
   }
-
   // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
   // (Mathématiquement : vecteur orthogonal)
-  if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+  else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
     move.x += forward.z;
     move.z -= forward.x;
-  }
-  if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+    PlayWalk();
+  }else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
     move.x -= forward.z;
     move.z += forward.x;
+    PlayWalk();
+  }else{
+    PauseWalk();
   }
 
   // Normalisation : Si on appuie sur W et D en même temps, la longueur du
@@ -235,6 +239,8 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
   // Validation finale de la position
   player->pos = nextPos;
+
+  
 
   // --- Mise à jour de la Caméra Raylib ---
   // Calcul du vecteur direction 3D complet (sphérique -> cartésien)
