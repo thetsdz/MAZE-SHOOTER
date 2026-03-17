@@ -31,6 +31,7 @@ int main(void) {
   int screenWidth = GetMonitorWidth(0);
   int screenHeight = GetMonitorHeight(0);
   InitWindow(screenWidth, screenHeight, "JEU");
+  InitAudioDevice();
   ToggleFullscreen();
   SetTargetFPS(60);
 
@@ -207,6 +208,8 @@ int main(void) {
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadTexture(botTex);
+  UnloadMenuMusic();
+  CloseAudioDevice();
   CloseWindow();
   return 0;
 }
