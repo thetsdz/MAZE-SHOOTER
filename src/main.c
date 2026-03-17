@@ -3,6 +3,7 @@
 #include <time.h>
 
 #include "../lib/headers/asset.h"
+#include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/level.h"
@@ -32,6 +33,8 @@ int main(void) {
   int screenHeight = GetMonitorHeight(0);
   InitWindow(screenWidth, screenHeight, "JEU");
   InitAudioDevice();
+  InitGameAudio();
+
   ToggleFullscreen();
   SetTargetFPS(60);
 
@@ -99,6 +102,7 @@ int main(void) {
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
+    UpdateGameAudio();   // ← est-ce que cette ligne existe ici ?
     if (IsKeyPressed(KEY_ESCAPE)) break;
 
     // --- Initialisation des objets du jeu (une seule fois) ---
@@ -120,6 +124,7 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
+        StopAllMusic();
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
@@ -128,6 +133,7 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
+        StopAllMusic();
         partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera,
                            &netState, &jeuInitialise, &score, &currentScreen);
         break;
@@ -208,7 +214,7 @@ int main(void) {
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadTexture(botTex);
-  UnloadMenuMusic();
+  UnloadGameAudio();
   CloseAudioDevice();
   CloseWindow();
   return 0;

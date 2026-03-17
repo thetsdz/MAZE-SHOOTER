@@ -11,16 +11,6 @@
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
 
-static Music music;
-static int musicLoaded = 0;
-
-void UnloadMenuMusic() {
-    if (musicLoaded) {
-        UnloadMusicStream(music);
-        musicLoaded = 0;
-    }
-}
-
 
 
 // Variables statiques pour gérer la sélection
@@ -84,12 +74,8 @@ void GestionSouris(GameScreen **currentScreen, Rectangle rect, int indice_bouton
 *   \param <Game screen *currentScreen> Etat de l'ecran actuel 
 */
 void GererMenu(GameScreen *currentScreen) {
-    if (!musicLoaded) {
-        music = LoadMusicStream("../assets/song/music.mp3");
-        PlayMusicStream(music);
-        musicLoaded = 1;
-    }
-    UpdateMusicStream(music);   
+
+    PlayMenuMusic();
 
 
 
