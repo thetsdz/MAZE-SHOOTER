@@ -103,9 +103,6 @@ void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
                          blocks[i][j].height,
                          blocks[i][j].depth,
                          blocks[i][j].color);
-            } else {
-                // Dessiner le sol sous les couloirs
-                DrawCube((Vector3){pos.x, 0, pos.z}, 2, 0.2f, 2, GRAY);
             }
         }
     }

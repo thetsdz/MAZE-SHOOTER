@@ -45,7 +45,7 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
             m.degats = 150.0f;            // Dégâts de zone (théoriques)
             m.nom = "Grenade MK2";
             // --- AJOUTS ---
-            m.tailleProjectile = 0.8f;    // Bien plus gros qu'une balle
+            m.tailleProjectile = 0.2f;    // Bien plus gros qu'une balle
             m.couleurProjectile = GREEN;   // Vert militaire
             break;
             
