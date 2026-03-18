@@ -1,3 +1,7 @@
+/**
+ * \file audio.c
+ */
+ 
 #include "../lib/headers/audio.h"
 
 static GameAudio g_audio = {0};

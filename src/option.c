@@ -1,3 +1,7 @@
+/**
+ * \file option.c
+ */
+
 #include "raylib.h"
 #include "raymath.h"
 #include "../lib/headers/types.h"

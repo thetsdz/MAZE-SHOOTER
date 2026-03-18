@@ -1,9 +1,5 @@
 /**
  * \file menu.c
- * \brief Contient les fonctions de gestion du menu principal
- * \author Hugues Astier
- * \version 1.0
- * \date 11/02.2026
  */
 
 #include "../lib/headers/menu.h"

@@ -1,3 +1,7 @@
+/**
+ * \file multijoueur.c
+ */
+
 #include "../lib/headers/multijoueur.h"
 
 #include <math.h>
