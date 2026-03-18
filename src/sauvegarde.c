@@ -1,3 +1,10 @@
+/**
+ * \file sauvegarde.c
+ */
+
+
+
+
 #include "../lib/headers/sauvegarde.h"
 
 #include <stdint.h>
@@ -24,6 +31,7 @@ typedef struct {
   int health;
   int maxHealth;
   int life;
+  Entity bot;
 } SaveData;
 
 // C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
@@ -32,7 +40,7 @@ typedef struct {
   uint32_t checksum;  // L'empreinte de sécurité
 } SaveFile;
 
-void sauvegarder(Entity* player, int* score) {
+void sauvegarder(Entity* player, Entity* bot, int* score) {
   SaveFile save;
 
   // Remplissage de la structure de données
@@ -52,6 +60,8 @@ void sauvegarder(Entity* player, int* score) {
   save.gameData.health = player->health;
   save.gameData.maxHealth = player->maxHealth;
   save.gameData.life = player->life;
+
+  save.gameData.bot = *bot;
 
   // Calcul du Checksum (Sur les données EN CLAIR)
   save.checksum =
@@ -74,7 +84,7 @@ void sauvegarder(Entity* player, int* score) {
   }
 }
 
-void chargerSauvegarde(Entity* player, int* score) {
+void chargerSauvegarde(Entity* player, Entity* bot, int* score) {
   // Lecture Binaire
   // Note le "rb" (Read Binary) au lieu de "r"
   FILE* fr = fopen("save.dat", "rb");
@@ -129,5 +139,6 @@ void chargerSauvegarde(Entity* player, int* score) {
   player->maxHealth = save.gameData.maxHealth;
   player->life = save.gameData.life;
 
+  *bot = save.gameData.bot;
   printf("[Chargement] Partie chargée avec succès !\n");
 }

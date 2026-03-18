@@ -1,10 +1,9 @@
 /**
  * \file reseau.c
- * \brief Contient les fonctions de gestion du réseau
- * \author Corentin Jammes
- * \version 1.2
- * \date 12.02.2026
  */
+
+
+
 
 // --- SECTION IMPORTANTE POUR WINDOWS ---
 // On doit définir ces macros AVANT d'inclure winsock2.h pour éviter
@@ -158,4 +157,72 @@ void FermerReseau(int socket) {
     close(socket);
 #endif
   }
+}
+
+int InitUDPBroadcastSender(void) {
+  int sock = socket(AF_INET, SOCK_DGRAM, 0);
+  if (sock < 0) return -1;
+
+  int opt = 1;
+  // Autorise l'envoi en broadcast
+  setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (const char*)&opt, sizeof(opt));
+  SetNonBlocking(sock);
+  
+  return sock;
+}
+
+void EnvoyerBroadcast(int sock, int port) {
+  struct sockaddr_in addr;
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = INADDR_BROADCAST; // 255.255.255.255
+
+  const char* msg = "MAZE_HOST"; // Notre mot de passe de reconnaissance
+  sendto(sock, msg, strlen(msg), 0, (struct sockaddr*)&addr, sizeof(addr));
+}
+
+int InitUDPBroadcastListener(int port) {
+  int sock = socket(AF_INET, SOCK_DGRAM, 0);
+  if (sock < 0) return -1;
+
+  int opt = 1;
+  // Permet à plusieurs programmes de réutiliser le port si besoin
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
+
+  struct sockaddr_in addr;
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = INADDR_ANY; // Ecoute sur toutes les interfaces
+
+  if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+    return -1;
+  }
+  
+  SetNonBlocking(sock);
+  return sock;
+}
+
+int RecevoirBroadcast(int sock, char* ipSortie) {
+  char buffer[32];
+  struct sockaddr_in senderAddr;
+  
+#ifdef _WIN32
+  int len = sizeof(senderAddr);
+#else
+  socklen_t len = sizeof(senderAddr);
+#endif
+
+  int n = recvfrom(sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&senderAddr, &len);
+  if (n > 0) {
+    buffer[n] = '\0';
+    // Si c'est bien notre jeu qui diffuse
+    if (strcmp(buffer, "MAZE_HOST") == 0) {
+      // On convertit l'adresse IP binaire en texte lisible
+      strcpy(ipSortie, inet_ntoa(senderAddr.sin_addr));
+      return 1;
+    }
+  }
+  return 0;
 }

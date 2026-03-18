@@ -1,3 +1,8 @@
+/** \version 1.0
+* \author Hugues Astier
+* \date 11/02.2026
+* \brief Contient les fonctions de gestion du menu principal
+*/
 
 #ifndef MENU_H
 #define MENU_H

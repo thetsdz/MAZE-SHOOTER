@@ -1,6 +1,17 @@
 #ifndef DESSIN_H
 #define DESSIN_H
 
+/** \version 1.0
+ * \author Corentin Jammes
+ * \date 11/02/2026
+ * \brief Permet de faire le dessin du jeu (3D + UI) à chaque frame
+ */
+
+/** \version 2.0
+ * \author Thomas Dequirez
+ * \date 11/03/2026
+ * \brief ajout de nouvelles textures (mur,sol ciel et bot).
+ */
 #include "types.h"
 
 /**
@@ -16,6 +27,7 @@
  */
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-                      Entity player, Texture2D viseur, Texture2D armeTex);
-
+                      Entity player, Texture2D viseur, Texture2D armeTex,
+                      Model skyModel, Texture2D wallTex, Texture2D floorTex,
+                      Model botModel);
 #endif

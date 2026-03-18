@@ -1,3 +1,9 @@
+/**
+ * \file log.c
+ */
+
+
+
 #include "../lib/headers/log.h"
 
 #include <stdio.h>
