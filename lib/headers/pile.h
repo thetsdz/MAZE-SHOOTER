@@ -1,6 +1,10 @@
 #ifndef PILE_H
 #define PILE_H
-
+/** \version 1.0
+ * \author Dequirez Thomas
+ * \date 21/01/2026
+ * \brief Système de pile pour le backtracking dans la génération du labyrinthe.
+ */
 #include "types.h"
 
 /** @brief Initialisation de la île (tout murs)*/

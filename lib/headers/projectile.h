@@ -1,42 +1,41 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-/**
- *  \version 1.0
+/** \version 1.0
  *  \author Corentin Jammes
  *  \date 11/01/2026
  *  \brief systeme de tir sans munitions sans rechargement mais un systeme de
  * collision avec une cible et les murs du labyrinthe
  */
 
-/**
- *  \version 2.0
+/** \version 2.0
  *  \author Corentin Jammes
  *  \date 15/01/2026
  *  \brief systeme de tir avec munitions et rechargement ainsi qu'un systeme de
 collision avec une cible et les murs du labyrinthe
+*/
 
-/**
- *  \version 3.0
+/** \version 3.0
  *  \author Corentin Jammes
  *  \date 01/02/2026
  *  \brief Systèmes de projectiles fonctionnels avec
-collisions(mur,bot,joueurs(meme en multijoueur))
-systeme de tir avec munitions et rechargement ainsi qu'un systeme de
-collision avec une cible et les murs du labyrinthe et ajout du tire pour le bot
+collisions(mur,bot,joueurs(meme en multijoueur)) collisions(mur,bot,joueurs(meme
+en multijoueur)) systeme de tir avec munitions et rechargement ainsi qu'un
+systeme de collision avec une cible et les murs du labyrinthe et ajout du tire
+pour le bot
  */
 
-/**
-*  \version 4.0
-*  \author Corentin Jammes
-*  \date 02/03/2026
-*  \brief Systèmes de projectiles fonctionnels avec
-collisions(mur,bot,joueurs(meme en multijoueur))
-*/
+/** \version 4.0
+ *  \author Corentin Jammes
+ *  \date 02/03/2026
+ *  \brief Systèmes de projectiles fonctionnels avec
+ * collisions(mur,bot,joueurs(meme en multijoueur))
+ */
 
 #include <stdio.h>
 
-#include "../linux/raylib-5.5_linux_amd64/include/raymath.h"
+#include "raylib.h"
+#include "raymath.h"
 #include "types.h"
 
 /** @brief Initialise le tableau de projectiles (tous inactifs au début)*/
