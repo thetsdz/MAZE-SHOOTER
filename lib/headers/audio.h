@@ -11,6 +11,7 @@ typedef struct {
     Sound pompe;
     Sound walk;
     Sound heart;
+    Sound reload;
 } GameAudio;
 
 // --- Cycle de vie ---
@@ -29,5 +30,14 @@ void PlayMitraillette(void);
 void PlayPompe(void);
 void PlayWalk(void);
 void PlayHeart(void);
+void PlayReload(void);
+
+void PausePistolet(void);
+void PauseMitraillette(void);
+void PausePompe(void);
+void PauseWalk(void);
+void PauseHeart(void);
+
+
 
 #endif

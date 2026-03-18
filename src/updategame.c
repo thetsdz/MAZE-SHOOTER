@@ -9,6 +9,7 @@
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
+#include "../lib/headers/audio.h"
 
 void UpdateGame(Entity* player, Entity* bot,
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
@@ -18,7 +19,10 @@ void UpdateGame(Entity* player, Entity* bot,
   UpdateBot(bot, blocks, player->pos, projs);
   if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, score);
 
-  if (IsKeyPressed(KEY_R)) player->ammo = player->maxAmmo;
+  if (IsKeyPressed(KEY_R)){
+    player->ammo = player->maxAmmo;
+    PlayReload();
+  } 
 
   if (IsKeyPressed(KEY_E) && *score >= SCORE_TRADE &&
       player->maxAmmo < MAX_PROJ) {
@@ -29,6 +33,7 @@ void UpdateGame(Entity* player, Entity* bot,
   }
 
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && player->ammo > 0) {
+    PlayMitraillette();
     Vector3 camDir = {sinf(player->yaw) * cosf(player->pitch),
                       sinf(player->pitch),
                       cosf(player->yaw) * cosf(player->pitch)};

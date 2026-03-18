@@ -59,25 +59,30 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
     move.x += forward.x;
     move.z += forward.z;
-    PlayWalk();
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
   }else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
     move.x -= forward.x;
     move.z -= forward.z;
-    PlayWalk();
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
   }
   // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
   // (Mathématiquement : vecteur orthogonal)
   else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
     move.x += forward.z;
     move.z -= forward.x;
-    PlayWalk();
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
   }else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
     move.x -= forward.z;
     move.z += forward.x;
-    PlayWalk();
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
   }else{
     PauseWalk();
   }
+  PlayGameMusic();
 
   // Normalisation : Si on appuie sur W et D en même temps, la longueur du
   // vecteur est 1.41 (racine de 2). On doit le ramener à 1.0 pour ne pas courir
@@ -240,7 +245,7 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // Validation finale de la position
   player->pos = nextPos;
 
-  
+  if(player->health < 20) PlayHeart();
 
   // --- Mise à jour de la Caméra Raylib ---
   // Calcul du vecteur direction 3D complet (sphérique -> cartésien)
