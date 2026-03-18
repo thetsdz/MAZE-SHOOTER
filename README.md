@@ -11,7 +11,6 @@
 - [Prérequis](#prérequis)
 - [Installation](#installation)
 - [Compilation & Lancement](#compilation--lancement)
-- [Structure du projet](#structure-du-projet)
 - [Contrôles](#contrôles)
 - [Multijoueur](#multijoueur)
 - [Sauvegarde](#sauvegarde)
@@ -31,7 +30,7 @@ MAZE-SHOOTER est un jeu de tir à la première personne dans lequel le joueur é
 
 - **Menu principal** interactif (navigation clavier et souris)
 - **Génération de labyrinthes** procédurale
-- **Bots** avec intelligence artificielle (pathfinding)
+- **Bots** resolution du labyrinthe(plus court chemin vers le joueur)
 - **Système de tir** avec plusieurs armes (pistolet, mitraillette, fusil à pompe)
 - **Audio dynamique** : musiques et effets sonores distincts selon l'état du jeu
 - **Sauvegarde / Chargement** de partie avec checksum d'intégrité
@@ -94,62 +93,6 @@ make
 
 ---
 
-## Structure du projet
-
-```
-MAZE-SHOOTER/
-├── bin/                    # Binaire compilé
-│   └── game
-├── doc/                    # Documentation générée par Doxygen
-│   └── html/
-│       └── index.html
-├── lib/
-│   ├── headers/            # Fichiers d'en-tête (.h)
-│   │   ├── asset.h
-│   │   ├── audio.h
-│   │   ├── bot.h
-│   │   ├── cryptage.h
-│   │   ├── dessin.h
-│   │   ├── level.h
-│   │   ├── log.h
-│   │   ├── menu.h
-│   │   ├── multijoueur.h
-│   │   ├── option.h
-│   │   ├── pile.h
-│   │   ├── player.h
-│   │   ├── projectile.h
-│   │   ├── reseau.h
-│   │   ├── sauvegarde.h
-│   │   ├── types.h
-│   │   └── updategame.h
-│   └── linux/
-│       └── raylib-5.5_linux_amd64/   # Raylib pré-compilé Linux
-├── src/                    # Code source
-│   ├── asset.c             # Gestion des ressources (textures, modèles)
-│   ├── audio.c             # Gestion de l'audio (musiques & sons)
-│   ├── bot.c               # Intelligence artificielle des ennemis
-│   ├── cryptage.c          # Chiffrement (sauvegardes)
-│   ├── dessin.c            # Rendu graphique 3D
-│   ├── level.c             # Génération et gestion du labyrinthe
-│   ├── log.c               # Système de logs
-│   ├── main.c              # Point d'entrée, boucle principale
-│   ├── menu.c              # Menu principal
-│   ├── multijoueur.c       # Logique multijoueur
-│   ├── option.c            # Écran des options
-│   ├── pile.c              # Structure de données pile (pathfinding)
-│   ├── player.c            # Gestion du joueur
-│   ├── projectile.c        # Gestion des projectiles
-│   ├── reseau.c            # Communication réseau
-│   ├── sauvegarde.c        # Sauvegarde et chargement de partie
-│   ├── updategame.c        # Mise à jour de l'état du jeu
-│   ├── Makefile            # Makefile principal
-│   └── Makefile.linux      # Makefile spécifique Linux
-├── Doxyfile                # Configuration Doxygen
-└── README.md
-```
-
----
-
 ## Contrôles
 
 | Touche | Action |
@@ -157,10 +100,11 @@ MAZE-SHOOTER/
 | `↑` / `↓` | Naviguer dans les menus |
 | `Entrée` | Valider / Sélectionner |
 | `Z` `Q` `S` `D` | Se déplacer |
-| `Souris` | Viser |
+| `Souris` | Changer l'orientation de la caméra |
 | `Clic gauche` | Tirer |
 | `R` | Recharger |
-| `Échap` | Pause / Retour au menu |
+| `Échap` | Quitter le jeu |
+| `back-space` | revenir au menui précédent |
 
 ---
 
@@ -204,21 +148,12 @@ xdg-open doc/html/index.html
 | `corentin` | Corentin | Développement Corentin |
 | `Thomas` | Thomas | Développement Thomas |
 
-### Intégrer master dans sa branche
-
-```bash
-git checkout ma-branche
-git merge master
-git push origin ma-branche
-```
-
----
 
 ## Auteurs
 
-- **Hugues Astier** — menu, audio, interface
-- **Corentin** — réseau, multijoueur, audio
-- **Thomas** — gameplay, bots, level design
+- **Hugues Astier** — menu, changement d'armes, interface
+- **Corentin** — réseau, multijoueur, gameplay, bots
+- **Thomas** — audio, level, design
 
 ---
 
