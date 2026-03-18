@@ -1,3 +1,9 @@
+/**
+ * \file updategame.c
+ */
+
+
+
 #include "../lib/headers/updategame.h"
 
 #include <stdio.h>
@@ -10,8 +16,7 @@
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/arme.h"
-
-
+#include "../lib/headers/audio.h"
 
 
 void ChangementArme(Entity *joueur){
@@ -48,8 +53,12 @@ void UpdateGame(Entity* player, Entity* bot,
   // --- Logique du jeu ---
   UpdatePlayer(player, blocks, camera, bot);
   UpdateBot(bot, blocks, player->pos, projs);
-  if (IsKeyPressed(KEY_Y)) sauvegarder(player, score);
+  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, score);
 
+  if (IsKeyPressed(KEY_R)){
+    player->ammo = player->maxAmmo;
+    PlayReload();
+  } 
 
  if (player->chronoTir > 0) {
         player->chronoTir -= GetFrameTime();

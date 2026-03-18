@@ -1,6 +1,64 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+/** \version 1.0
+ * \author Corentin Jammes
+ * \date 11/01/2026
+ * \brief Définition des types de données utilisés dans le projet
+ */
+/** \version 1.1
+ * \author Corentin Jammes
+ * \date 15/01/2026
+ * \brief ajout de 2 types de données pour le type player (les munitions)
+ */
+/** \version 2.0
+ * \author Thomas Dequirez
+ * \date 22/01/2026
+ * \brief ajout du type coor 2D pour la generation du labyrinthe + ajout d'un
+ * type isWall pour différencier les murs des couloirs dans le labyrinthe
+ */
+/** \version 3.0
+ * \author Corentin Jammes
+ * \date 24/01/2026
+ * \brief ajout d'un type bot
+ */
+/** \version 3.0
+ * \author Corentin Jammes
+ * \date 24/01/2026
+ * \brief ajout d'un type bot
+ */
+/** \version 5.0
+ * \author Thomas Dequirez
+ * \date 03/02/2026
+ * \brief suppresion des types player et bot au profit d'un type plus générique
+ * entity avec un champ pour différencier les types d'entités
+ */
+/** \version 6.0
+ * \author Thomas Dequirez
+ * \date 06/02/2026
+ * \brief completion du type GameScreen pour ajouter les valeurs EXIT,OPTION et
+ * multi
+ */
+/** \version 6.1
+ * \author Hugues Astier
+ * \date 06/02/2026
+ * \brief remplacement de la valeur test par GAME dans le type GameScreen
+ */
+/** \version 6.2
+ * \author Hugues Astier
+ * \date 11/02/2026
+ * \brief remplacement de la valeur de multi par MULTIJOUEUR et la valeur GAME
+ * par NOUVELLE PARTIE, et ajout de charger partie
+ */
+/** \version 7.0
+ * \author Corentin Jammes
+ * \date 02/03/2026
+ * \brief ajout de tot les types necessaire pour un multijoueur en reseau (type
+ * pour différencier les projectiles tirés par le joueur, les bots et l'autre
+ * joueur humain, type pour stocker l'état de la connexion réseau, type pour
+ * stocker les données échangées entre les joueurs à chaque frame)
+ */
+
 #include "raylib.h"
 
 /** @brief Nombre total de blocs dans le labyrinthe*/
@@ -20,19 +78,23 @@
  */
 // types.h
 
-
-typedef enum GameScreen { MENU, NOUVELLE_PARTIE, MULTIJOUEUR, CHARGER_PARTIE,OPTIONS, EXIT } GameScreen;  // Ajoute EXIT
-
-
+typedef enum GameScreen {
+  MENU,
+  NOUVELLE_PARTIE,
+  MULTIJOUEUR,
+  CHARGER_PARTIE,
+  OPTIONS,
+  EXIT
+} GameScreen;  // Ajoute EXIT
 
 /**
  * @enum EntityType
  * @brief Définit le type d'une entité (joueur ou bot).
  */
 typedef enum {
-    ENTITY_PLAYER,  /**< Entité contrôlée par le joueur. */
-    ENTITY_BOT,      /**< Entité contrôlée par l'IA. */
-    ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
+  ENTITY_PLAYER,       /**< Entité contrôlée par le joueur. */
+  ENTITY_BOT,          /**< Entité contrôlée par l'IA. */
+  ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
 } EntityType;
 
 /**
@@ -40,9 +102,10 @@ typedef enum {
  * @brief Définit le propriétaire d'un projectile.
  */
 typedef enum {
-    OWNER_PLAYER,  /**< Projectile tiré par le joueur. */
-    OWNER_BOT,      /**< Projectile tiré par un bot. */
-    OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau). */
+  OWNER_PLAYER,       /**< Projectile tiré par le joueur. */
+  OWNER_BOT,          /**< Projectile tiré par un bot. */
+  OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau).
+                       */
 } OwnerType;
 
 /**
@@ -50,8 +113,8 @@ typedef enum {
  * @brief Coordonnées pour la pile DFS (parcours du labyrinthe).
  */
 typedef struct {
-    int i;  /**< Indice de ligne. */
-    int j;  /**< Indice de colonne. */
+  int i; /**< Indice de ligne. */
+  int j; /**< Indice de colonne. */
 } Coord;
 
 /**
@@ -59,12 +122,12 @@ typedef struct {
  * @brief Représente un bloc du labyrinthe (mur ou couloir).
  */
 typedef struct {
-    Vector3 pos;    /**< Position centrale du bloc. */
-    float width;    /**< Largeur du bloc (axe X). */
-    float height;   /**< Hauteur du bloc (axe Y). */
-    float depth;    /**< Profondeur du bloc (axe Z). */
-    Color color;    /**< Couleur du bloc pour le rendu. */
-    bool isWall;    /**< true si c'est un mur, false si c'est un couloir. */
+  Vector3 pos;  /**< Position centrale du bloc. */
+  float width;  /**< Largeur du bloc (axe X). */
+  float height; /**< Hauteur du bloc (axe Y). */
+  float depth;  /**< Profondeur du bloc (axe Z). */
+  Color color;  /**< Couleur du bloc pour le rendu. */
+  bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
 } Block;
 
 
@@ -151,9 +214,9 @@ typedef struct {
  * @brief Contient l'état de la connexion réseau
  */
 typedef struct {
-    int socket;      /**< Le socket de communication (-1 si déconnecté) */
-    int isServer;    /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
-    int connected;   /**< 1 si la partie a commencé, 0 sinon */
+  int socket;    /**< Le socket de communication (-1 si déconnecté) */
+  int isServer;  /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
+  int connected; /**< 1 si la partie a commencé, 0 sinon */
 } ReseauState;
 
 /**
@@ -161,11 +224,12 @@ typedef struct {
  * @brief Données échangées entre les joueurs à chaque frame
  */
 typedef struct {
-    Vector3 pos;     /**< Position du joueur */
-    float yaw;       /**< Angle de vue horizontal */
-    float pitch;     /**< Angle de vue vertical (à ajouter pour gérer le tir en hauteur) */
-    int tir;         /**< 1 si le joueur tire, 0 sinon */
-    int estMort;     /**< 1 si le joueur est mort */
+  Vector3 pos; /**< Position du joueur */
+  float yaw;   /**< Angle de vue horizontal */
+  float pitch; /**< Angle de vue vertical (à ajouter pour gérer le tir en
+                  hauteur) */
+  int tir;     /**< 1 si le joueur tire, 0 sinon */
+  int estMort; /**< 1 si le joueur est mort */
 } PaquetReseau;
 
 #endif

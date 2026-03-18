@@ -1,5 +1,11 @@
+/**
+* \file player.c
+*/
+
+
 #include "../lib/headers/player.h"
 #include "../lib/headers/arme.h"
+#include "../lib/headers/audio.h"
 
 #include <math.h>
 
@@ -10,8 +16,6 @@ void InitPlayer(Entity* player) {
   player->velocityY = 0.0f;      // vitesse du joeur
   player->onGround = true;       // est-ce que le joueur est au sol
   player->size = 1.0f;           // taille
-  player->ammo = 10;             // Commence avec 10 balles
-
   player->health = 100;          // Points de vie de base
   player->maxHealth = 100;       // Points de vie maximum
   player->life = 3;              // Nombre de vies de base
@@ -62,22 +66,30 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
     move.x += forward.x;
     move.z += forward.z;
-  }
-  if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
+  }else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
     move.x -= forward.x;
     move.z -= forward.z;
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
   }
-
   // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
   // (Mathématiquement : vecteur orthogonal)
-  if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+  else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
     move.x += forward.z;
     move.z -= forward.x;
-  }
-  if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
+  }else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
     move.x -= forward.z;
     move.z += forward.x;
+    if(player->onGround == true) PlayWalk();
+    else{PauseWalk();}
+  }else{
+    PauseWalk();
   }
+  PlayGameMusic();
 
   // Normalisation : Si on appuie sur W et D en même temps, la longueur du
   // vecteur est 1.41 (racine de 2). On doit le ramener à 1.0 pour ne pas courir
@@ -239,6 +251,8 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
   // Validation finale de la position
   player->pos = nextPos;
+
+  if(player->health < 20) PlayHeart();
 
   // --- Mise à jour de la Caméra Raylib ---
   // Calcul du vecteur direction 3D complet (sphérique -> cartésien)

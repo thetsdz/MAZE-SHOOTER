@@ -1,20 +1,55 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include "types.h"
-#include "../linux/raylib-5.5_linux_amd64/include/raymath.h"
+/** \version 1.0
+ *  \author Corentin Jammes
+ *  \date 11/01/2026
+ *  \brief systeme de tir sans munitions sans rechargement mais un systeme de
+ * collision avec une cible et les murs du labyrinthe
+ */
+
+/** \version 2.0
+ *  \author Corentin Jammes
+ *  \date 15/01/2026
+ *  \brief systeme de tir avec munitions et rechargement ainsi qu'un systeme de
+collision avec une cible et les murs du labyrinthe
+*/
+
+/** \version 3.0
+ *  \author Corentin Jammes
+ *  \date 01/02/2026
+ *  \brief Systèmes de projectiles fonctionnels avec
+collisions(mur,bot,joueurs(meme en multijoueur)) collisions(mur,bot,joueurs(meme
+en multijoueur)) systeme de tir avec munitions et rechargement ainsi qu'un
+systeme de collision avec une cible et les murs du labyrinthe et ajout du tire
+pour le bot
+ */
+
+/** \version 4.0
+ *  \author Corentin Jammes
+ *  \date 02/03/2026
+ *  \brief Systèmes de projectiles fonctionnels avec
+ * collisions(mur,bot,joueurs(meme en multijoueur))
+ */
+
 #include <stdio.h>
 
+#include "raylib.h"
+#include "raymath.h"
+#include "types.h"
+
 /** @brief Initialise le tableau de projectiles (tous inactifs au début)*/
-void InitProjectiles(Projectile *projs);
+void InitProjectiles(Projectile* projs);
 
 /** @brief Trouve un slot libre et tire un projectile dans la direction où regarde le joueur ou le bot*/
 void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner,ModeleArme arme);
 
-/** @brief Met à jour la position, la durée de vie et les collisions de tous les tirs actifs*/
-void UpdateProjectiles(Projectile *projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity *bot, Entity *player, int *score);
+/** @brief Met à jour la position, la durée de vie et les collisions de tous les
+ * tirs actifs*/
+void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                       Entity* bot, Entity* player, int* score);
 
 /** @brief Affiche les projectiles actifs*/
-void DrawProjectiles(Projectile *projs);
+void DrawProjectiles(Projectile* projs);
 
 #endif

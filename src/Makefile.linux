@@ -22,6 +22,7 @@ SRCS = main.c \
 	   reseau.c \
 	   multijoueur.c \
 	   arme.c \
+	   audio.c \
 
 OBJS = $(SRCS:.c=.o)
 

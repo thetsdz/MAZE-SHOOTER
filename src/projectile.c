@@ -1,3 +1,7 @@
+/**
+ * \file projectile.c
+ */
+
 #include "../lib/headers/projectile.h"
 
 #include <stdio.h>  // Ajout pour printf/TraceLog si besoin
