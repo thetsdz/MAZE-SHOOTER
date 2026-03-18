@@ -12,6 +12,7 @@ void InitGameAudio(void) {
     g_audio.pompe       = LoadSound("../assets/audio/pompe.wav");
     g_audio.walk        = LoadSound("../assets/audio/walk.wav");
     g_audio.heart       = LoadSound("../assets/audio/heart.wav");
+    g_audio.reload       = LoadSound("../assets/audio/reload.wav");
 }
 
 void UnloadGameAudio(void) {
@@ -52,23 +53,10 @@ void StopAllMusic(void) {
 
 // --- Sons ---
 
-void PlayPistolet(void) {
-    if (!IsSoundPlaying(g_audio.pistolet)) {
-        PlaySound(g_audio.pistolet);
-    }
-}
-
-void PlayMitraillette(void) {
-    if (!IsSoundPlaying(g_audio.mitraillette)) {
-        PlaySound(g_audio.mitraillette);
-    }
-}
-
-void PlayPompe(void) {
-    if (!IsSoundPlaying(g_audio.pompe)) {
-        PlaySound(g_audio.pompe);
-    }
-}
+void PlayPistolet(void) {PlaySound(g_audio.pistolet);}
+void PlayMitraillette(void) {PlaySound(g_audio.mitraillette);}
+void PlayPompe(void) {PlaySound(g_audio.pompe);}
+void PlayReload(void) {PlaySound(g_audio.reload);}
 
 void PlayWalk(void) {
     if (!IsSoundPlaying(g_audio.walk)) {

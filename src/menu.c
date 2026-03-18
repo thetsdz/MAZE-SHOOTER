@@ -10,7 +10,7 @@
 #include "raymath.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/menu.h"
-
+#include "../lib/headers/audio.h"
 
 
 // Variables statiques pour gérer la sélection

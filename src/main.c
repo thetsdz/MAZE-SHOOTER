@@ -102,7 +102,7 @@ int main(void) {
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
-    UpdateGameAudio();   // ← est-ce que cette ligne existe ici ?
+    UpdateGameAudio();
     if (IsKeyPressed(KEY_ESCAPE)) break;
 
     // --- Initialisation des objets du jeu (une seule fois) ---
