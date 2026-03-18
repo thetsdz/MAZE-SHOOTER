@@ -88,6 +88,7 @@ typedef struct {
     bool active;    /**< true si le projectile est actif. */
     float life;     /**< Temps de vie restant (en secondes). */
     Color color;     /**<couleur du projectile */
+    int degats;      /**<degat du projectile */
     type_projectile type;     /**< en fonction balles classiques ou grenade */
     OwnerType owner; /**< Propriétaire du projectile. */
 } Projectile;
@@ -117,7 +118,7 @@ typedef struct {
     int munitionsMax;      //Taille du chargeur (ex: 30)
     float cadenceTir;      // Temps entre deux balles (ex: 0.1s)
     float vitesseProj;    // Vitesse du projectile
-    float degats;          // Puissance de l'arme
+    int degats;          // Puissance de l'arme
     const char *nom;       // Pour afficher "AK-47" ou "Glock" à l'écran
     float tailleProjectile; //taille du projectile
     Color couleurProjectile; // couleur du projectile

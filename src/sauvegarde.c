@@ -16,7 +16,6 @@ static const char* GAME_KEY =
 // On crée une structure qui contient toutes les données qu'on veut sauvegarder
 typedef struct {
   int score;
-  int maxAmmo;
   float x, y, z;
   float yaw, pitch;
   int onGround;
@@ -33,13 +32,13 @@ typedef struct {
 } SaveFile;
 
 
-/* temporairement mis en pause pour tester les nouvelles armes
+
 void sauvegarder(Entity* player, int* score) {
   SaveFile save;
 
   // Remplissage de la structure de données
   save.gameData.score = *score;
-  save.gameData.maxAmmo = player->maxAmmo;
+  save.gameData.ammo = player->ammo;
 
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
@@ -49,7 +48,6 @@ void sauvegarder(Entity* player, int* score) {
   save.gameData.pitch = player->pitch;
 
   save.gameData.onGround = player->onGround;
-  save.gameData.ammo = player->ammo;
 
   save.gameData.health = player->health;
   save.gameData.maxHealth = player->maxHealth;
@@ -115,7 +113,7 @@ void chargerSauvegarde(Entity* player, int* score) {
 
   // Application des données (Si tout est bon)
   *score = save.gameData.score;
-  player->maxAmmo = save.gameData.maxAmmo;
+  player->ammo = save.gameData.ammo;
 
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;
@@ -125,7 +123,7 @@ void chargerSauvegarde(Entity* player, int* score) {
   player->pitch = save.gameData.pitch;
 
   player->onGround = save.gameData.onGround;
-  player->ammo = save.gameData.ammo;
+  
 
   player->health = save.gameData.health;
   player->maxHealth = save.gameData.maxHealth;
@@ -133,4 +131,3 @@ void chargerSauvegarde(Entity* player, int* score) {
 
   printf("[Chargement] Partie chargée avec succès !\n");
 }
-*/

@@ -12,6 +12,10 @@
  * @param score Pointeur vers le score du joueur (pour le mettre à jour lors des tirs réussis, etc.)
  * @param camera Pointeur vers la caméra 3D (pour l'affichage joueur et les calculs de direction de tir)
  */
+
+
+void ChangementArme(Entity *joueur);
+
 void UpdateGame(Entity* player, Entity* bot,
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], int* score, Camera3D* camera);

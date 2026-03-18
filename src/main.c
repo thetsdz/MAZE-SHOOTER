@@ -72,7 +72,7 @@ int main(void) {
     if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
         (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
-      //InitBot(&bot);   TEMPORAIIRE
+      InitBot(&bot);   
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
@@ -102,7 +102,7 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-            //chargerSauvegarde(&player,&score);
+            chargerSauvegarde(&player,&score);
             chargement=true;
             DisableCursor();
         }
@@ -141,8 +141,8 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
-        /*DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                           viseur, armeTex, score, &netState);*/
+        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                           viseur, tabArmes, score, &netState);
         break;
       }
       case CHARGER_PARTIE: {
@@ -167,9 +167,9 @@ int main(void) {
     FermerReseau(netState.socket);
   }
 
-  /*TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo);
-  CloseLog();*/
+  TraceLog(LOG_INFO, "Fin de partie | Score=%d | maxAmmo=%d", score,
+           player.ammo);
+  CloseLog();
   UnloadTexture(viseur);
   for (int i=0;i<3;i++){
     UnloadTexture(tabArmes[i]);

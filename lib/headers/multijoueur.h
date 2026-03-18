@@ -25,6 +25,6 @@ void DessinerLobbyMultijoueur(ReseauState* netState);
 void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Texture2D armeTex, int score,
+                         Texture2D viseur, Texture2D armeTex[4], int score,
                          ReseauState* netState);
 #endif

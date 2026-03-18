@@ -48,6 +48,7 @@ void explosion(Projectile * p){
     p->radius=3.0f;
     p->color=WHITE;
     p->life=1.5f;
+    p->degats=500;
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
@@ -57,6 +58,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
 
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
+  
 
     for(int i=0; i<MAX_PROJ; i++){
         if(!projs[i].active){
@@ -66,6 +68,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
             projs[i].radius = arme.tailleProjectile;
             projs[i].color=arme.couleurProjectile;
             projs[i].life = 5.0f;
+            projs[i].degats=arme.degats;
             projs[i].owner = owner; // <-- On définit le propriétaire
             if (arme.type==GRENADE) projs[i].type=PROJ_GRENADE;
             else  projs[i].type=PROJ_NORMALE;
@@ -91,8 +94,12 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             gravite(&projs[i],dt);                                                         //on mets a jours vel.y
             Vector3 distance={projs[i].vel.x *dt, projs[i].vel.y * dt, projs[i].vel.z *dt};
             float elasticite=0.6;
-            projs[i].pos =Vector3Add(projs[i].pos,distance);                                //on met a jours pos
-            if (projs[i].pos.y<projs[i].radius){                                                     //si futur pos.y < tailleballe
+            if (projs[i].pos.y!=0) projs[i].pos =Vector3Add(projs[i].pos,distance);         //on met a jours pos attention si pos.y=0, elle y reste
+            else {
+                projs[i].pos.x=projs[i].pos.x+distance.x;
+                projs[i].pos.z=projs[i].pos.z+distance.z;
+            }
+            if (projs[i].pos.y<projs[i].radius && projs[i].pos.y!=0){                                           //si futur pos.y < tailleballe
                 projs[i].pos.y=projs[i].radius;                                             //avoir une belle balle en surface
                 if (projs[i].vel.y < -0.5f) {
                     projs[i].vel.y = projs[i].vel.y * -elasticite;                          //el famoso rebondo
@@ -105,9 +112,9 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 }
             }
             projs[i].life-=dt;
-            if (projs[i].life <= 0.0f) explosion(&projs[i]);
+            if (projs[i].life <= 0.0f && projs[i].pos.y!=0) explosion(&projs[i]); //pas deja explosé alors boom
         }
-        else{
+        else {
             projs[i].pos = Vector3Add(projs[i].pos, Vector3Scale(projs[i].vel, dt)); //sinon on calcul la nouvelle position pour tout les autres projectiles
             projs[i].life -= dt;
         }
@@ -120,12 +127,15 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     // 1. MES BALLES touchent l'AUTRE (Bot ou RemotePlayer)
     if (projs[i].owner == OWNER_PLAYER ) {
         float h = autre->size / 2.0f;
-        if (projs[i].pos.x > autre->pos.x - h && projs[i].pos.x < autre->pos.x + h &&
-            projs[i].pos.y > autre->pos.y && projs[i].pos.y < autre->pos.y + autre->size &&
-            projs[i].pos.z > autre->pos.z - h && projs[i].pos.z < autre->pos.z + h) {
+        float r = projs[i].radius;
+
+        //nouvelle logique de colision n°2
+        if (fabsf(projs[i].pos.x - autre->pos.x) < (r + h) && 
+            fabsf(projs[i].pos.y - autre->pos.y + h) < (r + h) &&
+            fabsf(projs[i].pos.z - autre->pos.z) < (r + h)){
             
-            autre->health -= 20;
-            projs[i].active = false;
+            autre->health -= projs[i].degats;
+            if (projs[i].type!=PROJ_GRENADE) projs[i].active = false;
 
             if (autre->health <= 0) {
                 *score += 1;
@@ -163,6 +173,10 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             }
             continue;
         }
+    }
+    //pour la grenade on desactive uniquement si sa vie est finie pas quand le bot meurt sinon pas de zone d'explosion
+    if (projs[i].life<=0){
+                projs[i].active = false;    
     }
 
     // 4. Murs (Identique)

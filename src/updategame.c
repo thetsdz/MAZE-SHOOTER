@@ -14,7 +14,32 @@
 
 
 
+void ChangementArme(Entity *joueur){
+    // F1 : Pistolet
+    if (IsKeyPressed(KEY_F1)) {
+        joueur->armeEquipee = ObtenirModeleArme(PISTOLET);
+        joueur->ammo = joueur->armeEquipee.munitionsMax; // On recharge auto au changement ?
+        joueur->chronoTir = 0; 
+    }
+    // F2 : Fusil
+    if (IsKeyPressed(KEY_F2)) {
+        joueur->armeEquipee = ObtenirModeleArme(FUSIL);
+        joueur->ammo = joueur->armeEquipee.munitionsMax;
+        joueur->chronoTir = 0;
+    }
+    // F3 : Sniper
+    if (IsKeyPressed(KEY_F3)) {
+        joueur->armeEquipee = ObtenirModeleArme(SNIPER);
+        joueur->ammo = joueur->armeEquipee.munitionsMax;
+        joueur->chronoTir = 0;
+    }
+        if (IsKeyPressed(KEY_F4)) {
+        joueur->armeEquipee = ObtenirModeleArme(GRENADE);
+        joueur->ammo = joueur->armeEquipee.munitionsMax;
+        joueur->chronoTir = 0;
+    }
 
+}
 
 
 void UpdateGame(Entity* player, Entity* bot,
@@ -23,46 +48,24 @@ void UpdateGame(Entity* player, Entity* bot,
   // --- Logique du jeu ---
   UpdatePlayer(player, blocks, camera, bot);
   UpdateBot(bot, blocks, player->pos, projs);
- // if (IsKeyPressed(KEY_Y)) sauvegarder(player, score);
+  if (IsKeyPressed(KEY_Y)) sauvegarder(player, score);
 
 
  if (player->chronoTir > 0) {
         player->chronoTir -= GetFrameTime();
     }
- // --- Changement d'arme ---
-// F1 : Pistolet
-if (IsKeyPressed(KEY_F1)) {
-    player->armeEquipee = ObtenirModeleArme(PISTOLET);
-    player->ammo = player->armeEquipee.munitionsMax; // On recharge auto au changement ?
-    player->chronoTir = 0; 
-}
-// F2 : Fusil
-if (IsKeyPressed(KEY_F2)) {
-    player->armeEquipee = ObtenirModeleArme(FUSIL);
-    player->ammo = player->armeEquipee.munitionsMax;
-    player->chronoTir = 0;
-}
-// F3 : Sniper
-if (IsKeyPressed(KEY_F3)) {
-    player->armeEquipee = ObtenirModeleArme(SNIPER);
-    player->ammo = player->armeEquipee.munitionsMax;
-    player->chronoTir = 0;
-}
-    if (IsKeyPressed(KEY_F4)) {
-    player->armeEquipee = ObtenirModeleArme(GRENADE);
-    player->ammo = player->armeEquipee.munitionsMax;
-    player->chronoTir = 0;
-}
+// --- Changement d'arme ---
+    ChangementArme(player);
 
-  if (IsKeyPressed(KEY_R)) player->ammo = player->armeEquipee.munitionsMax;;
+    if (IsKeyPressed(KEY_R)) player->ammo = player->armeEquipee.munitionsMax;;
 
-  if (IsKeyPressed(KEY_E) && *score >= SCORE_TRADE &&
-      player->armeEquipee.munitionsMax < MAX_PROJ) {
-    *score -= SCORE_TRADE;
-    player->armeEquipee.munitionsMax += 2;
-    /*TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d",
-             player->maxAmmo);*/
-  }
+    if (IsKeyPressed(KEY_E) && *score >= SCORE_TRADE &&
+        player->armeEquipee.munitionsMax < MAX_PROJ) {
+        *score -= SCORE_TRADE;
+        player->armeEquipee.munitionsMax += 2;
+        TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d",
+                player->ammo);
+    }
 
 
   bool veutTirer = false;

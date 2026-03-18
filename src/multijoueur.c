@@ -20,7 +20,9 @@
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
-/* temporairement en pause
+#include "../lib/headers/arme.h"
+#include "../lib/headers/updategame.h"
+
 // --- VARIABLES STATIQUES POUR LA SAISIE D'IP ---
 static bool saisieIP = false;
 static char ipTampon[20] = {
@@ -71,24 +73,24 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
       // hauteur/pitch)
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
       dir = Vector3Normalize(dir);
-      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER);
+      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER, joueur->armeEquipee);
     } else {
       jeTire = false;
     }
   }
 
-  if (IsKeyPressed(KEY_R)) {
-    joueur->ammo = joueur->maxAmmo;
-  }
 
-  // Debug : Se suicider pour tester le respawn
-  if (IsKeyPressed(KEY_N)) {
-    joueur->health -= 20;
-  }
+ChangementArme(joueur);
+if (IsKeyPressed(KEY_R)) joueur->ammo = joueur->armeEquipee.munitionsMax;;
 
-  if (IsKeyPressed(KEY_M)) {
-    joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
-  }
+// Debug : Se suicider pour tester le respawn
+if (IsKeyPressed(KEY_N)) {
+  joueur->health -= 20;
+}
+
+if (IsKeyPressed(KEY_M)) {
+  joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
+}
 
   // 2. Je prépare le paquet
   PaquetReseau paquetEnvoi;
@@ -104,7 +106,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 
     // Respawn Local
     joueur->health = joueur->maxHealth;
-    joueur->ammo = joueur->maxAmmo;
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
     if (reseau->isServer) {
       joueur->pos = (Vector3){1.5f, 10.0f, 1.5f};
     } else {
@@ -142,7 +144,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                               sinf(paquetRecu.pitch),
                               cosf(paquetRecu.yaw) * cosf(paquetRecu.pitch)};
 
-      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER);
+      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,ennemi->armeEquipee);
       TraceLog(LOG_INFO, "Tir ennemi reçu et créé !");
     }
   }
@@ -318,7 +320,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
 void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Texture2D armeTex, int score,
+                         Texture2D viseur, Texture2D tabArmes[4], int score,
                          ReseauState* netState) {
   if (!netState->connected) {
     // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
@@ -327,7 +329,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     // --- DESSIN JEU MULTI ---
     // Code existant pour le jeu...
     UpdateDessinGame(remotePlayer, blocks, *camera, projs, score, *player,
-                     viseur, armeTex);
+                     viseur, tabArmes);
 
     DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
                         player->pos.y, player->pos.z),
@@ -339,4 +341,3 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
 }
 
 
-*/
