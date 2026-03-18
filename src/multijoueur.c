@@ -1,11 +1,3 @@
-/**
- * \file multijoueur.c
- * \brief Contient les fonctions de gestion du mode multijoueur
- * \author Corentin Jammes
- * \version 1.0
- * \date 12.02.2026
- */
-
 #include "../lib/headers/multijoueur.h"
 
 #include <math.h>
