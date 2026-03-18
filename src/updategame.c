@@ -1,3 +1,9 @@
+/**
+ * \file updategame.c
+ */
+
+
+
 #include "../lib/headers/updategame.h"
 
 #include <stdio.h>

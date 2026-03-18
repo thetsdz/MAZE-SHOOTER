@@ -1,3 +1,10 @@
+/**
+ * \file reseau.c
+ */
+
+
+
+
 // --- SECTION IMPORTANTE POUR WINDOWS ---
 // On doit définir ces macros AVANT d'inclure winsock2.h pour éviter
 // que Windows ne définisse des symboles comme Rectangle, CloseWindow,

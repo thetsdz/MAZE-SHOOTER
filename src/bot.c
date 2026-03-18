@@ -1,3 +1,10 @@
+/**
+ * \file bot.c
+ */
+
+
+
+
 #include "../lib/headers/bot.h"
 
 #include <math.h>
