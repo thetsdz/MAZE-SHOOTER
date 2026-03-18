@@ -1,3 +1,8 @@
+/**
+* \file player.c
+*/
+
+
 #include "../lib/headers/player.h"
 #include "../lib/headers/audio.h"
 
