@@ -78,9 +78,7 @@ if (IsKeyPressed(KEY_F3)) {
     Vector3 startPos = {player->pos.x, player->pos.y + 0.5f, player->pos.z};
 
     
-    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee, player->armeEquipee.vitesseBalle, 
-                player->armeEquipee.tailleProjectile, 
-                player->armeEquipee.couleurProjectile);
+    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee);
 
     
     player->ammo--;

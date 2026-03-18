@@ -116,7 +116,7 @@ typedef struct {
     TypeArme type;
     int munitionsMax;      //Taille du chargeur (ex: 30)
     float cadenceTir;      // Temps entre deux balles (ex: 0.1s)
-    float vitesseBalle;    // Vitesse du projectile
+    float vitesseProj;    // Vitesse du projectile
     float degats;          // Puissance de l'arme
     const char *nom;       // Pour afficher "AK-47" ou "Glock" à l'écran
     float tailleProjectile; //taille du projectile
