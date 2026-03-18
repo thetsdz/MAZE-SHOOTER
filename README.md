@@ -74,6 +74,18 @@ Aucune installation de dépendance supplémentaire n'est nécessaire, Raylib est
 cd src
 make run
 ```
+### Windows
+
+```bash
+cd src
+make run
+```
+### Mac
+
+```bash
+cd src
+make run
+```
 
 ### Nettoyage des fichiers objets
 
