@@ -13,7 +13,7 @@
  *  \author Corentin Jammes
  *  \date 05/02/2026
  *  \brief Fichier de sauvegarde sécurisé (Checksum + RC4) pour eviter la triche
-
+ */
 /**
  *  \version 2.1
  *  \author Corentin Jammes

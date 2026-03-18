@@ -5,9 +5,10 @@
 #include "types.h"
 /** \version 1.0
  *  \author Corentin Jammes
- *  \date 02/02/2026
+ *  \date 12/02/2026
  *  \brief Toutes les fonctions du mode multijoueur (Lobby + Gameplay)
  */
+
 /**
  * \brief Initialise les positions de départ opposées
  * \param <Entity* joueur> le joueur local(serveur)

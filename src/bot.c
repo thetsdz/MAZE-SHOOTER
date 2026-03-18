@@ -1,7 +1,3 @@
-/** \file bot.c
-    \brief Gère les robots
-*/
-
 #include "../lib/headers/bot.h"
 
 #include <math.h>
