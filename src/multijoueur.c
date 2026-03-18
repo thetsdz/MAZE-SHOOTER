@@ -12,6 +12,7 @@
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
+#include "../lib/headers/audio.h"
 
 // --- VARIABLES STATIQUES POUR LE BROADCAST ---
 static bool rechercheEnCours = false;
@@ -65,6 +66,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
       dir = Vector3Normalize(dir);
       ShootProjectile(projs, camera->position, dir, OWNER_PLAYER);
+      PlayMitraillette();
     } else {
       jeTire = false;
     }
@@ -72,6 +74,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 
   if (IsKeyPressed(KEY_R)) {
     joueur->ammo = joueur->maxAmmo;
+    PlayReload();
   }
 
   // Debug : Se suicider pour tester le respawn
