@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "projectile.h"
+#include "raylib.h"
 #include "raymath.h"
 
 /** \brief Initialise le robot

@@ -1,6 +1,12 @@
 #ifndef LOG_H
 #define LOG_H
 
+/** \version 1.0
+ * \author Corentin Jammes
+ * \date 11/02/2026
+ * \brief Permet d'écrire des logs dans un fichier pour faciliter le débuggage
+ */
+
 #include <stdarg.h>
 
 /**
