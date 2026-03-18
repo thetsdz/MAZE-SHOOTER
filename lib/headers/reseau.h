@@ -14,6 +14,12 @@
  * \brief corrections pour la compatibilité Windows (cast des options de socket,
  * typage de len pour accept, etc.)
  */
+/** \version 2.0
+ * \author Corentin Jammes
+ * \date 18.03.2026
+ * \brief modification du fonctionnement pour pouvoir realiser une recherche
+ * broadcast facilement
+ */
 
 /**
  * \brief Prépare le serveur (Hôte) sur un port donné
@@ -58,4 +64,26 @@ int RecevoirPaquet(int socket, PaquetReseau* paquet);
  * \param <int socket> le socket de la communication
  */
 void FermerReseau(int socket);
+
+/**
+ * \brief Prépare un socket pour envoyer des Broadcasts UDP (Pour l'Hôte)
+ */
+int InitUDPBroadcastSender(void);
+
+/**
+ * \brief Envoie un message de présence sur le réseau local
+ */
+void EnvoyerBroadcast(int sock, int port);
+
+/**
+ * \brief Prépare un socket pour écouter les Broadcasts UDP (Pour le Client)
+ */
+int InitUDPBroadcastListener(int port);
+
+/**
+ * \brief Vérifie si un message de serveur a été reçu et extrait son IP
+ * \param ipSortie Tableau de char (ex: char ip[20]) qui contiendra l'IP trouvée
+ * \return 1 si un serveur est trouvé, 0 sinon
+ */
+int RecevoirBroadcast(int sock, char* ipSortie);
 #endif
