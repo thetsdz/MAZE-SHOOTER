@@ -1,11 +1,3 @@
-/**
- * \file reseau.c
- * \brief Contient les fonctions de gestion du réseau
- * \author Corentin Jammes
- * \version 1.2
- * \date 12.02.2026
- */
-
 // --- SECTION IMPORTANTE POUR WINDOWS ---
 // On doit définir ces macros AVANT d'inclure winsock2.h pour éviter
 // que Windows ne définisse des symboles comme Rectangle, CloseWindow,

@@ -6,6 +6,7 @@
 * \date 11/02.2026
 */
 
+>>>>>>> cbf24738bf495d1fd106c804491010841351faee
 #include "raylib.h"
 #include "raymath.h"
 #include "../lib/headers/types.h"

@@ -1,8 +1,3 @@
-/** \file asset.c
-    \brief Gère les textures
-    \author Hugues Astier
-*/
-
 #include <stdio.h> 
 #include "../lib/headers/asset.h"
 
