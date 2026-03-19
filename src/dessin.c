@@ -37,8 +37,10 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   DrawLevel(blocks, wallTex, floorTex);
 
   // --- Bot ---
-  DrawModelEx(botModel, bot->pos, (Vector3){0, 1, 0}, bot->yaw * RAD2DEG,
-              (Vector3){bot->size, bot->size, bot->size}, WHITE);
+  /*DrawModelEx(botModel, bot->pos, (Vector3){0, 1, 0}, bot->yaw * RAD2DEG,
+              (Vector3){bot->size, bot->size, bot->size}, WHITE); */
+  DrawModel(botModel, bot->pos, 1.0f, WHITE);
+  
 
   // --- Projectiles ---
   DrawProjectiles(projs);

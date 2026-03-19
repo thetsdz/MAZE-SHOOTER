@@ -77,12 +77,11 @@ int main(void) {
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
 
-  Model botModel = LoadModel("../assets/models/robot.dae");
-  Texture2D botTex = LoadTexture("../assets/models/gobot_main_tex.png");
-  for (int i = 0; i < botModel.materialCount; i++) {
-    botModel.materials[i].maps[MATERIAL_MAP_DIFFUSE].texture = botTex;
-  }
+  // 1. Charger le modèle (le .obj va chercher le .mtl tout seul dans le même dossier)
+  Model botModel = LoadModel("../assets/images/robot/Robot.obj");
 
+
+  
   // --- Skybox (cross vertical 3x4) ---
   Mesh skyMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   Model skyModel = LoadModelFromMesh(skyMesh);
@@ -118,7 +117,7 @@ int main(void) {
     if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
         (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
-      InitBot(&bot, blocks);
+      InitBot(&bot, blocks,player.pos);
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
@@ -224,7 +223,7 @@ int main(void) {
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
-  UnloadTexture(botTex);
+  
   UnloadGameAudio();
   CloseAudioDevice();
   CloseWindow();
