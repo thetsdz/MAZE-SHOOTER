@@ -37,8 +37,39 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   DrawLevel(blocks, wallTex, floorTex);
 
   // --- Bot ---
-  DrawModelEx(botModel, bot->pos, (Vector3){0, 1, 0}, bot->yaw * RAD2DEG,
-              (Vector3){bot->size, bot->size, bot->size}, WHITE);
+  /*Vector3 drawPos = bot->pos;
+  drawPos.y -= 0.5f; //pour pied au sol
+  DrawModelEx(botModel, drawPos, (Vector3){0, 1, 0}, (bot->yaw * RAD2DEG)- 90.0f,
+              (Vector3){0.3f, 0.3f, 0.3f}, WHITE); */
+  
+  Vector3 drawPos = bot->pos;
+  drawPos.y -= 0.5f; // On ajuste pour que les pieds touchent le sol
+
+  // --- 2. Création de la Transformation ---
+  // On part d'une matrice vide (Identity)
+  Matrix transform = MatrixIdentity();
+
+  // A. On applique le SALTO (Rotation sur l'axe X local)
+  transform = MatrixMultiply(transform, MatrixRotateX(bot->pitch * DEG2RAD));
+
+  // B. On applique le REGARD (Rotation sur l'axe Y mondial)
+  // On ajoute le +90.0f pour compenser l'épaule du modèle
+  float angleFinal = (bot->yaw * RAD2DEG) - 90.0f;
+  transform = MatrixMultiply(transform, MatrixRotateY(angleFinal * DEG2RAD));
+
+  // --- 3. Application et Dessin ---
+  botModel.transform = transform; 
+  DrawModel(botModel, drawPos, 0.3f, WHITE);
+
+
+
+
+
+
+
+
+
+
 
   // --- Projectiles ---
   DrawProjectiles(projs);

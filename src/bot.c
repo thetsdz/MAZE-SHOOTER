@@ -104,7 +104,7 @@ static GridPos GetNextStepBFS(GridPos start, GridPos target,
   return curr;
 }
 
-void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
+void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],Vector3 posjoueur) { // temporaire pour respawn
   bot->yaw = 0.0f;         // angle du bot
   bot->pitch = 0.0f;       // angle du bot
   bot->velocityY = 0.0f;   // vitesse du bot
@@ -130,13 +130,18 @@ void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
   } while (blocks[i][j].isWall);
   
 
-
+  //TEMPORARIEMENT EN PAUUUSE
   // Une fois la case vide trouvée, on convertit la position Grille en position
   // Monde 3D
-  bot->pos.x = i * 3.0f - offset;
+  /*bot->pos.x = i * 3.0f - offset;
   bot->pos.z = j * 3.0f - offset;
   bot->pos.y = 5.0f;  // On le fait spawner un peu en l'air pour qu'il retombe
-                      // doucement au sol
+                      // doucement au sol */
+  bot->pos.x = posjoueur.x;
+  bot->pos.z = posjoueur.y;
+  bot->pos.y = posjoueur.z;
+
+
 }
 
 void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
@@ -218,7 +223,7 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   float dzPlayer = targetPos.z - bot->pos.z;
   float distToPlayer = sqrtf(dxPlayer * dxPlayer + dzPlayer * dzPlayer);
   float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f);
-  bot->pitch = atan2f(dy, distToPlayer);
+  //bot->pitch = atan2f(dy, distToPlayer); commenté pour avoir salto à decommenter et commenté la partie salto ci dessous pour arreter
 
   // --- Tir ---
   static float shootTimer = 0.0f;
@@ -252,14 +257,26 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 
   // --- Physique & Mouvement (Gravité) ---
-  // Le bot saute s'il est bloqué ou aléatoirement
+
+  // PARTIE SAUT DE BOT s'il est bloqué ou aléatoirement
   static float moveTimer = 0.0f;
   moveTimer += dt;
 
   if (fmodf(moveTimer, 4.0f) < 0.1f && bot->onGround) {
     bot->velocityY = 0.35f;  // Petit saut
-    bot->onGround = false;
+    bot->onGround = false; 
   }
+
+  if (!bot->onGround) {
+    // On tourne à 720°/seconde (soit un tour complet en 0.5s)
+    if (bot->pitch < 360.0f) {
+        bot->pitch += 720.0f * dt; 
+    }
+}  else {
+    // Dès qu'il touche le sol, paf, il est droit
+    bot->pitch = 0.0f;
+}
+    
 
   bot->velocityY -= gravity;  // Application gravité
 
