@@ -68,6 +68,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
         case PISTOLET : PlayPistolet(); break;
         case FUSIL : PlayMitraillette(); break;
         case SNIPER : PlayPompe(); break;
+        case GRENADE : break;
 
     }
 

@@ -76,6 +76,20 @@ int main(void) {
 
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
+  // --- Modèles niveau ---
+  Mesh wallMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model wallModel = LoadModelFromMesh(wallMesh);
+  wallModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = wallTex;
+
+  Mesh floorMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model floorModel = LoadModelFromMesh(floorMesh);
+  floorModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = floorTex;
+
+
+
+
+
+
 
   Model botModel = LoadModel("../assets/models/robot.dae");
   Texture2D botTex = LoadTexture("../assets/models/gobot_main_tex.png");
@@ -181,19 +195,19 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
-        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         tabArmes, skyModel, wallTex, floorTex, botModel);
-        break;
+        UpdateDessinGame(&bot, blocks, camera, projs, score, player,
+                 viseur, tabArmes, skyModel, wallModel, floorModel, botModel);
+                 break;
       }
       case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                            viseur, tabArmes, score, &netState, skyModel,
-                            wallTex, floorTex, botModel);
+          DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+                              viseur, tabArmes, score, &netState,
+                              skyModel, wallModel, floorModel, botModel);
         break;
       }
       case CHARGER_PARTIE: {
-        UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         tabArmes, skyModel, wallTex, floorTex, botModel);
+        UpdateDessinGame(&bot, blocks, camera, projs, score, player,
+                 viseur, tabArmes, skyModel, wallModel, floorModel, botModel);
         break;
       }
       case OPTIONS: {
@@ -225,6 +239,8 @@ int main(void) {
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadTexture(botTex);
+  UnloadModel(wallModel);
+  UnloadModel(floorModel);
   UnloadGameAudio();
   CloseAudioDevice();
   CloseWindow();

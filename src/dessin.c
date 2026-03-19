@@ -21,8 +21,7 @@
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
                       Entity player, Texture2D viseur, Texture2D tabArmes[4],
-                      Model skyModel, Texture2D wallTex, Texture2D floorTex,
-                      Model botModel) {
+                      Model skyModel, Model wallModel, Model floorModel, Model botModel){
   // --- Dessin 3D ---
   BeginMode3D(camera);
 
@@ -34,8 +33,7 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   rlEnableDepthMask();
 
   // --- Niveau ---
-  DrawLevel(blocks, wallTex, floorTex);
-
+  DrawLevel(blocks, wallModel, floorModel);
   // --- Bot ---
   DrawModelEx(botModel, bot->pos, (Vector3){0, 1, 0}, bot->yaw * RAD2DEG,
               (Vector3){bot->size, bot->size, bot->size}, WHITE);
