@@ -61,13 +61,22 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                        ReseauState* reseau) {
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
   UpdatePlayer(joueur, blocks, camera, ennemi);
-
+  if (joueur->chronoTir > 0) {
+    joueur->chronoTir -= GetFrameTime();
+  }
   // --- GESTION DU TIR LOCAL ---
-  bool jeTire = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+  bool jeTire;
 
+  if (joueur->armeEquipee.type == FUSIL) {
+      jeTire = IsMouseButtonDown(MOUSE_BUTTON_LEFT); // Continu
+  } else {
+      jeTire = IsMouseButtonPressed(MOUSE_BUTTON_LEFT); // Coup par coup
+  }
   if (jeTire) {
-    if (joueur->ammo > 0) {
+    if (joueur->ammo > 0&& joueur->chronoTir <= 0) {
       joueur->ammo--;
+      joueur->chronoTir = joueur->armeEquipee.cadenceTir; // On réinitialise le délai
+
       // On calcule la direction exacte depuis la caméra (prend en compte la
       // hauteur/pitch)
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
