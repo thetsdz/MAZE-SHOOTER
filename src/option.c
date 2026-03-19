@@ -1,10 +1,7 @@
 /**
-*   \file option.c
-*   \brief Gere la page option
-*   \author Hugues Astier
-*   \version 1.0
-*   \date 11/02/2026
-*/
+ * \file option.c
+ */
+
 #include "raylib.h"
 #include "raymath.h"
 #include "../lib/headers/types.h"

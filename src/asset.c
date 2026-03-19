@@ -1,9 +1,9 @@
-/** \file asset.c
-    \brief Gère les textures
-    \author Hugues Astier
-*/
-
-#include <stdio.h> 
+/**
+ * \file asset.c
+ */
+ 
+ 
+ #include <stdio.h> 
 #include "../lib/headers/asset.h"
 
 
@@ -23,30 +23,35 @@ void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight) {
 }
 
 
+
+
+
 void DessinerArme(Texture2D texture, int screenWidth, int screenHeight) {
     if (texture.id <= 0) return;
 
-    // --- 1. Calcul de l'ÉCHELLE (Scaling) ---
-    // On veut que l'arme occupe, par exemple, 25% (un quart) de la largeur de l'écran.
-    float targetWidth = screenWidth * 0.25f;
+    // --- 1. Calcul de l'ÉCHELLE ---
+    float ratio = 0.25f;
     
-    // Le facteur d'échelle est : LargeurVoulue / LargeurRéelle de l'image
+    // Petite astuce : si l'image est presque carrée (comme la grenade), 
+    // on réduit un peu le ratio pour qu'elle ne prenne pas tout l'écran en hauteur.
+    if (texture.width < 400) ratio = 0.15f; 
+
+    float targetWidth = screenWidth * ratio;
     float scale = targetWidth / (float)texture.width;
 
-    // --- 2. Calcul de la POSITION (Bas-Droite) ---
-    // Marge pour ne pas coller au bord de l'écran
+    // --- 2. Calcul de la POSITION ---
     int margin = 20;
+    int offsetY = 120; 
 
-    // Position X = LargeurEcran - LargeurImageMiseAL'echelle - Marge
     float posX = screenWidth - (texture.width * scale) - margin;
-    
-    // Position Y = HauteurEcran - HauteurImageMiseAL'echelle - Marge
-    float posY = screenHeight - (texture.height * scale) - margin;
+    float posY = screenHeight - (texture.height * scale) - margin - offsetY;
 
-    // --- 3. Dessin avancé (DrawTextureEx) ---
-    // On utilise un Vector2 pour la position
+    // --- 3. DESSIN ---
     Vector2 position = { posX, posY };
-    float rotation = 15.0f;
-    // Rotation 0.0f (pas de rotation), Scale calculé, couleur WHITE (normal)
+    float rotation = 20.0f; 
+
+    // Pour la grenade, on peut annuler la rotation pour qu'elle reste droite
+    if (texture.width < 400) rotation = 0.0f;
+
     DrawTextureEx(texture, position, rotation, scale, WHITE);
 }

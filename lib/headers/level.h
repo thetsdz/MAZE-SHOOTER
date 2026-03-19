@@ -1,6 +1,12 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+/** \version 1.0
+ *  \author Thomas Dequirez
+ *  \date 22/01/2026
+ * \brief Contient les fonctions de génération et d'affichage du labyrinthe
+ */
+
 #include "types.h"
 
 /** @brief Initialisation du labyrinthe (tout murs)*/

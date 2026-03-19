@@ -50,7 +50,7 @@ int main() {
 
     // 6. Export direct dans le dossier assets
     // Cela va ÉCRASER l'ancienne image moche
-    ExportImage(armeImg, "../../assets/weapon_placeholder.png");
+    ExportImage(armeImg, "../images/fusil_assault.png");
 
     // Nettoyage
     UnloadImage(armeImg);

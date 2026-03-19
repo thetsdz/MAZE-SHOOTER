@@ -1,3 +1,10 @@
+/**
+ * \file sauvegarde.c
+ */
+
+
+
+
 #include "../lib/headers/sauvegarde.h"
 
 #include <stdint.h>
@@ -16,7 +23,6 @@ static const char* GAME_KEY =
 // On crée une structure qui contient toutes les données qu'on veut sauvegarder
 typedef struct {
   int score;
-  int maxAmmo;
   float x, y, z;
   float yaw, pitch;
   int onGround;
@@ -38,7 +44,7 @@ void sauvegarder(Entity* player, Entity* bot, int* score) {
 
   // Remplissage de la structure de données
   save.gameData.score = *score;
-  save.gameData.maxAmmo = player->maxAmmo;
+  save.gameData.ammo = player->ammo;
 
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
@@ -48,7 +54,6 @@ void sauvegarder(Entity* player, Entity* bot, int* score) {
   save.gameData.pitch = player->pitch;
 
   save.gameData.onGround = player->onGround;
-  save.gameData.ammo = player->ammo;
 
   save.gameData.health = player->health;
   save.gameData.maxHealth = player->maxHealth;
@@ -116,7 +121,7 @@ void chargerSauvegarde(Entity* player, Entity* bot, int* score) {
 
   // Application des données (Si tout est bon)
   *score = save.gameData.score;
-  player->maxAmmo = save.gameData.maxAmmo;
+  player->ammo = save.gameData.ammo;
 
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;
@@ -126,7 +131,7 @@ void chargerSauvegarde(Entity* player, Entity* bot, int* score) {
   player->pitch = save.gameData.pitch;
 
   player->onGround = save.gameData.onGround;
-  player->ammo = save.gameData.ammo;
+  
 
   player->health = save.gameData.health;
   player->maxHealth = save.gameData.maxHealth;

@@ -1,8 +1,14 @@
+/**
+ * \file main.c
+ */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "../lib/headers/asset.h"
+#include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/level.h"
@@ -31,6 +37,9 @@ int main(void) {
   int screenWidth = GetMonitorWidth(0);
   int screenHeight = GetMonitorHeight(0);
   InitWindow(screenWidth, screenHeight, "JEU");
+  InitAudioDevice();
+  InitGameAudio();
+
   ToggleFullscreen();
   SetTargetFPS(60);
 
@@ -58,8 +67,12 @@ int main(void) {
   camera.projection = CAMERA_PERSPECTIVE;
 
   // --- Textures ---
-  Texture2D viseur = ChargerTexture("../assets/images/crosshair.png");
-  Texture2D armeTex = ChargerTexture("../assets/images/weapon_placeholder.png");
+  Texture2D tabArmes[4];
+  tabArmes[0] = LoadTexture("../assets/images/pistolet_placeholder.png");
+  tabArmes[1] = LoadTexture("../assets/images/fusil_assault.png");
+  tabArmes[2] = LoadTexture("../assets/images/sniper_placeholder.png");
+  tabArmes[3] = LoadTexture("../assets/images/grenade_placeholder.png");
+  Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
@@ -98,6 +111,7 @@ int main(void) {
 
   // --- Boucle Principale ---
   while (!WindowShouldClose() && running) {
+    UpdateGameAudio();
     if (IsKeyPressed(KEY_ESCAPE)) break;
 
     // --- Initialisation des objets du jeu (une seule fois) ---
@@ -119,6 +133,7 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
+        StopAllMusic();
         UpdateGame(&player, &bot, blocks, projs, &score, &camera);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
@@ -127,6 +142,7 @@ int main(void) {
         break;
       }
       case MULTIJOUEUR: {
+        StopAllMusic();
         partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera,
                            &netState, &jeuInitialise, &score, &currentScreen);
         break;
@@ -166,18 +182,18 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex, skyModel, wallTex, floorTex, botModel);
+                         tabArmes, skyModel, wallTex, floorTex, botModel);
         break;
       }
       case MULTIJOUEUR: {
         DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
-                            viseur, armeTex, score, &netState, skyModel,
+                            viseur, tabArmes, score, &netState, skyModel,
                             wallTex, floorTex, botModel);
         break;
       }
       case CHARGER_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         armeTex, skyModel, wallTex, floorTex, botModel);
+                         tabArmes, skyModel, wallTex, floorTex, botModel);
         break;
       }
       case OPTIONS: {
@@ -197,16 +213,20 @@ int main(void) {
     FermerReseau(netState.socket);
   }
 
-  TraceLog(LOG_INFO, "Fin de partie | Score=%d | AmmoMax=%d", score,
-           player.maxAmmo);
+  TraceLog(LOG_INFO, "Fin de partie | Score=%d | maxAmmo=%d", score,
+           player.ammo);
   CloseLog();
   UnloadTexture(viseur);
-  UnloadTexture(armeTex);
+  for (int i=0;i<3;i++){
+    UnloadTexture(tabArmes[i]);
+  }
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadTexture(botTex);
+  UnloadGameAudio();
+  CloseAudioDevice();
   CloseWindow();
   return 0;
 }

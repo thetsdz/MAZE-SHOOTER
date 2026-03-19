@@ -1,3 +1,7 @@
+/**
+ * \file pile.c
+ */
+
 #include <stdlib.h>
 #include "../lib/headers/pile.h"
 

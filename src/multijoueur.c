@@ -1,9 +1,5 @@
 /**
  * \file multijoueur.c
- * \brief Contient les fonctions de gestion du mode multijoueur
- * \author Corentin Jammes
- * \version 1.0
- * \date 12.02.2026
  */
 
 #include "../lib/headers/multijoueur.h"
@@ -20,11 +16,16 @@
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
+#include "../lib/headers/arme.h"
+#include "../lib/headers/updategame.h"
+#include "../lib/headers/audio.h"
 
-// --- VARIABLES STATIQUES POUR LA SAISIE D'IP ---
-static bool saisieIP = false;
-static char ipTampon[20] = {
-    0};  // Tampon pour stocker l'IP (ex: "192.168.1.15")
+
+// --- VARIABLES STATIQUES POUR LE BROADCAST ---
+static bool rechercheEnCours = false;
+static int udpSocket = -1;
+static float dernierBroadcast = 0.0f;
+#define PORT_BROADCAST 30001
 
 void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
   // --- Logique de Spawn Opposé ---
@@ -60,35 +61,46 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                        ReseauState* reseau) {
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
   UpdatePlayer(joueur, blocks, camera, ennemi);
-
+  if (joueur->chronoTir > 0) {
+    joueur->chronoTir -= GetFrameTime();
+  }
   // --- GESTION DU TIR LOCAL ---
-  bool jeTire = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+  bool jeTire;
 
+  if (joueur->armeEquipee.type == FUSIL) {
+      jeTire = IsMouseButtonDown(MOUSE_BUTTON_LEFT); // Continu
+  } else {
+      jeTire = IsMouseButtonPressed(MOUSE_BUTTON_LEFT); // Coup par coup
+  }
   if (jeTire) {
-    if (joueur->ammo > 0) {
+    if (joueur->ammo > 0&& joueur->chronoTir <= 0) {
       joueur->ammo--;
+      joueur->chronoTir = joueur->armeEquipee.cadenceTir; // On réinitialise le délai
+
       // On calcule la direction exacte depuis la caméra (prend en compte la
       // hauteur/pitch)
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
       dir = Vector3Normalize(dir);
-      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER);
+      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER, joueur->armeEquipee);
     } else {
       jeTire = false;
     }
   }
-
+  ChangementArme(joueur);
   if (IsKeyPressed(KEY_R)) {
-    joueur->ammo = joueur->maxAmmo;
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
+    PlayReload();
   }
 
-  // Debug : Se suicider pour tester le respawn
-  if (IsKeyPressed(KEY_N)) {
-    joueur->health -= 20;
-  }
 
-  if (IsKeyPressed(KEY_M)) {
-    joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
-  }
+// Debug : Se suicider pour tester le respawn
+if (IsKeyPressed(KEY_N)) {
+  joueur->health -= 20;
+}
+
+if (IsKeyPressed(KEY_M)) {
+  joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
+}
 
   // 2. Je prépare le paquet
   PaquetReseau paquetEnvoi;
@@ -104,7 +116,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 
     // Respawn Local
     joueur->health = joueur->maxHealth;
-    joueur->ammo = joueur->maxAmmo;
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
     if (reseau->isServer) {
       joueur->pos = (Vector3){1.5f, 10.0f, 1.5f};
     } else {
@@ -142,7 +154,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                               sinf(paquetRecu.pitch),
                               cosf(paquetRecu.yaw) * cosf(paquetRecu.pitch)};
 
-      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER);
+      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,ennemi->armeEquipee);
       TraceLog(LOG_INFO, "Tir ennemi reçu et créé !");
     }
   }
@@ -161,36 +173,21 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 void DessinerLobbyMultijoueur(ReseauState* netState) {
   DrawText("MODE MULTIJOUEUR", 100, 100, 30, WHITE);
 
-  if (netState->socket == -1) {
-    if (saisieIP) {
-      // Affichage du menu de saisie
-      DrawText("Entrez l'IP du serveur:", 100, 200, 20, WHITE);
-
-      // Dessiner la boîte de saisie
-      DrawRectangleLines(100, 230, 300, 40, WHITE);
-      DrawText(ipTampon, 110, 240, 20, WHITE);
-
-      // Curseur clignotant
-      if ((GetTime() * 2.0f) - (int)(GetTime() * 2.0f) < 0.5f) {
-        DrawText("_", 110 + MeasureText(ipTampon, 20), 240, 20, MAROON);
-      }
-
-      DrawText("[ENTRÉE] Valider   [ECHAP] Annuler", 100, 300, 20, WHITE);
-    } else {
+  if (netState->socket == -1 && !rechercheEnCours) {
       // Affichage du menu normal
       DrawText("[H] HEBERGER une partie (Serveur)", 100, 200, 20, WHITE);
-      DrawText("[C] REJOINDRE une partie (Client)", 100, 240, 20, WHITE);
+      DrawText("[C] REJOINDRE une partie (Recherche locale)", 100, 240, 20, WHITE);
       DrawText("[BACKSPACE] Retour Menu Principal", 100, 500, 20, WHITE);
-    }
   } else {
-    // En attente de connexion (après validation ou hébergement)
     if (netState->isServer) {
-      DrawText(TextFormat("IP Locale: %s - Port: 30000", "0.0.0.0"), 100, 160,
-               20, BLUE);
-      DrawText("En attente d'un adversaire...", 100, 350, 20, WHITE);
-    } else {
-      DrawText(TextFormat("Connexion à %s...", ipTampon), 100, 350, 20,
-               DARKGREEN);
+      DrawText("Hébergement en cours...", 100, 160, 20, BLUE);
+      DrawText("En attente d'un adversaire sur le réseau...", 100, 350, 20, WHITE);
+    } else if (rechercheEnCours) {
+      // Animation des petits points pour faire patienter
+      int points = (int)(GetTime() * 3.0f) % 4;
+      const char* texteRecherche = TextFormat("Recherche d'un serveur local%s", 
+                                  points == 1 ? "." : points == 2 ? ".." : points == 3 ? "..." : "");
+      DrawText(texteRecherche, 100, 350, 20, DARKGREEN);
     }
     DrawText("[BACKSPACE] Annuler", 100, 500, 20, WHITE);
   }
@@ -203,122 +200,103 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
                         GameScreen* currentScreen) {
   // 1. LOBBY (Si on n'est pas encore connecté)
   if (!netState->connected) {
-    // Si on n'est PAS en train de saisir l'IP
-    if (!saisieIP) {
+      
+    // Si on n'est ni serveur, ni en train de chercher
+    if (!rechercheEnCours && netState->socket == -1) {
       // Choix H : Héberger
-      if (IsKeyPressed(KEY_H) && netState->socket == -1) {
+      if (IsKeyPressed(KEY_H)) {
         netState->socket = InitServeur(30000);
         netState->isServer = 1;
+        // On prépare le lance-voix UDP
+        udpSocket = InitUDPBroadcastSender();
+        dernierBroadcast = 0.0f;
       }
 
-      // Choix C : Activer le mode saisie
-      if (IsKeyPressed(KEY_C) && netState->socket == -1) {
-        saisieIP = true;
-        memset(ipTampon, 0, sizeof(ipTampon));  // Vider le tampon
+      // Choix C : Chercher une partie
+      if (IsKeyPressed(KEY_C)) {
+        rechercheEnCours = true;
+        // On prépare les oreilles UDP
+        udpSocket = InitUDPBroadcastListener(PORT_BROADCAST);
       }
 
-      // Retour Menu depuis Lobby (Uniquement si on ne saisit pas)
       if (IsKeyPressed(KEY_BACKSPACE)) {
-        if (netState->socket != -1) FermerReseau(netState->socket);
-        netState->socket = -1;
-        netState->isServer = 0;
         *currentScreen = MENU;
       }
     }
-    // Si on EST en train de saisir l'IP
     else {
-      // Capture des caractères (Chiffres et points)
-      int key = GetCharPressed();
-      while (key > 0) {
-        // Accepter uniquement chiffres (48-57) et point (46)
-        if ((key >= 48 && key <= 57) || key == 46) {
-          int len = strlen(ipTampon);
-          if (len < 15) {  // Limite taille IPv4
-            ipTampon[len] = (char)key;
-            ipTampon[len + 1] = '\0';
-          }
+      // --- LOGIQUE SERVEUR (Hébergeur) ---
+      if (netState->isServer && netState->socket != -1) {
+        // Crier notre présence toutes les secondes
+        if (udpSocket != -1 && GetTime() - dernierBroadcast > 1.0f) {
+            EnvoyerBroadcast(udpSocket, PORT_BROADCAST);
+            dernierBroadcast = GetTime();
         }
-        key = GetCharPressed();
-      }
 
-      // Effacer (Backspace)
-      if (IsKeyPressed(KEY_BACKSPACE)) {
-        int len = strlen(ipTampon);
-        if (len > 0) {
-          ipTampon[len - 1] = '\0';
-        }
-      }
-
-      // Annuler la saisie (Echap)
-      if (IsKeyPressed(KEY_ESCAPE)) {
-        saisieIP = false;
-      }
-
-      // Valider (Entrée)
-      if (IsKeyPressed(KEY_ENTER)) {
-        // Si le champ est vide, on met localhost par défaut
-        if (strlen(ipTampon) == 0) strcpy(ipTampon, "127.0.0.1");
-
-        netState->socket = InitClient(ipTampon, 30000);
-        netState->isServer = 0;
-        saisieIP = false;  // On quitte le mode saisie
-
-        // Si connect réussit, on lance !
-        if (netState->socket != -1) {
+        // Vérifier si un client s'est connecté au TCP
+        int clientSock = AttendreClient(netState->socket);
+        if (clientSock != -1) {
+          FermerReseau(netState->socket);
+          if (udpSocket != -1) { FermerReseau(udpSocket); udpSocket = -1; } // On arrête de crier
+          netState->socket = clientSock;
           netState->connected = 1;
-          // Init jeu pour le Client
-          InitMultijoueur(player, remotePlayer, 0);
-          srand(42);
-          init_lab(blocks);
-          creer_lab(blocks);
-          srand(time(NULL));
 
-          InitProjectiles(projs);
-          *score = 0;
-          *jeuInitialise = true;
-          DisableCursor();
+          InitMultijoueur(player, remotePlayer, 1);
+          srand(42); init_lab(blocks); creer_lab(blocks); srand(time(NULL));
+          InitProjectiles(projs); *score = 0; *jeuInitialise = true; DisableCursor();
         }
       }
-    }
+      
+      // --- LOGIQUE CLIENT (Chercheur) ---
+      if (rechercheEnCours && udpSocket != -1) {
+        char ipTrouvee[20];
+        // Si on entend un serveur
+        if (RecevoirBroadcast(udpSocket, ipTrouvee)) {
+            TraceLog(LOG_INFO, "Serveur trouvé à l'IP : %s", ipTrouvee);
+            FermerReseau(udpSocket); udpSocket = -1; // On arrête d'écouter
+            rechercheEnCours = false;
 
-    // Si on est serveur, on vérifie si un client arrive (Code existant)
-    if (netState->isServer && netState->socket != -1) {
-      int clientSock = AttendreClient(netState->socket);
-      if (clientSock != -1) {
-        FermerReseau(netState->socket);
-        netState->socket = clientSock;
-        netState->connected = 1;
+            // On s'y connecte
+            netState->socket = InitClient(ipTrouvee, 30000);
+            netState->isServer = 0;
 
-        InitMultijoueur(player, remotePlayer, 1);
-        srand(42);
-        init_lab(blocks);
-        creer_lab(blocks);
-        srand(time(NULL));
+            if (netState->socket != -1) {
+              netState->connected = 1;
+              InitMultijoueur(player, remotePlayer, 0);
+              srand(42); init_lab(blocks); creer_lab(blocks); srand(time(NULL));
+              InitProjectiles(projs); *score = 0; *jeuInitialise = true; DisableCursor();
+            }
+        }
+      }
 
-        InitProjectiles(projs);
-        *score = 0;
-        *jeuInitialise = true;
-        DisableCursor();
+      // Annuler l'attente ou la recherche
+      if (IsKeyPressed(KEY_BACKSPACE)) {
+        if (netState->socket != -1) FermerReseau(netState->socket);
+        if (udpSocket != -1) FermerReseau(udpSocket);
+        netState->socket = -1;
+        udpSocket = -1;
+        netState->isServer = 0;
+        rechercheEnCours = false;
+        *currentScreen = MENU;
       }
     }
   }
-  // 2. JEU EN COURS (Code existant)
+  // 2. JEU EN COURS (Le code existant ne change pas en dessous)
   else {
-    UpdateMultijoueur(player, remotePlayer, blocks, projs, camera, netState);
-    if (IsKeyPressed(KEY_BACKSPACE)) {
-      FermerReseau(netState->socket);
-      netState->connected = 0;
-      netState->socket = -1;
-      *currentScreen = MENU;
-      *jeuInitialise = false;
-    }
+      UpdateMultijoueur(player, remotePlayer, blocks, projs, camera, netState);
+      if (IsKeyPressed(KEY_BACKSPACE)) {
+          FermerReseau(netState->socket);
+          netState->connected = 0;
+          netState->socket = -1;
+          *currentScreen = MENU;
+          *jeuInitialise = false;
+      }
   }
 }
 
 void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Texture2D armeTex, int score,
+                         Texture2D viseur, Texture2D tabArmes[4], int score,
                          ReseauState* netState, Model skyModel,
                          Texture2D wallTex, Texture2D floorTex,
                          Model botModel) {
@@ -329,7 +307,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     // --- DESSIN JEU MULTI ---
     // Code existant pour le jeu...
     UpdateDessinGame(remotePlayer, blocks, *camera, projs, score, *player,
-                     viseur, armeTex, skyModel, wallTex, floorTex, botModel);
+                     viseur, tabArmes, skyModel, wallTex, floorTex, botModel);
 
     DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
                         player->pos.y, player->pos.z),
@@ -339,3 +317,5 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     DrawText(TextFormat("[%s] Ping: -- ms", role), 10, 160, 20, YELLOW);
   }
 }
+
+
