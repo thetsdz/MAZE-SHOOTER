@@ -3,6 +3,7 @@
  */
 
 #include "../lib/headers/projectile.h"
+#include "../lib/headers/audio.h"
 
 #include <stdio.h>  // Ajout pour printf/TraceLog si besoin
 #include <stdlib.h>
@@ -48,6 +49,7 @@ void gravite(Projectile * p,float dt){
 }
 
 void explosion(Projectile * p){
+    PlayExplosion();
     p->pos.y=0;
     p->radius=3.0f;
     p->color=WHITE;
@@ -62,7 +64,12 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
 
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
-  
+    switch (arme.type){
+        case PISTOLET : PlayPistolet(); break;
+        case FUSIL : PlayMitraillette(); break;
+        case SNIPER : PlayPompe(); break;
+
+    }
 
     for(int i=0; i<MAX_PROJ; i++){
         if(!projs[i].active){
