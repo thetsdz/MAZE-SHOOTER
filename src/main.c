@@ -78,7 +78,7 @@ int main(void) {
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
 
   // 1. Charger le modèle (le .obj va chercher le .mtl tout seul dans le même dossier)
-  Model botModel = LoadModel("../assets/images/robot/Robot.obj");
+  Model botModel = LoadModel("../assets/images/robot/Robot.glb");
 
 
   
