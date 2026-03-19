@@ -63,10 +63,11 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   Vector3 move = {0, 0, 0};
 
   // On ajoute les vecteurs directionnels selon les touches
-  if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
+  if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { //QWERTY PT*
+    printf("touche haut est preéssé\n");
     move.x += forward.x;
     move.z += forward.z;
-    if(player->onGround == true) PlayWalk();
+    if (player->onGround == true) PlayWalk();
     else{PauseWalk();}
   }else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
     move.x -= forward.x;

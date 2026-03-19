@@ -39,13 +39,7 @@ typedef struct {
   uint32_t checksum;  // L'empreinte de sécurité
 } SaveFile;
 
-<<<<<<< HEAD
-
-
-void sauvegarder(Entity* player, int* score) {
-=======
 void sauvegarder(Entity* player, Entity* bot, int* score) {
->>>>>>> master
   SaveFile save;
 
   // Remplissage de la structure de données

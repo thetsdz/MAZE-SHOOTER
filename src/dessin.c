@@ -68,7 +68,11 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 
   DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
-  
+  TypeArme tab[4]={PISTOLET, FUSIL, SNIPER,GRENADE};  
+  int i=0;
+  while (player.armeEquipee.type!=tab[i]){
+    i+=1;
+  }
   DessinerArme(tabArmes[i], GetScreenWidth(), GetScreenHeight());
 
   DrawText(TextFormat("Point de vie restant: %d", player.health), 10, 190, 20,

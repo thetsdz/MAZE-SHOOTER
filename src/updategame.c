@@ -56,7 +56,7 @@ void UpdateGame(Entity* player, Entity* bot,
   if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, score);
 
   if (IsKeyPressed(KEY_R)){
-    player->ammo = player->maxAmmo;
+    player->ammo = player->armeEquipee.munitionsMax;
     PlayReload();
   } 
 

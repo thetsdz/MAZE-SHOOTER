@@ -94,8 +94,7 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
 // --------------------------------------------------
 void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2D floorTex)
 {
-    // Sol
-    DrawPlane((Vector3){0, 0, 0}, (Vector2){NUM_BLOCKS*3, NUM_BLOCKS*3}, WHITE);
+    
 
     // Modèle mur
     Mesh wallMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
@@ -119,7 +118,7 @@ void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2
                 DrawModelEx(floorModel,
                     (Vector3){pos.x, 0.0f, pos.z},
                     (Vector3){0, 1, 0}, 0.0f,
-                    (Vector3){3.0f, 0.2f, 3.0f},
+                    (Vector3){3.0f, 0.001f, 3.0f},
                     WHITE);
             }
         }
