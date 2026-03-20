@@ -161,8 +161,6 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
       float h = autre->size / 2.0f;
       float r = projs[i].radius;
 
-      // CORRECTION : Les parenthèses -(autre->pos.y + h) centrent bien la
-      // hitbox sur le corps
       if (fabsf(projs[i].pos.x - autre->pos.x) < (r + h) &&
           fabsf(projs[i].pos.y - (autre->pos.y + h)) < (r + h) &&
           fabsf(projs[i].pos.z - autre->pos.z) < (r + h)) {
@@ -186,10 +184,9 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     // 2. LES BALLES ENNEMIES (Bot ou Remote) me touchent MOI
     else if (projs[i].owner == OWNER_BOT ||
              projs[i].owner == OWNER_REMOTE_PLAYER) {
-      if (player->health <= 0) continue;  // Sécurité : on ne touche pas un mort
+      if (player->health <= 0) continue;
 
-      float h = player->size /
-                2.0f;  // CORRECTION CRITIQUE : / 2.0f au lieu de / 50.0f !
+      float h = player->size / 2.0f;
       float r = projs[i].radius;
 
       // CORRECTION : On utilise la même logique mathématique propre que pour
