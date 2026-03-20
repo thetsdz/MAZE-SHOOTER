@@ -27,6 +27,8 @@
 #include "raymath.h"
 #include "rlgl.h"
 
+//signature github 
+
 int main(void) {
   // --- Initialisation du log ---
   if (!InitLog("log.txt")) return 1;
