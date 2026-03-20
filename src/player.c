@@ -64,6 +64,7 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
   // On ajoute les vecteurs directionnels selon les touches
   if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { //QWERTY PT*
+   
     move.x += forward.x;
     move.z += forward.z;
     if (player->onGround == true) PlayWalk();
