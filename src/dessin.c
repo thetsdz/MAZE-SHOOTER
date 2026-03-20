@@ -18,6 +18,81 @@
 #include "raymath.h"
 #include "rlgl.h"
 
+
+
+
+
+
+
+void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
+    for (int i = 0; i < MAX_PROJ; i++) {
+        if (!projs[i].active) continue;
+
+        // Reset de la matrice du modèle spécifique avant de travailler dessus
+        tabModels[projs[i].type].transform = MatrixIdentity();
+
+        switch (projs[i].type) {
+            case PROJ_PISTOLET: {
+                float s = 0.25f;
+                // On combine le fait de le coucher (90°) AVEC ton inclinaison (Pitch) sur l'axe X
+                // (Mets un "+" ou un "-" devant le pitch selon si la balle monte ou descend)
+                Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD); 
+                rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
+                
+                tabModels[PROJ_PISTOLET].transform = rot;
+                DrawModel(tabModels[PROJ_PISTOLET], projs[i].pos, s, RED);
+                break;
+            }
+            case PROJ_FUSIL: {
+              float s = 0.25f; // Taille du fusil
+              // On fait EXACTEMENT comme le pistolet : on combine le 90° et le pitch sur l'axe X !
+              Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD); 
+              rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
+              
+              tabModels[PROJ_FUSIL].transform = rot;
+              DrawModel(tabModels[PROJ_FUSIL], projs[i].pos, s, RED);
+              break;
+            }
+
+           case PROJ_SNIPER: {
+              float s = 0.25f; 
+              // On utilise la MÊME logique de rotation que le pistolet
+              // Si le sniper est "perpendiculaire", on garde le (90.0f - pitch)
+              Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD);
+              rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
+              
+              // LA SEULE DIFFÉRENCE POSSIBLE : 
+              // Si la balle de sniper pointe à gauche/droite au lieu de devant, 
+              // on ajoute un petit quart de tour final ici :
+              // rot = MatrixMultiply(MatrixRotateZ(90.0f * DEG2RAD), rot);
+
+              tabModels[PROJ_SNIPER].transform = rot;
+              DrawModel(tabModels[PROJ_SNIPER], projs[i].pos, s, RED);
+              break;
+            }
+            case PROJ_GRENADE: {
+                float s = 0.2f;
+                // Pas de rotation complexe nécessaire pour la grenade
+                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, RED);
+                break;
+
+
+            }
+        }
+      //pour  tester taille balle mettre le switch en commentaire
+      //DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
+    }
+}
+  
+
+
+
+
+
+
+
+
+
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
                       Entity player, Texture2D viseur, Texture2D tabArmes[4],
@@ -37,26 +112,16 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   DrawLevel(blocks, wallTex, floorTex);
 
   // --- Bot ---
-  /*Vector3 drawPos = bot->pos;
-  drawPos.y -= 0.5f; //pour pied au sol
-  DrawModelEx(botModel, drawPos, (Vector3){0, 1, 0}, (bot->yaw * RAD2DEG)- 90.0f,
-              (Vector3){0.3f, 0.3f, 0.3f}, WHITE); */
-  
   Vector3 drawPos = bot->pos;
   drawPos.y -= 0.5f; // On ajuste pour que les pieds touchent le sol
-
-  // --- 2. Création de la Transformation ---
   // On part d'une matrice vide (Identity)
   Matrix transform = MatrixIdentity();
-
   // A. On applique le SALTO (Rotation sur l'axe X local)
   transform = MatrixMultiply(transform, MatrixRotateX(bot->pitch * DEG2RAD));
-
   // B. On applique le REGARD (Rotation sur l'axe Y mondial)
   // On ajoute le +90.0f pour compenser l'épaule du modèle
   float angleFinal = (bot->yaw * RAD2DEG) - 90.0f;
   transform = MatrixMultiply(transform, MatrixRotateY(angleFinal * DEG2RAD));
-
   // --- 3. Application et Dessin ---
   botModel.transform = transform; 
   DrawModel(botModel, drawPos, 0.3f, WHITE);

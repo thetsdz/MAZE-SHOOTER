@@ -90,7 +90,7 @@ void UpdateGame(Entity* player, Entity* bot,
     Vector3 startPos = {player->pos.x, player->pos.y + 0.5f, player->pos.z};
 
     
-    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee);
+    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee,player->yaw,player->pitch);
 
     
     player->ammo--;

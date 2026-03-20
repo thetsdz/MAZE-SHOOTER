@@ -59,6 +59,12 @@
  * stocker les données échangées entre les joueurs à chaque frame)
  */
 
+ /** \version
+* \author Hugues Astier
+ * \date 18/03/2026
+ * \brief ajout des types armes, des types projectiles, de modelearme et de quelque champs dans entity 
+ */
+
 #include "raylib.h"
 
 /** @brief Nombre total de blocs dans le labyrinthe*/
@@ -145,8 +151,12 @@ typedef enum{
  * @brief Représente un projectile (balle) dans le jeu.
  */
 typedef struct {
+    
+
     Vector3 pos;    /**< Position actuelle. */
     Vector3 vel;    /**< Vecteur vélocité (direction * vitesse). */
+    float yaw;        /**< Rotation horizontale. */
+    float pitch;      /**< Rotation verticale. */
     float radius;   /**< Rayon de la sphère (hitbox). */
     bool active;    /**< true si le projectile est actif. */
     float life;     /**< Temps de vie restant (en secondes). */

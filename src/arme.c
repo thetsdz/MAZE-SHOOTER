@@ -10,10 +10,10 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
             m.type = PISTOLET;
             m.munitionsMax = 12;
             m.cadenceTir = 0.25f;
-            m.vitesseProj = 0.05f;
+            m.vitesseProj = 9.0f;
             m.degats = 20;
             m.nom = "Pistolet";
-            m.tailleProjectile = 0.05f;    // Taille standard
+            m.tailleProjectile = 0.015f;    // Taille standard
             m.couleurProjectile = YELLOW; // Jaune classique
             break;
 
@@ -21,22 +21,22 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
             m.type = FUSIL;
             m.munitionsMax = 30;
             m.cadenceTir = 0.1f;
-            m.vitesseProj = 005.0f;
+            m.vitesseProj = 10.50f;
             m.degats = 15;
             m.nom = "Fusil d'assaut";
-            m.tailleProjectile = 0.05f;   // Un peu plus fin
+            m.tailleProjectile = 0.02f;      //un peu plus petit que pistolet car moins précis
             m.couleurProjectile = ORANGE;  // Orange pour les traçantes
             break;
 
         case SNIPER:
             m.type = SNIPER;
             m.munitionsMax = 5;
-            m.cadenceTir = 1.5f;
-            m.vitesseProj = 0.1f;      // Très rapide !
+            m.cadenceTir = 3.0f;
+            m.vitesseProj = 20.0f;      // Très rapide !
             m.degats = 100;
             m.nom = "Fusil de precision";
             // --- AJOUTS ---
-            m.tailleProjectile = 0.9f;    // Grosse balle imposante
+            m.tailleProjectile = 0.03f;    // Grosse balle i
             m.couleurProjectile = RED;     // Rouge "danger"
             break;
             
@@ -48,7 +48,7 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
             m.degats = 0;            // Dégâts de zone (théoriques) gerer directement dans projectiles.c
             m.nom = "Grenade MK2";
             // --- AJOUTS ---
-            m.tailleProjectile = 0.1f;    // 
+            m.tailleProjectile = 0.05f;    // 
             m.couleurProjectile = GREEN;   // Vert militaire
             break;
             
