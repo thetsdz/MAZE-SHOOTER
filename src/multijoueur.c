@@ -81,7 +81,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                        Projectile projs[MAX_PROJ], Camera3D* camera,
                        ReseauState* reseau) {
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
-  UpdatePlayer(joueur, blocks, camera, ennemi);
+  UpdatePlayer(joueur, blocks, camera, &ennemi);
   if (joueur->chronoTir > 0) {
     joueur->chronoTir -= GetFrameTime();
   }
@@ -187,7 +187,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
   // 'ennemi' est passé comme 'autre' pour que MES balles le touchent
   // 'joueur' est passé comme 'player' pour que SES balles me touchent
   int scoreTemp = 0;
-  UpdateProjectiles(projs, blocks, ennemi, joueur, &scoreTemp);
+  UpdateProjectiles(projs, blocks, &ennemi, joueur, &scoreTemp);
 }
 
 void DessinerLobbyMultijoueur(ReseauState* netState) {
@@ -499,30 +499,21 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
   }
 }
 
-void DessinerMultijoueur(
-    Entity* player,
-    Entity* remotePlayer,
-    Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-    Projectile projs[MAX_PROJ],
-    Camera3D* camera,
-    Texture2D viseur,
-    Texture2D tabArmes[4],
-    int score,
-    ReseauState* netState,
-    Model skyModel,
-    Model wallModel,
-    Model floorModel,
-    Model botModel
-){
+void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
+                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                         Projectile projs[MAX_PROJ], Camera3D* camera,
+                         Texture2D viseur, Texture2D tabArmes[4], int score,
+                         ReseauState* netState, Model skyModel, Model wallModel,
+                         Model floorModel, Model botModel) {
   if (!netState->connected) {
     // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
     DessinerLobbyMultijoueur(netState);
   } else {
-    // --- DESSIN JEU MULTI ---
-    // Code existant pour le jeu...
-    UpdateDessinGame(player, blocks, *camera, projs, score, *player,
-                     viseur, tabArmes, skyModel, wallModel, floorModel, botModel);
+    Entity dummyBots[18] = {0};
+    dummyBots[0] = *remotePlayer;
 
+    UpdateDessinGame(dummyBots, blocks, *camera, projs, score, *player, viseur,
+                     tabArmes, skyModel, wallModel, floorModel, botModel);
     DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
                         player->pos.y, player->pos.z),
              10, 130, 20, GREEN);
