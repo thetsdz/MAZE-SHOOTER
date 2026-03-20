@@ -69,28 +69,17 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
 
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
-    switch (arme.type){
-        case PISTOLET : PlayPistolet(); break;
-        case FUSIL : PlayMitraillette(); break;
-        case SNIPER : PlayPompe(); break;
-        case GRENADE : break;
-
-    }
-
-    for(int i=0; i<MAX_PROJ; i++){
-        if(!projs[i].active){
-            projs[i].active = true;
-            projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(dir, arme.vitesseProj); // Vitesse du projectile
-            projs[i].radius = arme.tailleProjectile;
-            projs[i].color=arme.couleurProjectile;
-            projs[i].life = 5.0f;
-            projs[i].degats=arme.degats;
-            projs[i].owner = owner; // <-- On définit le propriétaire
-            if (arme.type==GRENADE) projs[i].type=PROJ_GRENADE;
-            else  projs[i].type=PROJ_NORMALE;
-            break;
-        }
+  switch (arme.type) {
+    case PISTOLET:
+      PlayPistolet();
+      break;
+    case FUSIL:
+      PlayMitraillette();
+      break;
+    case SNIPER:
+      PlayPompe();
+      break;
+  }
 
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) {

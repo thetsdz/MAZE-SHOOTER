@@ -237,7 +237,6 @@ int main(void) {
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
-  UnloadTexture(botTex);
   UnloadModel(wallModel);
   UnloadModel(floorModel);
   

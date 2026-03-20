@@ -110,8 +110,8 @@ void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],Vector3 posjoueur
   bot->velocityY = 0.0f;   // vitesse du bot
   bot->onGround = true;    // le bot est initialisée au sol
   bot->size = 1.0f;        // taille du bot
-  bot->health = 20;        // Points de vie du bot
-  bot->maxHealth = 20;     // Points de vie maximum du bot
+  bot->health = 100;        // Points de vie du bot
+  bot->maxHealth = 100;     // Points de vie maximum du bot
   bot->life = 10000;       // Le bot a une vie très longue
   bot->armeEquipee=ObtenirModeleArme(PISTOLET); //
   bot->type = ENTITY_BOT;  // type de l'entité
