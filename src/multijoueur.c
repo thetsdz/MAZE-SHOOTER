@@ -131,6 +131,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
   paquetEnvoi.pitch = joueur->pitch;
   paquetEnvoi.tir = jeTire ? 1 : 0;
   paquetEnvoi.estMort = 0;
+  paquetEnvoi.arme = joueur->armeEquipee.type;
 
   // Gestion mort locale
   if (joueur->health <= 0) {
@@ -155,27 +156,23 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
   // 3. J'envoie le paquet
   EnvoyerPaquet(reseau->socket, &paquetEnvoi);
 
-  // 4. RÉCEPTION (Correction: boucle WHILE pour lire TOUS les paquets en
-  // attente)
+  // 4. RÉCEPTION
   PaquetReseau paquetRecu;
-  // Utiliser WHILE permet de ne pas rater le tir si plusieurs paquets arrivent
-  // en même temps
   while (RecevoirPaquet(reseau->socket, &paquetRecu)) {
     ennemi->pos = Vector3Lerp(ennemi->pos, paquetRecu.pos, 0.2f);
     ennemi->yaw = paquetRecu.yaw;
-    ennemi->pitch =
-        paquetRecu
-            .pitch;  // Optionnel : utile si tu veux animer le buste de l'ennemi
+    ennemi->pitch = paquetRecu.pitch;
+
+    // AJOUT : On équipe l'ennemi distant avec l'arme qu'il a sélectionnée
+    ennemi->armeEquipee = ObtenirModeleArme(paquetRecu.arme);
 
     if (paquetRecu.tir) {
       Vector3 originTir = ennemi->pos;
       originTir.y += 0.5f;
 
-      // DIRECTION CORRIGÉE : Utilise le yaw ET le pitch reçu
       Vector3 directionTir = {sinf(paquetRecu.yaw) * cosf(paquetRecu.pitch),
                               sinf(paquetRecu.pitch),
                               cosf(paquetRecu.yaw) * cosf(paquetRecu.pitch)};
-
       ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,
                       ennemi->armeEquipee);
       TraceLog(LOG_INFO, "Tir ennemi reçu et créé !");
@@ -369,9 +366,6 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
         }
       }
     } else if (saisieIPEnCours) {
-      // --- LOGIQUE SAISIE MANUELLE ---
-      // (Garde le code fourni dans ma réponse précédente pour le
-      // GetCharPressed() etc...)
       // --- LOGIQUE SAISIE MANUELLE ---
       int key = GetCharPressed();
       while (key > 0) {
