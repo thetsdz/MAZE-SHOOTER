@@ -18,6 +18,67 @@
 #include "raymath.h"
 #include "rlgl.h"
 
+
+
+#define MINIMAP_W 400
+#define MINIMAP_H 300
+#define MINIMAP_PADDING 10
+
+
+
+
+
+void minimap(Entity player, Entity bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
+    int minimapX = GetScreenWidth() - MINIMAP_W - MINIMAP_PADDING;
+    int minimapY = MINIMAP_PADDING;
+
+    float blockSize = blocks[0][0].width;
+    float mapTotalSize = NUM_BLOCKS * blockSize;
+
+    float scaleX = (float)MINIMAP_W / mapTotalSize;
+    float scaleY = (float)MINIMAP_H / mapTotalSize;
+
+    // Origine de la carte
+    float originX = blocks[0][0].pos.x - blocks[0][0].width / 2.0f;
+    float originZ = blocks[0][0].pos.z - blocks[0][0].depth / 2.0f;
+
+    // Fond + bordure
+    DrawRectangle(minimapX, minimapY, MINIMAP_W, MINIMAP_H, (Color){ 0, 0, 0, 180 });
+    DrawRectangleLines(minimapX, minimapY, MINIMAP_W, MINIMAP_H, WHITE);
+
+    for (int i = 0; i < NUM_BLOCKS; i++) {
+        for (int j = 0; j < NUM_BLOCKS; j++) {
+            Block b = blocks[i][j];
+
+            if (!b.isWall) continue;
+
+            int dotW = (int)(b.width * scaleX);
+            int dotH = (int)(b.depth * scaleY);
+            if (dotW < 1) dotW = 1;
+            if (dotH < 1) dotH = 1;
+
+            int dotX = minimapX + (int)((b.pos.x - originX) * scaleX) - dotW / 2;
+            int dotY = minimapY + (int)((b.pos.z - originZ) * scaleY) - dotH / 2;
+
+            DrawRectangle(dotX, dotY, dotW, dotH, b.color);
+        }
+    }
+
+    // Joueur
+    int playerDotX = minimapX + (int)((player.pos.x - originX) * scaleX);
+    int playerDotY = minimapY + (int)((player.pos.z - originZ) * scaleY);
+    DrawRectangle(playerDotX - 3, playerDotY - 3, 6, 6, GREEN);
+
+
+    int botDoxX = minimapX + (int)((bot.pos.x - originX) * scaleX);
+    int botDotY = minimapY + (int)((bot.pos.z - originZ) * scaleY);
+    DrawRectangle(botDoxX - 3, botDotY - 3, 6, 6, RED);
+}
+
+
+
+
+
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
                       Entity player, Texture2D viseur, Texture2D tabArmes[4],
@@ -59,16 +120,6 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   botModel.transform = transform; 
   DrawModel(botModel, drawPos, 0.3f, WHITE);
 
-
-
-
-
-
-
-
-
-
-
   // --- Projectiles ---
   DrawProjectiles(projs);
 
@@ -106,4 +157,8 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
   DrawText(TextFormat("Point de vie restant: %d", player.health), 10, 190, 20,
            RED);
+
+
+
+  minimap(player, bot, blocks);
 }

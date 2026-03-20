@@ -12,7 +12,29 @@
  * \date 11/03/2026
  * \brief ajout de nouvelles textures (mur,sol ciel et bot).
  */
+
+/** \version 3.0
+ * \author Thomas Dequirez
+ * \date 20/03/2026
+ * \brief ajout de la minimap
+ */
+
+
+
 #include "types.h"
+
+
+
+
+/**
+ * @brief Gere l'affichage de la map en haut à droite
+ * @param Player Entité Joueur
+ * @param Bot Entite Bot
+ * @param blocks Labyrinthe
+ */
+void minimap(Entity player, Entity bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
+
+
 
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
