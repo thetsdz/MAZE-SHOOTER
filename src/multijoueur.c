@@ -72,7 +72,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
       // hauteur/pitch)
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
       dir = Vector3Normalize(dir);
-      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER, joueur->armeEquipee);
+      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER, joueur->armeEquipee,joueur->yaw, joueur->pitch);
     } else {
       jeTire = false;
     }
@@ -145,7 +145,7 @@ if (IsKeyPressed(KEY_M)) {
                               sinf(paquetRecu.pitch),
                               cosf(paquetRecu.yaw) * cosf(paquetRecu.pitch)};
 
-      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,ennemi->armeEquipee);
+      ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,ennemi->armeEquipee,ennemi->yaw, ennemi->pitch);
       TraceLog(LOG_INFO, "Tir ennemi reçu et créé !");
     }
   }
@@ -295,6 +295,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
     // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
     DessinerLobbyMultijoueur(netState);
   } else {
+
     // --- DESSIN JEU MULTI ---
     // Code existant pour le jeu...
     UpdateDessinGame(remotePlayer, blocks, *camera, projs, score, *player,

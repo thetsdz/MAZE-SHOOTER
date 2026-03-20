@@ -56,12 +56,12 @@ void explosion(Projectile * p){
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, ModeleArme arme) {
+void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, ModeleArme arme, float camYaw, float camPitch) {
     // Normalisation de la direction par sécurité
     Vector3 dir = Vector3Normalize(direction);
 
-  // Point d'apparition un peu devant pour ne pas se tirer dessus
-  Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
+    // Point d'apparition un peu devant pour ne pas se tirer dessus
+    Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
   
 
     for(int i=0; i<MAX_PROJ; i++){
@@ -74,12 +74,23 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
             projs[i].life = 5.0f;
             projs[i].degats=arme.degats;
             projs[i].owner = owner; // <-- On définit le propriétaire
+            projs[i].yaw = camYaw * RAD2DEG;   
+            projs[i].pitch = camPitch * RAD2DEG;
             switch (arme.type) {
-                case PISTOLET : projs[i].type=PROJ_PISTOLET; break; 
-                case FUSIL : projs[i].type=PROJ_FUSIL; break;
-                case SNIPER : projs[i].type=PROJ_SNIPER; break;
-                case GRENADE : projs[i].type=PROJ_GRENADE ; break;
-                default : break;
+                case PISTOLET : 
+                    projs[i].type=PROJ_PISTOLET; 
+                    break; 
+                case FUSIL : 
+                    projs[i].type=PROJ_FUSIL; 
+                    break;
+                case SNIPER : 
+                    projs[i].type=PROJ_SNIPER; 
+                    break;
+                case GRENADE : 
+                    projs[i].type=PROJ_GRENADE ; 
+                    break;
+                default :   
+                    break;
             }
             break;
         }
@@ -164,7 +175,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     else if (projs[i].owner == OWNER_BOT || projs[i].owner == OWNER_REMOTE_PLAYER) {
         if (player->health <= 0) continue; // Sécurité : on ne touche pas un mort
 
-        float h = player->size / 50.0f;
+        float h = player->size / 2.0f;
         if (projs[i].pos.x > player->pos.x - h && projs[i].pos.x < player->pos.x + h &&
             projs[i].pos.y > player->pos.y && projs[i].pos.y < player->pos.y + player->size &&
             projs[i].pos.z > player->pos.z - h && projs[i].pos.z < player->pos.z + h) 
@@ -222,28 +233,3 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 }
 
 
-
-void DrawProjectiles(Projectile *projs,Model tabModels[4]) {
-    
-    for(int i=0; i<MAX_PROJ; i++){
-        
-        if (projs[i].active) {
-            tabModels[projs[i].type].transform = MatrixIdentity();
-            float s = 0.2f; // Scale par défaut
-            if (projs[i].type == PROJ_SNIPER) {
-                // Sniper : On pivote sur X (l'axe horizontal rouge) pour la redresser
-                s = 2.0f;
-                printf("Dessin Sniper avec rotation X\n");
-                DrawModelEx(tabModels[PROJ_SNIPER], projs[i].pos, (Vector3){1, 0, 0}, 90.0f, (Vector3){s, s, s}, WHITE);
-            } 
-            else if (projs[i].type == PROJ_GRENADE) {
-                s = 0.5f;
-                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
-            } 
-            else {
-                // Pistolet et Fusil : On pivote sur Y (l'axe vertical vert)
-                DrawModelEx(tabModels[projs[i].type], projs[i].pos, (Vector3){0, 1, 0}, 90.0f, (Vector3){s, s, s}, WHITE);
-            }
-    }
-  }
-}

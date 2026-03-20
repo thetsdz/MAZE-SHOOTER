@@ -248,12 +248,11 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
     // Position de départ (au niveau des yeux du bot)
     Vector3 shootOrigin = {bot->pos.x, bot->pos.y + 0.5f, bot->pos.z};
-
     // Tir avec propriétaire BOT
-    ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT,bot->armeEquipee);
-
+    ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT,bot->armeEquipee, bot->yaw, bot->pitch);
     // Reset timer (avec une petite variation aléatoire)
     shootTimer = (float)(rand() % 100) / 200.0f;  // Reset à 0.0 - 0.5s
+    
   }
 
   // --- Physique & Mouvement (Gravité) ---

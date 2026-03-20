@@ -85,8 +85,20 @@ int main(void) {
   
   tabModels[0]= LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
   tabModels[1] = LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
-  tabModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper.glb");
+  tabModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
   tabModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
+
+  // --- AUTOPSIE DU MODÈLE ---
+printf("--- DEBUG SNIPER ---\n");
+printf("Nombre de meshes : %d\n", tabModels[2].meshCount);
+printf("Nombre de materiaux : %d\n", tabModels[2].materialCount);
+
+if (tabModels[2].meshCount > 0) {
+    BoundingBox bb = GetModelBoundingBox(tabModels[2]);
+    printf("Taille du modele (Min): X:%.2f, Y:%.2f, Z:%.2f\n", bb.min.x, bb.min.y, bb.min.z);
+    printf("Taille du modele (Max): X:%.2f, Y:%.2f, Z:%.2f\n", bb.max.x, bb.max.y, bb.max.z);
+}
+printf("--------------------\n");
  
 
 
