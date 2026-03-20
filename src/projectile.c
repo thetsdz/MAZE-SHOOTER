@@ -74,8 +74,13 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
             projs[i].life = 5.0f;
             projs[i].degats=arme.degats;
             projs[i].owner = owner; // <-- On définit le propriétaire
-            if (arme.type==GRENADE) projs[i].type=PROJ_GRENADE;
-            else  projs[i].type=PROJ_NORMALE;
+            switch (arme.type) {
+                case PISTOLET : projs[i].type=PROJ_PISTOLET; break; 
+                case FUSIL : projs[i].type=PROJ_FUSIL; break;
+                case SNIPER : projs[i].type=PROJ_SNIPER; break;
+                case GRENADE : projs[i].type=PROJ_GRENADE ; break;
+                default : break;
+            }
             break;
         }
 
@@ -218,11 +223,27 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
 
 
-void DrawProjectiles(Projectile *projs) {
+void DrawProjectiles(Projectile *projs,Model tabModels[4]) {
+    
     for(int i=0; i<MAX_PROJ; i++){
-        if(projs[i].active) {
-            // On utilise la couleur qu'on a pris la peine d'enregistrer !
-            DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
-        }
+        
+        if (projs[i].active) {
+            tabModels[projs[i].type].transform = MatrixIdentity();
+            float s = 0.2f; // Scale par défaut
+            if (projs[i].type == PROJ_SNIPER) {
+                // Sniper : On pivote sur X (l'axe horizontal rouge) pour la redresser
+                s = 2.0f;
+                printf("Dessin Sniper avec rotation X\n");
+                DrawModelEx(tabModels[PROJ_SNIPER], projs[i].pos, (Vector3){1, 0, 0}, 90.0f, (Vector3){s, s, s}, WHITE);
+            } 
+            else if (projs[i].type == PROJ_GRENADE) {
+                s = 0.5f;
+                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
+            } 
+            else {
+                // Pistolet et Fusil : On pivote sur Y (l'axe vertical vert)
+                DrawModelEx(tabModels[projs[i].type], projs[i].pos, (Vector3){0, 1, 0}, 90.0f, (Vector3){s, s, s}, WHITE);
+            }
     }
   }
+}

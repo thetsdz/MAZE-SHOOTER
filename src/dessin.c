@@ -22,7 +22,7 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
                       Entity player, Texture2D viseur, Texture2D tabArmes[4],
                       Model skyModel, Texture2D wallTex, Texture2D floorTex,
-                      Model botModel) {
+                      Model botModel, Model tabModels[4]) {
   // --- Dessin 3D ---
   BeginMode3D(camera);
 
@@ -62,21 +62,12 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   DrawModel(botModel, drawPos, 0.3f, WHITE);
 
 
-
-
-
-
-
-
-
-
-
   // --- Projectiles ---
-  DrawProjectiles(projs);
+  DrawProjectiles(projs,tabModels);
 
   EndMode3D();
 
-  // --- UI 2D ---
+  // --- UI 2D ---  
   DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20,
            DARKGRAY);
   DrawText(TextFormat("Arme : %s", player.armeEquipee.nom), 10, 35, 20, DARKGRAY);

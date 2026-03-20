@@ -137,7 +137,7 @@ typedef struct {
  */
 
 typedef enum{
-    PROJ_GRENADE,PROJ_NORMALE
+    PROJ_PISTOLET,PROJ_FUSIL,PROJ_SNIPER,PROJ_GRENADE
 } type_projectile;
 
 /**

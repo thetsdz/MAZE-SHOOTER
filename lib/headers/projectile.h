@@ -12,7 +12,7 @@
  *  \author Corentin Jammes
  *  \date 15/01/2026
  *  \brief systeme de tir avec munitions et rechargement ainsi qu'un systeme de
-collision avec une cible et les murs du labyrinthe
+*   collision avec une cible et les murs du labyrinthe
 */
 
 /** \version 3.0
@@ -32,6 +32,17 @@ pour le bot
  * collisions(mur,bot,joueurs(meme en multijoueur))
  */
 
+ /** \version 5.0
+ *  \author Hugues Astier
+ *  \date 18/03/2026
+ *  \brief Changeement de logique de detection des projectiles en colision sur le bot, ajout des grenades, et des differents type de projectile 
+ *  en focntion de l'arme.
+ *  Ajout de la fonction explosion, gravite et RebondirGrenade pour gerer la grenade, plus ajout des textures sur les projectiles 
+ * Systeme de projectiles fonctiennels 
+ */
+
+
+
 #include <stdio.h>
 
 #include "raylib.h"
@@ -50,6 +61,6 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Entity* bot, Entity* player, int* score);
 
 /** @brief Affiche les projectiles actifs*/
-void DrawProjectiles(Projectile* projs);
+void DrawProjectiles(Projectile* projs, Model tabModels[4]);
 
 #endif

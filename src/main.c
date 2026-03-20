@@ -77,8 +77,15 @@ int main(void) {
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
 
-  // 1. Charger le modèle (le .obj va chercher le .mtl tout seul dans le même dossier)
+  // 1. Charger les modèle bot et projectiles (provient de poly.pizza)
+  Model tabModels[4];
   Model botModel = LoadModel("../assets/images/robot/Robot.glb");
+  
+  tabModels[0]= LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
+  tabModels[1] = LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
+  tabModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper.glb");
+  tabModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
+ 
 
 
   
@@ -181,18 +188,18 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         tabArmes, skyModel, wallTex, floorTex, botModel);
+                         tabArmes, skyModel, wallTex, floorTex, botModel, tabModels);
         break;
       }
       case MULTIJOUEUR: {
         DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
                             viseur, tabArmes, score, &netState, skyModel,
-                            wallTex, floorTex, botModel);
+                            wallTex, floorTex, botModel, tabModels);
         break;
       }
       case CHARGER_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
-                         tabArmes, skyModel, wallTex, floorTex, botModel);
+                         tabArmes, skyModel, wallTex, floorTex, botModel, tabModels) ;
         break;
       }
       case OPTIONS: {
