@@ -2,14 +2,13 @@
  * \file bot.c
  */
 
-
-
-
 #include "../lib/headers/bot.h"
-#include "../lib/headers/arme.h"
+
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include "../lib/headers/arme.h"
 
 // Structure pour représenter une position dans la grille du labyrinthe
 typedef struct {
@@ -104,44 +103,34 @@ static GridPos GetNextStepBFS(GridPos start, GridPos target,
   return curr;
 }
 
-void InitBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],Vector3 posjoueur) { // temporaire pour respawn
-  bot->yaw = 0.0f;         // angle du bot
-  bot->pitch = 0.0f;       // angle du bot
-  bot->velocityY = 0.0f;   // vitesse du bot
-  bot->onGround = true;    // le bot est initialisée au sol
-  bot->size = 1.0f;        // taille du bot
-  bot->health = 20;        // Points de vie du bot
-  bot->maxHealth = 20;     // Points de vie maximum du bot
-  bot->life = 10000;       // Le bot a une vie très longue
-  bot->armeEquipee=ObtenirModeleArme(PISTOLET); //
-  bot->type = ENTITY_BOT;  // type de l'entité
-
+void InitBot(Entity* bot,
+             Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {  // temporaire pour respawn
+  bot->yaw = 0.0f;                                    // angle du bot
+  bot->pitch = 0.0f;                                  // angle du bot
+  bot->velocityY = 0.0f;                              // vitesse du bot
+  bot->onGround = true;  // le bot est initialisée au sol
+  bot->size = 1.0f;      // taille du bot
+  bot->health = 100;     // Points de vie du bot
+  bot->maxHealth = 100;  // Points de vie maximum du bot
+  bot->life = 10000;     // Le bot a une vie très longue
+  bot->armeEquipee = ObtenirModeleArme(PISTOLET);  //
+  bot->type = ENTITY_BOT;                          // type de l'entité
+  bot->chronoTir = (float)(rand() % 100) / 100.0f;
   // --- RECHERCHE D'UN SPAWN ALÉATOIRE ---
   float offset = NUM_BLOCKS - 1;  // Le même offset que dans level.c
   int i, j;
 
-
-  
   // On boucle jusqu'à trouver une case qui N'EST PAS un mur
   do {
     // rand() % NUM_BLOCKS donne un nombre entre 0 et 50
     i = rand() % NUM_BLOCKS;
     j = rand() % NUM_BLOCKS;
   } while (blocks[i][j].isWall);
-  
 
-  //TEMPORARIEMENT EN PAUUUSE
-  // Une fois la case vide trouvée, on convertit la position Grille en position
-  // Monde 3D
-  /*bot->pos.x = i * 3.0f - offset;
+  bot->pos.x = i * 3.0f - offset;
   bot->pos.z = j * 3.0f - offset;
   bot->pos.y = 5.0f;  // On le fait spawner un peu en l'air pour qu'il retombe
                       // doucement au sol */
-  bot->pos.x = posjoueur.x;
-  bot->pos.z = posjoueur.y;
-  bot->pos.y = posjoueur.z;
-
-
 }
 
 void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
@@ -222,16 +211,17 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   float dxPlayer = targetPos.x - bot->pos.x;
   float dzPlayer = targetPos.z - bot->pos.z;
   float distToPlayer = sqrtf(dxPlayer * dxPlayer + dzPlayer * dzPlayer);
-  float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f);
-  //bot->pitch = atan2f(dy, distToPlayer); commenté pour avoir salto à decommenter et commenté la partie salto ci dessous pour arreter
+  // float dy = (targetPos.y + 0.5f) - (bot->pos.y + 0.5f);
+  // bot->pitch = atan2f(dy, distToPlayer); commenté pour avoir salto à
+  //  decommenter et commenté la partie salto ci dessous pour arreter
 
   // --- Tir ---
-  static float shootTimer = 0.0f;
-  shootTimer += dt;
+  // CORRECTION : On utilise le chronoTir propre à l'entité
+  bot->chronoTir += dt;
 
   // Le bot tire toutes les 1.5 à 2.5 secondes (aléatoire un peu)
   // Le bot NE TIRE QUE S'IL VOIT LE JOUEUR
-  if (playerVisible && shootTimer > 2.0f &&
+  if (playerVisible && bot->chronoTir > 2.0f &&
       distToPlayer < 30.0f) {  // Ne tire que si < 30 mètres
 
     // Calcul du vecteur de visée parfait
@@ -239,8 +229,6 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     aimDir = Vector3Normalize(aimDir);
 
     // --- Ajout de l'IMPRÉCISION ---
-    // On modifie légèrement le vecteur direction avec des valeurs aléatoires
-    // Plus le diviseur est petit, plus le bot est imprécis
     float spread = 0.15f;
     aimDir.x += ((float)(rand() % 100) / 50.0f - 1.0f) * spread;
     aimDir.y += ((float)(rand() % 100) / 50.0f - 1.0f) * spread;
@@ -250,10 +238,10 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     Vector3 shootOrigin = {bot->pos.x, bot->pos.y + 0.5f, bot->pos.z};
 
     // Tir avec propriétaire BOT
-    ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT,bot->armeEquipee);
+    ShootProjectile(projs, shootOrigin, aimDir, OWNER_BOT, bot->armeEquipee);
 
     // Reset timer (avec une petite variation aléatoire)
-    shootTimer = (float)(rand() % 100) / 200.0f;  // Reset à 0.0 - 0.5s
+    bot->chronoTir = (float)(rand() % 100) / 200.0f;  // Reset à 0.0 - 0.5s
   }
 
   // --- Physique & Mouvement (Gravité) ---
@@ -264,19 +252,18 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
   if (fmodf(moveTimer, 4.0f) < 0.1f && bot->onGround) {
     bot->velocityY = 0.35f;  // Petit saut
-    bot->onGround = false; 
+    bot->onGround = false;
   }
 
   if (!bot->onGround) {
     // On tourne à 720°/seconde (soit un tour complet en 0.5s)
     if (bot->pitch < 360.0f) {
-        bot->pitch += 720.0f * dt; 
+      bot->pitch += 720.0f * dt;
     }
-}  else {
+  } else {
     // Dès qu'il touche le sol, paf, il est droit
     bot->pitch = 0.0f;
-}
-    
+  }
 
   bot->velocityY -= gravity;  // Application gravité
 

@@ -92,20 +92,7 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS])
 // --------------------------------------------------
 // Affichage
 // --------------------------------------------------
-void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2D floorTex)
-{
-    
-
-    // Modèle mur
-    Mesh wallMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Model wallModel = LoadModelFromMesh(wallMesh);
-    wallModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = wallTex;
-
-    // Modèle sol
-    Mesh floorMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Model floorModel = LoadModelFromMesh(floorMesh);
-    floorModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = floorTex;
-
+void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel, Model floorModel){  
     for(int i = 0; i < NUM_BLOCKS; i++){
         for(int j = 0; j < NUM_BLOCKS; j++){
             Vector3 pos = blocks[i][j].pos;
@@ -123,7 +110,4 @@ void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Texture2D wallTex, Texture2
             }
         }
     }
-
-    UnloadModel(wallModel);
-    UnloadModel(floorModel);
 }

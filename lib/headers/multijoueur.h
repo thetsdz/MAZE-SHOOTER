@@ -8,6 +8,18 @@
  *  \date 12/02/2026
  *  \brief Toutes les fonctions du mode multijoueur (Lobby + Gameplay)
  */
+/** \version 2.0
+ *  \author Corentin Jammes
+ *  \date 18/03/2026
+ *  \brief ajout d'un broadcast UDP pour la recherche de serveur local
+ */
+/** \version 3.0
+ *  \author Corentin Jammes
+ *  \date 20/03/2026
+ *  \brief reajout de la possibilité de se connecter via IP manuelle (en plus du
+ * broadcast) + refonte de l'interface du lobby pour gérer les 2 méthodes de
+ * connexion + ajout de messages d'erreur et d'instructions dans le lobby
+ */
 
 /**
  * \brief Initialise les positions de départ opposées
@@ -39,7 +51,8 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
  * \param <Projectile projs[MAX_PROJ]> le tableau des projectiles
  * \param <Camera3D* camera> la caméra
  * \param <ReseauState* netState> l'état du réseau
- * \param <bool* jeuInitialise> un pointeur vers une variable indiquant si le jeu est initialisé
+ * \param <bool* jeuInitialise> un pointeur vers une variable indiquant si le
+ * jeu est initialisé
  * \param <int* score> un pointeur vers le score du joueur
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
@@ -56,13 +69,24 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
 void DessinerLobbyMultijoueur(ReseauState* netState);
 
 /**
- * \brief Dessine le mode multijoueur 
+ * \brief Dessine le mode multijoueur
  * \param <Entity* player> le joueur local
  */
-void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
-                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                         Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Texture2D armeTex[4], int score,
-                         ReseauState* netState, Model skyModel,
-                         Texture2D wallTex, Texture2D floorTex, Model botModel);
+// multijoueur.h
+// multijoueur.h
+void DessinerMultijoueur(
+    Entity* player,
+    Entity* remotePlayer,
+    Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+    Projectile projs[MAX_PROJ],
+    Camera3D* camera,
+    Texture2D viseur,
+    Texture2D tabArmes[4],
+    int score,
+    ReseauState* netState,
+    Model skyModel,
+    Model wallModel,
+    Model floorModel,
+    Model botModel
+);
 #endif

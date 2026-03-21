@@ -68,6 +68,7 @@ void PlayHeart(void);
 
 /** \brief Joue le son du rechargement */
 void PlayReload(void);
+void PlayExplosion(void);
 
 /* ----------------------------- Sons (Pause) ----------------------------- */
 
