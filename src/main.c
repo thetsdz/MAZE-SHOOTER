@@ -84,6 +84,7 @@ int main(void) {
   tabProjModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
   tabProjModels[4] = LoadModel("../assets/models/projectiles/Explosion.glb");
 
+  srand(time(NULL));
 
 
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
