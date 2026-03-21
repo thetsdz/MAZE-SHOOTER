@@ -2,7 +2,6 @@
  * \file main.c
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -55,7 +54,7 @@ int main(void) {
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
-  Entity bot;
+  Entity bot[18];
   Entity remotePlayer;
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
@@ -78,7 +77,12 @@ int main(void) {
 
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
   Texture2D floorTex = LoadTexture("../assets/images/concrete.png");
+  // --- Modèles niveau ---
+  Mesh wallMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model wallModel = LoadModelFromMesh(wallMesh);
+  wallModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = wallTex;
 
+<<<<<<< HEAD
   // 1. Charger les modèle bot et projectiles (provient de poly.pizza)
   Model tabModels[4];
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
@@ -91,6 +95,16 @@ int main(void) {
  
  
   
+=======
+  Mesh floorMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model floorModel = LoadModelFromMesh(floorMesh);
+  floorModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = floorTex;
+
+  // 1. Charger le modèle (le .obj va chercher le .mtl tout seul dans le même
+  // dossier)
+  Model botModel = LoadModel("../assets/images/robot/Robot.glb");
+
+>>>>>>> master
   // --- Skybox (cross vertical 3x4) ---
   Mesh skyMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   Model skyModel = LoadModelFromMesh(skyMesh);
@@ -126,7 +140,7 @@ int main(void) {
     if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
         (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
       InitPlayer(&player);
-      InitBot(&bot, blocks,player.pos);
+      for (int i = 0; i < 18; i++) InitBot(&bot[i], blocks);
       init_lab(blocks);
       creer_lab(blocks);
       InitProjectiles(projs);
@@ -142,7 +156,7 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         StopAllMusic();
-        UpdateGame(&player, &bot, blocks, projs, &score, &camera);
+        UpdateGame(&player, bot, blocks, projs, &score, &camera);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -157,11 +171,11 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          chargerSauvegarde(&player, &bot, &score);
+          chargerSauvegarde(&player, bot, &score);
           chargement = true;
           DisableCursor();
         }
-        UpdateGame(&player, &bot, blocks, projs, &score, &camera);
+        UpdateGame(&player, bot, blocks, projs, &score, &camera);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -189,19 +203,33 @@ int main(void) {
         break;
       }
       case NOUVELLE_PARTIE: {
+<<<<<<< HEAD
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
                          tabArmes, skyModel, wallTex, floorTex, botModel, tabModels);
+=======
+        UpdateDessinGame(bot, blocks, camera, projs, score, player, viseur,
+                         tabArmes, skyModel, wallModel, floorModel, botModel);
+>>>>>>> master
         break;
       }
       case MULTIJOUEUR: {
         DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
                             viseur, tabArmes, score, &netState, skyModel,
+<<<<<<< HEAD
                             wallTex, floorTex, botModel, tabModels);
         break;
       }
       case CHARGER_PARTIE: {
         UpdateDessinGame(&bot, blocks, camera, projs, score, player, viseur,
                          tabArmes, skyModel, wallTex, floorTex, botModel, tabModels) ;
+=======
+                            wallModel, floorModel, botModel);
+        break;
+      }
+      case CHARGER_PARTIE: {
+        UpdateDessinGame(bot, blocks, camera, projs, score, player, viseur,
+                         tabArmes, skyModel, wallModel, floorModel, botModel);
+>>>>>>> master
         break;
       }
       case OPTIONS: {
@@ -225,14 +253,21 @@ int main(void) {
            player.ammo);
   CloseLog();
   UnloadTexture(viseur);
+<<<<<<< HEAD
   for (int i=0;i<3;i++){
     UnloadModel(tabArmes[i]);
+=======
+  for (int i = 0; i < 3; i++) {
+    UnloadTexture(tabArmes[i]);
+>>>>>>> master
   }
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
-  
+  UnloadModel(wallModel);
+  UnloadModel(floorModel);
+
   UnloadGameAudio();
   CloseAudioDevice();
   CloseWindow();

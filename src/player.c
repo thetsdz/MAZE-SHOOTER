@@ -1,13 +1,13 @@
 /**
-* \file player.c
-*/
-
+ * \file player.c
+ */
 
 #include "../lib/headers/player.h"
-#include "../lib/headers/arme.h"
-#include "../lib/headers/audio.h"
 
 #include <math.h>
+
+#include "../lib/headers/arme.h"
+#include "../lib/headers/audio.h"
 
 void InitPlayer(Entity* player) {
   player->pos = (Vector3){0, 10.0f, 0};
@@ -20,13 +20,18 @@ void InitPlayer(Entity* player) {
   player->maxHealth = 100;       // Points de vie maximum
   player->life = 3;              // Nombre de vies de base
   player->type = ENTITY_PLAYER;  // type de l'entité
-  player->armeEquipee = ObtenirModeleArme(PISTOLET); //  On charge la "fiche technique" du pistolet
-  player->ammo = player->armeEquipee.munitionsMax;  // On remplit les munitions au maximum défini par le modèle (ici 12 ou 10 selon ton choix)
-  player->chronoTir = 0.0f;     // On initialise le chrono à 0 pour pouvoir tirer immédiatement
+  player->armeEquipee = ObtenirModeleArme(
+      PISTOLET);  //  On charge la "fiche technique" du pistolet
+  player->ammo =
+      player->armeEquipee
+          .munitionsMax;  // On remplit les munitions au maximum défini par le
+                          // modèle (ici 12 ou 10 selon ton choix)
+  player->chronoTir =
+      0.0f;  // On initialise le chrono à 0 pour pouvoir tirer immédiatement
 }
 
 void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                  Camera3D* camera, Entity* ennemi) {
+                  Camera3D* camera, Entity** ennemi) {
   // Constantes de gameplay
   float speed = 0.1f;         // vitesse par défaut
   float gravity = 0.02f;      // gravité par defaut
@@ -63,31 +68,43 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   Vector3 move = {0, 0, 0};
 
   // On ajoute les vecteurs directionnels selon les touches
-  if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { //QWERTY PT*
-   
+  if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {  // QWERTY PT*
+
     move.x += forward.x;
     move.z += forward.z;
-    if (player->onGround == true) PlayWalk();
-    else{PauseWalk();}
-  }else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+    if (player->onGround == true)
+      PlayWalk();
+    else {
+      PauseWalk();
+    }
+  } else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
     move.x -= forward.x;
     move.z -= forward.z;
-    if(player->onGround == true) PlayWalk();
-    else{PauseWalk();}
+    if (player->onGround == true)
+      PlayWalk();
+    else {
+      PauseWalk();
+    }
   }
   // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
   // (Mathématiquement : vecteur orthogonal)
   else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
     move.x += forward.z;
     move.z -= forward.x;
-    if(player->onGround == true) PlayWalk();
-    else{PauseWalk();}
-  }else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+    if (player->onGround == true)
+      PlayWalk();
+    else {
+      PauseWalk();
+    }
+  } else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
     move.x -= forward.z;
     move.z += forward.x;
-    if(player->onGround == true) PlayWalk();
-    else{PauseWalk();}
-  }else{
+    if (player->onGround == true)
+      PlayWalk();
+    else {
+      PauseWalk();
+    }
+  } else {
     PauseWalk();
   }
   PlayGameMusic();
@@ -112,52 +129,101 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   float playerHalf = player->size / 2.0f;
 
   // --- COLLISION AVEC L'ENNEMI (GLISSEMENT + SAUT SUR LA TÊTE) ---
-  float enemyHalf = ennemi->size / 2.0f;
-  float enemyTop = ennemi->pos.y + enemyHalf;
-  float enemyBottom = ennemi->pos.y - enemyHalf;
+  if ((*ennemi)->type == ENTITY_REMOTE_PLAYER) {
+    float enemyHalf = (*ennemi)->size / 2.0f;
+    float enemyTop = (*ennemi)->pos.y + enemyHalf;
+    float enemyBottom = (*ennemi)->pos.y - enemyHalf;
 
-  // Détection AABB (Axis Aligned Bounding Box)
-  bool collideX = nextPos.x + playerHalf > ennemi->pos.x - enemyHalf &&
-                  nextPos.x - playerHalf < ennemi->pos.x + enemyHalf;
-  bool collideY = nextPos.y + playerHalf > ennemi->pos.y - enemyHalf &&
-                  nextPos.y - playerHalf < ennemi->pos.y + enemyHalf;
-  bool collideZ = nextPos.z + playerHalf > ennemi->pos.z - enemyHalf &&
-                  nextPos.z - playerHalf < ennemi->pos.z + enemyHalf;
+    // Détection AABB (Axis Aligned Bounding Box)
+    bool collideX = nextPos.x + playerHalf > (*ennemi)->pos.x - enemyHalf &&
+                    nextPos.x - playerHalf < (*ennemi)->pos.x + enemyHalf;
+    bool collideY = nextPos.y + playerHalf > (*ennemi)->pos.y - enemyHalf &&
+                    nextPos.y - playerHalf < (*ennemi)->pos.y + enemyHalf;
+    bool collideZ = nextPos.z + playerHalf > (*ennemi)->pos.z - enemyHalf &&
+                    nextPos.z - playerHalf < (*ennemi)->pos.z + enemyHalf;
 
-  if (collideX && collideY && collideZ) {
-    // CAS 1 : On tombe sur la tête de l'autre joueur (on atterrit)
-    if (player->velocityY < 0 && player->pos.y - playerHalf >= enemyTop) {
-      nextPos.y = enemyTop + playerHalf;  // On se pose sur lui
-      player->velocityY = 0;
-      player->onGround = true;  // On peut sauter depuis sa tête !
+    if (collideX && collideY && collideZ) {
+      // CAS 1 : On tombe sur la tête de l'autre joueur (on atterrit)
+      if (player->velocityY < 0 && player->pos.y - playerHalf >= enemyTop) {
+        nextPos.y = enemyTop + playerHalf;  // On se pose sur lui
+        player->velocityY = 0;
+        player->onGround = true;  // On peut sauter depuis sa tête !
+      }
+      // CAS 2 : On cogne l'autre joueur par le bas (en sautant)
+      else if (player->velocityY > 0 &&
+               player->pos.y + playerHalf <= enemyBottom) {
+        nextPos.y = enemyBottom - playerHalf;
+        player->velocityY = 0;
+      }
+      // CAS 3 : Collision latérale (Glissement fluide)
+      else {
+        float overlapX =
+            (enemyHalf + playerHalf) - fabsf(nextPos.x - (*ennemi)->pos.x);
+        float overlapZ =
+            (enemyHalf + playerHalf) - fabsf(nextPos.z - (*ennemi)->pos.z);
+
+        if (overlapX < overlapZ) {
+          if (nextPos.x < (*ennemi)->pos.x)
+            nextPos.x = (*ennemi)->pos.x - enemyHalf - playerHalf;
+          else
+            nextPos.x = (*ennemi)->pos.x + enemyHalf + playerHalf;
+        } else {
+          if (nextPos.z < (*ennemi)->pos.z)
+            nextPos.z = (*ennemi)->pos.z - enemyHalf - playerHalf;
+          else
+            nextPos.z = (*ennemi)->pos.z + enemyHalf + playerHalf;
+        }
+      }
     }
-    // CAS 2 : On cogne l'autre joueur par le bas (en sautant)
-    else if (player->velocityY > 0 &&
-             player->pos.y + playerHalf <= enemyBottom) {
-      nextPos.y = enemyBottom - playerHalf;
-      player->velocityY = 0;
-    }
-    // CAS 3 : Collision latérale (Glissement fluide)
-    else {
-      float overlapX =
-          (enemyHalf + playerHalf) - fabsf(nextPos.x - ennemi->pos.x);
-      float overlapZ =
-          (enemyHalf + playerHalf) - fabsf(nextPos.z - ennemi->pos.z);
+  } else {
+    for (int i = 0; i < 18; i++) {
+      float enemyHalf = (*ennemi)[i].size / 2.0f;
+      float enemyTop = (*ennemi)[i].pos.y + enemyHalf;
+      float enemyBottom = (*ennemi)[i].pos.y - enemyHalf;
 
-      if (overlapX < overlapZ) {
-        if (nextPos.x < ennemi->pos.x)
-          nextPos.x = ennemi->pos.x - enemyHalf - playerHalf;
-        else
-          nextPos.x = ennemi->pos.x + enemyHalf + playerHalf;
-      } else {
-        if (nextPos.z < ennemi->pos.z)
-          nextPos.z = ennemi->pos.z - enemyHalf - playerHalf;
-        else
-          nextPos.z = ennemi->pos.z + enemyHalf + playerHalf;
+      // Détection AABB (Axis Aligned Bounding Box)
+      bool collideX = nextPos.x + playerHalf > (*ennemi)[i].pos.x - enemyHalf &&
+                      nextPos.x - playerHalf < (*ennemi)[i].pos.x + enemyHalf;
+      bool collideY = nextPos.y + playerHalf > (*ennemi)[i].pos.y - enemyHalf &&
+                      nextPos.y - playerHalf < (*ennemi)[i].pos.y + enemyHalf;
+      bool collideZ = nextPos.z + playerHalf > (*ennemi)[i].pos.z - enemyHalf &&
+                      nextPos.z - playerHalf < (*ennemi)[i].pos.z + enemyHalf;
+
+      if (collideX && collideY && collideZ) {
+        // CAS 1 : On tombe sur la tête de l'autre joueur (on atterrit)
+        if (player->velocityY < 0 && player->pos.y - playerHalf >= enemyTop) {
+          nextPos.y = enemyTop + playerHalf;  // On se pose sur lui
+          player->velocityY = 0;
+          player->onGround = true;  // On peut sauter depuis sa tête !
+        }
+        // CAS 2 : On cogne l'autre joueur par le bas (en sautant)
+        else if (player->velocityY > 0 &&
+                 player->pos.y + playerHalf <= enemyBottom) {
+          nextPos.y = enemyBottom - playerHalf;
+          player->velocityY = 0;
+        }
+        // CAS 3 : Collision latérale (Glissement fluide)
+        else {
+          float overlapX =
+              (enemyHalf + playerHalf) - fabsf(nextPos.x - (*ennemi)[i].pos.x);
+          float overlapZ =
+              (enemyHalf + playerHalf) - fabsf(nextPos.z - (*ennemi)[i].pos.z);
+
+          if (overlapX < overlapZ) {
+            if (nextPos.x < (*ennemi)[i].pos.x)
+              nextPos.x = (*ennemi)[i].pos.x - enemyHalf - playerHalf;
+            else
+              nextPos.x = (*ennemi)[i].pos.x + enemyHalf + playerHalf;
+          } else {
+            if (nextPos.z < (*ennemi)[i].pos.z)
+              nextPos.z = (*ennemi)[i].pos.z - enemyHalf - playerHalf;
+            else
+              nextPos.z = (*ennemi)[i].pos.z + enemyHalf + playerHalf;
+          }
+        }
       }
     }
   }
-
   for (int i = 0; i < NUM_BLOCKS; i++) {
     for (int j = 0; j < NUM_BLOCKS; j++) {
       Block b = blocks[i][j];
@@ -253,7 +319,7 @@ void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // Validation finale de la position
   player->pos = nextPos;
 
-  if(player->health < 20) PlayHeart();
+  if (player->health < 20) PlayHeart();
 
   // --- Mise à jour de la Caméra Raylib ---
   // Calcul du vecteur direction 3D complet (sphérique -> cartésien)

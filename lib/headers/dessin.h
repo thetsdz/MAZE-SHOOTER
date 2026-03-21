@@ -14,6 +14,7 @@
  */
 
 /** \version 3.0
+<<<<<<< HEAD
  * \author Hugues Astier
  * \date 17/03/2026
  * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du bot qui pivote pour suivre le joueur. 
@@ -36,6 +37,23 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]);
 
 
 
+=======
+ * \author Thomas Dequirez
+ * \date 20/03/2026
+ * \brief ajout de la minimap
+ */
+
+#include "types.h"
+
+/**
+ * @brief Gere l'affichage de la map en haut à droite
+ * @param Player Entité Joueur
+ * @param Bot Entite Bot
+ * @param blocks Labyrinthe
+ */
+void minimap(Entity player, Entity bot[18],
+             Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
+>>>>>>> master
 
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
@@ -48,9 +66,15 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]);
  * @param viseur Texture du viseur à dessiner au centre de l'écran
  * @param armeTex Texture de l'arme à dessiner en bas de l'écran
  */
-void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
+<<<<<<< HEAD
                       Entity player, Texture2D viseur, Model tabArmes[4],
                       Model skyModel, Texture2D wallTex, Texture2D floorTex,
                       Model botModel, Model tabModels[4]);
+=======
+                      Entity player, Texture2D viseur, Texture2D tabArmes[4],
+                      Model skyModel, Model wallModel, Model floorModel,
+                      Model botModel);
+>>>>>>> master
 #endif

@@ -236,10 +236,10 @@ typedef struct {
 typedef struct {
   Vector3 pos; /**< Position du joueur */
   float yaw;   /**< Angle de vue horizontal */
-  float pitch; /**< Angle de vue vertical (à ajouter pour gérer le tir en
-                  hauteur) */
+  float pitch; /**< Angle de vue vertical */
   int tir;     /**< 1 si le joueur tire, 0 sinon */
   int estMort; /**< 1 si le joueur est mort */
+  TypeArme arme; /**< L'arme que le joueur tient actuellement */
 } PaquetReseau;
 
 #endif
