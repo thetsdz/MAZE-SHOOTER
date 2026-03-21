@@ -69,11 +69,11 @@ int main(void) {
   camera.projection = CAMERA_PERSPECTIVE;
 
   // --- Textures ---
-  Texture2D tabArmes[4];
-  tabArmes[0] = LoadTexture("../assets/images/pistolet_placeholder.png");
-  tabArmes[1] = LoadTexture("../assets/images/fusil_assault.png");
-  tabArmes[2] = LoadTexture("../assets/images/sniper_placeholder.png");
-  tabArmes[3] = LoadTexture("../assets/images/grenade_placeholder.png");
+  Model tabArmes[4];
+  tabArmes[0] = LoadModel("../assets/models/armes/Pistolet.glb");
+  tabArmes[1] = LoadModel("../assets/models/armes/Fusil_assault.glb");
+  tabArmes[2] = LoadModel("../assets/models/armes/Sniper.glb");
+  tabArmes[3] = LoadModel("../assets/models/armes/Grenade.glb");
   Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   Texture2D wallTex = LoadTexture("../assets/images/brick.png");
@@ -81,27 +81,15 @@ int main(void) {
 
   // 1. Charger les modèle bot et projectiles (provient de poly.pizza)
   Model tabModels[4];
-  Model botModel = LoadModel("../assets/images/robot/Robot.glb");
+  Model botModel = LoadModel("../assets/models/robots/Robot.glb");
   
   tabModels[0]= LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
   tabModels[1] = LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
   tabModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
   tabModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
 
-  // --- AUTOPSIE DU MODÈLE ---
-printf("--- DEBUG SNIPER ---\n");
-printf("Nombre de meshes : %d\n", tabModels[2].meshCount);
-printf("Nombre de materiaux : %d\n", tabModels[2].materialCount);
-
-if (tabModels[2].meshCount > 0) {
-    BoundingBox bb = GetModelBoundingBox(tabModels[2]);
-    printf("Taille du modele (Min): X:%.2f, Y:%.2f, Z:%.2f\n", bb.min.x, bb.min.y, bb.min.z);
-    printf("Taille du modele (Max): X:%.2f, Y:%.2f, Z:%.2f\n", bb.max.x, bb.max.y, bb.max.z);
-}
-printf("--------------------\n");
  
-
-
+ 
   
   // --- Skybox (cross vertical 3x4) ---
   Mesh skyMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
@@ -238,7 +226,7 @@ printf("--------------------\n");
   CloseLog();
   UnloadTexture(viseur);
   for (int i=0;i<3;i++){
-    UnloadTexture(tabArmes[i]);
+    UnloadModel(tabArmes[i]);
   }
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);

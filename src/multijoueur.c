@@ -287,7 +287,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
 void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Texture2D tabArmes[4], int score,
+                         Texture2D viseur, Model tabArmes[4], int score,
                          ReseauState* netState, Model skyModel,
                          Texture2D wallTex, Texture2D floorTex,
                          Model botModel, Model tabModels[4]) {

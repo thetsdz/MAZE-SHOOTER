@@ -40,7 +40,7 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
                 rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
                 
                 tabModels[PROJ_PISTOLET].transform = rot;
-                DrawModel(tabModels[PROJ_PISTOLET], projs[i].pos, s, RED);
+                DrawModel(tabModels[PROJ_PISTOLET], projs[i].pos, s, WHITE);
                 break;
             }
             case PROJ_FUSIL: {
@@ -50,7 +50,7 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
               rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
               
               tabModels[PROJ_FUSIL].transform = rot;
-              DrawModel(tabModels[PROJ_FUSIL], projs[i].pos, s, RED);
+              DrawModel(tabModels[PROJ_FUSIL], projs[i].pos, s, WHITE);
               break;
             }
 
@@ -67,19 +67,19 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
               // rot = MatrixMultiply(MatrixRotateZ(90.0f * DEG2RAD), rot);
 
               tabModels[PROJ_SNIPER].transform = rot;
-              DrawModel(tabModels[PROJ_SNIPER], projs[i].pos, s, RED);
+              DrawModel(tabModels[PROJ_SNIPER], projs[i].pos, s, WHITE);
               break;
             }
             case PROJ_GRENADE: {
                 float s = 0.2f;
                 // Pas de rotation complexe nécessaire pour la grenade
-                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, RED);
+                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
                 break;
 
 
             }
         }
-      //pour  tester taille balle mettre le switch en commentaire
+      //pour  tester taille balle mettre le switch en commentaire et prendre DrawSphere
       //DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
     }
 }
@@ -95,7 +95,7 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
 
 void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-                      Entity player, Texture2D viseur, Texture2D tabArmes[4],
+                      Entity player, Texture2D viseur, Model tabArmes[4],
                       Model skyModel, Texture2D wallTex, Texture2D floorTex,
                       Model botModel, Model tabModels[4]) {
   // --- Dessin 3D ---
@@ -125,12 +125,21 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // --- 3. Application et Dessin ---
   botModel.transform = transform; 
   DrawModel(botModel, drawPos, 0.3f, WHITE);
-
+  
 
   // --- Projectiles ---
   DrawProjectiles(projs,tabModels);
 
   EndMode3D();
+
+  //--- armes --- apres de dernier End3Mod3D()
+  TypeArme tab[4]={PISTOLET, FUSIL, SNIPER,GRENADE};  
+
+  int i=0;
+  while (player.armeEquipee.type!=tab[i]){
+    i+=1;
+  }
+  DessinerArme(tabArmes[i],i);
 
   // --- UI 2D ---  
   DrawText(TextFormat("Score: %d | FPS: %d", score, GetFPS()), 10, 10, 20,
@@ -155,12 +164,6 @@ void UpdateDessinGame(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 
   DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
-  TypeArme tab[4]={PISTOLET, FUSIL, SNIPER,GRENADE};  
-  int i=0;
-  while (player.armeEquipee.type!=tab[i]){
-    i+=1;
-  }
-  DessinerArme(tabArmes[i], GetScreenWidth(), GetScreenHeight());
 
   DrawText(TextFormat("Point de vie restant: %d", player.health), 10, 190, 20,
            RED);

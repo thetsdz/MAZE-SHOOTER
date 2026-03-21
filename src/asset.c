@@ -26,32 +26,29 @@ void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight) {
 
 
 
-void DessinerArme(Texture2D texture, int screenWidth, int screenHeight) {
-    if (texture.id <= 0) return;
+void DessinerArme(Model ModeleArme, int indexArme) {
+    if (ModeleArme.meshes == NULL) return;
 
-    // --- 1. Calcul de l'ÉCHELLE ---
-    float ratio = 0.25f;
-    
-    // Petite astuce : si l'image est presque carrée (comme la grenade), 
-    // on réduit un peu le ratio pour qu'elle ne prenne pas tout l'écran en hauteur.
-    if (texture.width < 400) ratio = 0.15f; 
+    Camera3D cameraHUD = { 0 };
+    cameraHUD.position = (Vector3){ -0.25f, 0.15f, 8.5f }; 
+    cameraHUD.target = (Vector3){ 0.0f, 0.0f, 0.0f };   
+    cameraHUD.up = (Vector3){ 0.0f, 1.0f, 0.0f };       
+    cameraHUD.fovy = 50.0f;                             
+    cameraHUD.projection = CAMERA_PERSPECTIVE;
 
-    float targetWidth = screenWidth * ratio;
-    float scale = targetWidth / (float)texture.width;
+    BeginMode3D(cameraHUD);
+        
+        // --- ÉTAPE A : CENTRE ET DISTANCE 2m ---
+        // X=0, Y=0 (Plein centre)
+        // Z=8.0f (Distance de 2.0 par rapport à la caméra qui est à 10.0)
+        Vector3 position = { 0.0f, 0.0f, 8.0f }; 
 
-    // --- 2. Calcul de la POSITION ---
-    int margin = 20;
-    int offsetY = 120; 
+        float angleRotation = 90.0f; 
+        Vector3 axeRotation = { 0.0f, 1.0f, 0.0f }; 
+        float echelle = 0.05f; 
+        if (indexArme == 3) echelle = 0.1f;
+        DrawModelEx(ModeleArme, position, axeRotation, angleRotation, 
+                    (Vector3){ echelle, echelle, echelle }, WHITE);
 
-    float posX = screenWidth - (texture.width * scale) - margin;
-    float posY = screenHeight - (texture.height * scale) - margin - offsetY;
-
-    // --- 3. DESSIN ---
-    Vector2 position = { posX, posY };
-    float rotation = 20.0f; 
-
-    // Pour la grenade, on peut annuler la rotation pour qu'elle reste droite
-    if (texture.width < 400) rotation = 0.0f;
-
-    DrawTextureEx(texture, position, rotation, scale, WHITE);
+    EndMode3D();
 }

@@ -26,6 +26,6 @@ void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight);
     \param Largeur de la fenètre
     \param Hauteur de la fenètre
 */
-void DessinerArme(Texture2D texture, int screenWidth, int screenHeight);
+void DessinerArme(Model ModelArme, int indexArme);
 
 #endif
