@@ -155,15 +155,36 @@
 [INFO] VAO: [ID 41] Mesh uploaded successfully to VRAM (GPU)
 [INFO] VAO: [ID 42] Mesh uploaded successfully to VRAM (GPU)
 [INFO] VAO: [ID 43] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/projectiles/Explosion.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/projectiles/Explosion.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 17
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 44] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 45] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 46] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 47] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 48] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 49] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 50] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 51] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 52] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 53] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 54] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 55] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 56] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 57] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 58] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 59] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 60] Mesh uploaded successfully to VRAM (GPU)
 [INFO] FILEIO: [../assets/images/brick.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
 [INFO] TEXTURE: [ID 5] Texture loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
 [INFO] FILEIO: [../assets/images/concrete.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
 [INFO] TEXTURE: [ID 6] Texture loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
-[INFO] VAO: [ID 44] Mesh uploaded successfully to VRAM (GPU)
-[INFO] VAO: [ID 45] Mesh uploaded successfully to VRAM (GPU)
-[INFO] VAO: [ID 46] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 61] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 62] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 63] Mesh uploaded successfully to VRAM (GPU)
 [INFO] FILEIO: [../assets/shaders/skybox.vs] Text file loaded successfully
 [INFO] FILEIO: [../assets/shaders/skybox.fs] Text file loaded successfully
 [INFO] SHADER: [ID 4] Vertex shader compiled successfully
@@ -172,96 +193,5 @@
 [INFO] FILEIO: [../assets/images/sky.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (2048x1536 | R8G8B8A8 | 1 mipmaps)
 [INFO] TEXTURE: [ID 7] Cubemap texture loaded successfully (512x512)
-[INFO] Serveur trouvé à l'IP : 172.20.10.2
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] L'ennemi est mort !
-[INFO] Fin de partie | Score=0 | maxAmmo=10
+[INFO] Mort en solo ! Respawn...
+[INFO] Fin de partie | Score=2 | maxAmmo=1
