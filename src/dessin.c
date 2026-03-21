@@ -25,12 +25,12 @@
 
 
 
-void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
+void DrawProjectiles(Projectile *projs, Model tabProjModels[]) {
     for (int i = 0; i < MAX_PROJ; i++) {
         if (!projs[i].active) continue;
 
         // Reset de la matrice du modèle spécifique avant de travailler dessus
-        tabModels[projs[i].type].transform = MatrixIdentity();
+        tabProjModels[projs[i].type].transform = MatrixIdentity();
 
         switch (projs[i].type) {
             case PROJ_PISTOLET: {
@@ -40,8 +40,8 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
                 Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD); 
                 rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
                 
-                tabModels[PROJ_PISTOLET].transform = rot;
-                DrawModel(tabModels[PROJ_PISTOLET], projs[i].pos, s, WHITE);
+                tabProjModels[PROJ_PISTOLET].transform = rot;
+                DrawModel(tabProjModels[PROJ_PISTOLET], projs[i].pos, s, WHITE);
                 break;
             }
             case PROJ_FUSIL: {
@@ -50,8 +50,8 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
               Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD); 
               rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
               
-              tabModels[PROJ_FUSIL].transform = rot;
-              DrawModel(tabModels[PROJ_FUSIL], projs[i].pos, s, WHITE);
+              tabProjModels[PROJ_FUSIL].transform = rot;
+              DrawModel(tabProjModels[PROJ_FUSIL], projs[i].pos, s, WHITE);
               break;
             }
 
@@ -67,17 +67,24 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]) {
               // on ajoute un petit quart de tour final ici :
               // rot = MatrixMultiply(MatrixRotateZ(90.0f * DEG2RAD), rot);
 
-              tabModels[PROJ_SNIPER].transform = rot;
-              DrawModel(tabModels[PROJ_SNIPER], projs[i].pos, s, WHITE);
+              tabProjModels[PROJ_SNIPER].transform = rot;
+              DrawModel(tabProjModels[PROJ_SNIPER], projs[i].pos, s, WHITE);
               break;
             }
             case PROJ_GRENADE: {
+              //on affiche deux models en fonction de si la grenade a explosé ou non
+              if (projs[i].radius ==3.0f) {
+                float s = 17.0f;
+                DrawModel(tabProjModels[4], projs[i].pos, s, WHITE);
+                break;
+              }
+              else {
                 float s = 0.2f;
                 // Pas de rotation complexe nécessaire pour la grenade
-                DrawModel(tabModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
+                DrawModel(tabProjModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
                 break;
 
-
+              }
             }
         }
       //pour  tester taille balle mettre le switch en commentaire et prendre DrawSphere
@@ -143,9 +150,9 @@ void minimap(Entity player, Entity bot[18],
 
 void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-                      Entity player, Texture2D viseur, Model tabArmes[4],
+                      Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel, Model tabModels[4]) {
+                      Model botModel, Model tabProjModels[]) {
   // --- Dessin 3D ---
   BeginMode3D(camera);
 
@@ -159,26 +166,6 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // --- Niveau ---
   DrawLevel(blocks, wallModel, floorModel);
   // --- Bot ---
-<<<<<<< HEAD
-  Vector3 drawPos = bot->pos;
-  drawPos.y -= 0.5f; // On ajuste pour que les pieds touchent le sol
-  // On part d'une matrice vide (Identity)
-  Matrix transform = MatrixIdentity();
-  // A. On applique le SALTO (Rotation sur l'axe X local)
-  transform = MatrixMultiply(transform, MatrixRotateX(bot->pitch * DEG2RAD));
-  // B. On applique le REGARD (Rotation sur l'axe Y mondial)
-  // On ajoute le +90.0f pour compenser l'épaule du modèle
-  float angleFinal = (bot->yaw * RAD2DEG) - 90.0f;
-  transform = MatrixMultiply(transform, MatrixRotateY(angleFinal * DEG2RAD));
-  // --- 3. Application et Dessin ---
-  botModel.transform = transform; 
-  DrawModel(botModel, drawPos, 0.3f, WHITE);
-  
-=======
-  /*Vector3 drawPos = bot->pos;
-  drawPos.y -= 0.5f; //pour pied au sol
-  DrawModelEx(botModel, drawPos, (Vector3){0, 1, 0}, (bot->yaw *
-  RAD2DEG)- 90.0f, (Vector3){0.3f, 0.3f, 0.3f}, WHITE); */
 
   for (int i = 0; i < 18; i++) {
     Vector3 drawPos = bot[i].pos;
@@ -196,20 +183,18 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     // On ajoute le +90.0f pour compenser l'épaule du modèle
     float angleFinal = (bot[i].yaw * RAD2DEG) - 90.0f;
     transform = MatrixMultiply(transform, MatrixRotateY(angleFinal * DEG2RAD));
->>>>>>> master
 
     // --- 3. Application et Dessin ---
     botModel.transform = transform;
     DrawModel(botModel, drawPos, 0.3f, WHITE);
   }
   // --- Projectiles ---
-  DrawProjectiles(projs,tabModels);
+  DrawProjectiles(projs,tabProjModels);
 
   EndMode3D();
 
   //--- armes --- apres de dernier End3Mod3D()
   TypeArme tab[4]={PISTOLET, FUSIL, SNIPER,GRENADE};  
-
   int i=0;
   while (player.armeEquipee.type!=tab[i]){
     i+=1;
@@ -241,15 +226,6 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 
   DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
-<<<<<<< HEAD
-=======
-  TypeArme tab[4] = {PISTOLET, FUSIL, SNIPER, GRENADE};
-  int i = 0;
-  while (player.armeEquipee.type != tab[i]) {
-    i += 1;
-  }
-  DessinerArme(tabArmes[i], GetScreenWidth(), GetScreenHeight());
->>>>>>> master
 
   DrawText(TextFormat("Point de vie restant: %d", player.health), 10, 190, 20,
            RED);

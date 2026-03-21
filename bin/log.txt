@@ -16,11 +16,11 @@
 [INFO]     > Render size:  1920 x 1080
 [INFO]     > Viewport offsets: 0, 0
 [INFO] GLAD: OpenGL extensions loaded successfully
-[INFO] GL: Supported extensions count: 231
+[INFO] GL: Supported extensions count: 226
 [INFO] GL: OpenGL device information:
 [INFO]     > Vendor:   Intel
-[INFO]     > Renderer: Mesa Intel(R) UHD Graphics 630 (CML GT2)
-[INFO]     > Version:  4.6 (Core Profile) Mesa 25.0.7-0ubuntu0.24.04.2
+[INFO]     > Renderer: Mesa Intel(R) HD Graphics 520 (SKL GT2)
+[INFO]     > Version:  4.6 (Core Profile) Mesa 22.3.6
 [INFO]     > GLSL:     4.60
 [INFO] GL: VAO extension detected, VAO functions loaded successfully
 [INFO] GL: NPOT textures extension detected, full NPOT textures supported
@@ -38,11 +38,230 @@
 [INFO] RLGL: Default OpenGL state initialized successfully
 [INFO] TEXTURE: [ID 2] Texture loaded successfully (128x128 | GRAY_ALPHA | 1 mipmaps)
 [INFO] FONT: Default font loaded successfully (224 glyphs)
-[INFO] SYSTEM: Working Directory: /info/etu/l2info/s2503018/Documents/Projet/PROJET/bin
+[INFO] SYSTEM: Working Directory: /home/hugues/Documents/Etudes/Mathématiques_Informatique/Double_Licence_2/Le_Mans_Universite/Matieres/Algo_Prog_C_2/PROJET/bin
+[INFO] AUDIO: Device initialized successfully
+[INFO]     > Backend:       miniaudio | PulseAudio
+[INFO]     > Format:        32-bit IEEE Floating Point -> 32-bit Signed Integer
+[INFO]     > Channels:      2 -> 2
+[INFO]     > Sample rate:   48000 -> 48000
+[INFO]     > Periods size:  3600
+[INFO] STREAM: Initialized successfully (44100 Hz, 32 bit, Stereo)
+[INFO] FILEIO: [../assets/audio/menu.mp3] Music file loaded successfully
+[INFO]     > Sample rate:   44100 Hz
+[INFO]     > Sample size:   32 bits
+[INFO]     > Channels:      2 (Stereo)
+[INFO]     > Total frames:  5378688
+[INFO] STREAM: Initialized successfully (48000 Hz, 16 bit, Mono)
+[INFO] FILEIO: [../assets/audio/game.wav] Music file loaded successfully
+[INFO]     > Sample rate:   48000 Hz
+[INFO]     > Sample size:   16 bits
+[INFO]     > Channels:      1 (Mono)
+[INFO]     > Total frames:  4292525
+[INFO] FILEIO: [../assets/audio/pistolet.mp3] File loaded successfully
+[INFO] WAVE: Data loaded successfully (44100 Hz, 32 bit, 2 channels)
+[INFO] FILEIO: [../assets/audio/mitraillette.mp3] File loaded successfully
+[INFO] WAVE: Data loaded successfully (44100 Hz, 32 bit, 2 channels)
+[INFO] FILEIO: [../assets/audio/pompe.wav] File loaded successfully
+[INFO] WAVE: Data loaded successfully (48000 Hz, 16 bit, 1 channels)
+[INFO] FILEIO: [../assets/audio/walk.wav] File loaded successfully
+[INFO] WAVE: Data loaded successfully (48000 Hz, 16 bit, 1 channels)
+[INFO] FILEIO: [../assets/audio/heart.wav] File loaded successfully
+[INFO] WAVE: Data loaded successfully (11025 Hz, 16 bit, 1 channels)
+[INFO] FILEIO: [../assets/audio/reload.wav] File loaded successfully
+[INFO] WAVE: Data loaded successfully (48000 Hz, 16 bit, 1 channels)
+[INFO] FILEIO: [../assets/audio/explosion.mp3] File loaded successfully
+[INFO] WAVE: Data loaded successfully (48000 Hz, 32 bit, 2 channels)
 [INFO] TIMER: Target time per frame: 16.667 milliseconds
+[INFO] FILEIO: [../assets/models/armes/Pistolet.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/armes/Pistolet.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 2] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 3] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 4] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/armes/Fusil_assault.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/armes/Fusil_assault.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 5] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 6] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 7] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/armes/Sniper.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/armes/Sniper.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 11
+[INFO]     > Materials count: 16 (+1 default)
+[INFO] VAO: [ID 8] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 9] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 10] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 11] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 12] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 13] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 14] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 15] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 16] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 17] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 18] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 19] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 20] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 21] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 22] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 23] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 24] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 25] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 26] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 27] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 28] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 29] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/armes/Grenade.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/armes/Grenade.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 30] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 31] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 32] Mesh uploaded successfully to VRAM (GPU)
 [INFO] FILEIO: [../assets/images/crosshair.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (64x64 | R8G8B8A8 | 1 mipmaps)
 [INFO] TEXTURE: [ID 3] Texture loaded successfully (64x64 | R8G8B8A8 | 1 mipmaps)
-[INFO] FILEIO: [../assets/images/weapon_placeholder.png] File loaded successfully
-[INFO] IMAGE: Data loaded successfully (600x400 | R8G8B8A8 | 1 mipmaps)
-[INFO] TEXTURE: [ID 4] Texture loaded successfully (600x400 | R8G8B8A8 | 1 mipmaps)
+[INFO] FILEIO: [../assets/models/robots/Robot.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/robots/Robot.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 1 (+1 default)
+[INFO] IMAGE: Data loaded successfully (1024x1024 | R8G8B8 | 1 mipmaps)
+[INFO] TEXTURE: [ID 4] Texture loaded successfully (1024x1024 | R8G8B8 | 1 mipmaps)
+[INFO] VAO: [ID 33] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/projectiles/Bullet_pistolet.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/projectiles/Bullet_pistolet.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 34] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 35] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 36] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/projectiles/Bullet_fusil_assault.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/projectiles/Bullet_fusil_assault.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 2 (+1 default)
+[INFO] VAO: [ID 37] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 38] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/projectiles/Bullet_sniper3.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/projectiles/Bullet_sniper3.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 2 (+1 default)
+[INFO] VAO: [ID 39] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 40] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/models/projectiles/Grenade.glb] File loaded successfully
+[INFO] MODEL: [../assets/models/projectiles/Grenade.glb] Model basic data (glb) loaded successfully
+[INFO]     > Meshes count: 1
+[INFO]     > Materials count: 3 (+1 default)
+[INFO] VAO: [ID 41] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 42] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 43] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/images/brick.png] File loaded successfully
+[INFO] IMAGE: Data loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
+[INFO] TEXTURE: [ID 5] Texture loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
+[INFO] FILEIO: [../assets/images/concrete.png] File loaded successfully
+[INFO] IMAGE: Data loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
+[INFO] TEXTURE: [ID 6] Texture loaded successfully (1024x1024 | GRAYSCALE | 1 mipmaps)
+[INFO] VAO: [ID 44] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 45] Mesh uploaded successfully to VRAM (GPU)
+[INFO] VAO: [ID 46] Mesh uploaded successfully to VRAM (GPU)
+[INFO] FILEIO: [../assets/shaders/skybox.vs] Text file loaded successfully
+[INFO] FILEIO: [../assets/shaders/skybox.fs] Text file loaded successfully
+[INFO] SHADER: [ID 4] Vertex shader compiled successfully
+[INFO] SHADER: [ID 5] Fragment shader compiled successfully
+[INFO] SHADER: [ID 6] Program shader loaded successfully
+[INFO] FILEIO: [../assets/images/sky.png] File loaded successfully
+[INFO] IMAGE: Data loaded successfully (2048x1536 | R8G8B8A8 | 1 mipmaps)
+[INFO] TEXTURE: [ID 7] Cubemap texture loaded successfully (512x512)
+[INFO] Serveur trouvé à l'IP : 172.20.10.2
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] L'ennemi est mort !
+[INFO] Fin de partie | Score=0 | maxAmmo=10

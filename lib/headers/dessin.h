@@ -14,36 +14,33 @@
  */
 
 /** \version 3.0
-<<<<<<< HEAD
  * \author Hugues Astier
  * \date 17/03/2026
  * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du bot qui pivote pour suivre le joueur. 
  * Deplacement de la fonction DrawProjectiles dans dessin.c, avec des modifications pour que les projectiles suivent le viseur.
+ */
 
+/** \version 4.0
+ * \author Thomas Dequirez
+ * \date 20/03/2026
+ * \brief ajout de la minimap
  */
 
 
+
 #include "types.h"
+
+
+
 
 /**
  * @brief permet de dessiner les projectiles à chaque frame
  * @param projs Pointeur vers le tableau de projetiles 
  * @param tabModels tableau de texture des differrents projectiles (trié)
  */
-void DrawProjectiles(Projectile *projs, Model tabModels[4]);
+void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
 
 
-
-
-
-
-=======
- * \author Thomas Dequirez
- * \date 20/03/2026
- * \brief ajout de la minimap
- */
-
-#include "types.h"
 
 /**
  * @brief Gere l'affichage de la map en haut à droite
@@ -53,7 +50,6 @@ void DrawProjectiles(Projectile *projs, Model tabModels[4]);
  */
 void minimap(Entity player, Entity bot[18],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
->>>>>>> master
 
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
@@ -68,13 +64,7 @@ void minimap(Entity player, Entity bot[18],
  */
 void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ], int score,
-<<<<<<< HEAD
-                      Entity player, Texture2D viseur, Model tabArmes[4],
-                      Model skyModel, Texture2D wallTex, Texture2D floorTex,
-                      Model botModel, Model tabModels[4]);
-=======
-                      Entity player, Texture2D viseur, Texture2D tabArmes[4],
+                      Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel);
->>>>>>> master
+                      Model botModel, Model tabProjModels[]);
 #endif

@@ -90,12 +90,8 @@ void UpdateGame(Entity* player, Entity bot[18],
                       cosf(player->yaw) * cosf(player->pitch)};
     Vector3 startPos = {player->pos.x, player->pos.y + 0.5f, player->pos.z};
 
-<<<<<<< HEAD
     
     ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee,player->yaw,player->pitch);
-=======
-    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee);
->>>>>>> master
 
     player->ammo--;
     player->chronoTir =

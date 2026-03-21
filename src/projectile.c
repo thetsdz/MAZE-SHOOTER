@@ -62,14 +62,25 @@ void explosion(Projectile* p) {
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-<<<<<<< HEAD
 void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, ModeleArme arme, float camYaw, float camPitch) {
     // Normalisation de la direction par sécurité
     Vector3 dir = Vector3Normalize(direction);
 
     // Point d'apparition un peu devant pour ne pas se tirer dessus
     Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
-  
+    switch (arme.type) {
+      case PISTOLET:
+        PlayPistolet();
+        break;
+      case FUSIL:
+        PlayMitraillette();
+        break;
+      case SNIPER:
+        PlayPompe();
+        break;
+      case GRENADE:
+        break;
+    }
 
     for(int i=0; i<MAX_PROJ; i++){
         if(!projs[i].active){
@@ -101,47 +112,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
             }
             break;
         }
-=======
-void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
-                     OwnerType owner, ModeleArme arme) {
-  // Normalisation de la direction par sécurité
-  Vector3 dir = Vector3Normalize(direction);
-
-  // Point d'apparition un peu devant pour ne pas se tirer dessus
-  Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
-  switch (arme.type) {
-    case PISTOLET:
-      PlayPistolet();
-      break;
-    case FUSIL:
-      PlayMitraillette();
-      break;
-    case SNIPER:
-      PlayPompe();
-      break;
-    case GRENADE:
-      break;
-  }
->>>>>>> master
-
-  for (int i = 0; i < MAX_PROJ; i++) {
-    if (!projs[i].active) {
-      projs[i].active = true;
-      projs[i].pos = spawn;
-      projs[i].vel =
-          Vector3Scale(dir, arme.vitesseProj);  // Vitesse du projectile
-      projs[i].radius = arme.tailleProjectile;
-      projs[i].color = arme.couleurProjectile;
-      projs[i].life = 5.0f;
-      projs[i].degats = arme.degats;
-      projs[i].owner = owner;  // <-- On définit le propriétaire
-      if (arme.type == GRENADE)
-        projs[i].type = PROJ_GRENADE;
-      else
-        projs[i].type = PROJ_NORMALE;
-      break;
     }
-  }
 }
 
 // ... (Début du fichier identique)
@@ -246,20 +217,10 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
              projs[i].owner == OWNER_BOT) {
       bool aToucheJoueur = false;
 
-<<<<<<< HEAD
-        float h = player->size / 2.0f;
-        if (projs[i].pos.x > player->pos.x - h && projs[i].pos.x < player->pos.x + h &&
-            projs[i].pos.y > player->pos.y && projs[i].pos.y < player->pos.y + player->size &&
-            projs[i].pos.z > player->pos.z - h && projs[i].pos.z < player->pos.z + h) 
-        {
-            player->health -= 20;
-            projs[i].active = false;
-=======
       // A. Vérification de la collision avec le Joueur
       if (player->health > 0) {
         float h = player->size / 2.0f;
         float r = projs[i].radius;
->>>>>>> master
 
         if (fabsf(projs[i].pos.x - player->pos.x) < (r + h) &&
             fabsf(projs[i].pos.y - (player->pos.y + h)) < (r + h) &&
@@ -345,15 +306,3 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   }
 }
 
-<<<<<<< HEAD
-
-=======
-void DrawProjectiles(Projectile* projs) {
-  for (int i = 0; i < MAX_PROJ; i++) {
-    if (projs[i].active) {
-      // On utilise la couleur qu'on a pris la peine d'enregistrer !
-      DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
-    }
-  }
-}
->>>>>>> master

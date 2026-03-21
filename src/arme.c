@@ -45,10 +45,10 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
             m.munitionsMax = 3;           // On en a peu
             m.cadenceTir = 1.0f;          // Temps de lancer
             m.vitesseProj = 20.0f;       // Très lent par rapport à une balle !
-            m.degats = 0;            // Dégâts de zone (théoriques) gerer directement dans projectiles.c
+            m.degats = 0;            // fera des degats de zone  gerer directement dans projectiles.c
             m.nom = "Grenade MK2";
             // --- AJOUTS ---
-            m.tailleProjectile = 0.05f;    // 
+            m.tailleProjectile = 0.05f;    
             m.couleurProjectile = GREEN;   // Vert militaire
             break;
             

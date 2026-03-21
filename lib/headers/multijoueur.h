@@ -72,14 +72,6 @@ void DessinerLobbyMultijoueur(ReseauState* netState);
  * \brief Dessine le mode multijoueur
  * \param <Entity* player> le joueur local
  */
-<<<<<<< HEAD
-void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
-                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                         Projectile projs[MAX_PROJ], Camera3D* camera,
-                         Texture2D viseur, Model tabArmes[4], int score,
-                         ReseauState* netState, Model skyModel,
-                         Texture2D wallTex, Texture2D floorTex, Model botModel, Model tabModels[4]);
-=======
 // multijoueur.h
 // multijoueur.h
 void DessinerMultijoueur(
@@ -98,5 +90,4 @@ void DessinerMultijoueur(
     Model botModel,
     Model tabModels[4]
 );
->>>>>>> master
 #endif
