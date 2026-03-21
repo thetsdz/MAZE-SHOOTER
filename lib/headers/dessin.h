@@ -16,7 +16,7 @@
 /** \version 3.0
  * \author Hugues Astier
  * \date 17/03/2026
- * \brief Ajout de nouvelles textures (bot,projectiles), avec texture du bot qui suit le joueur. 
+ * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du bot qui pivote pour suivre le joueur. 
  * Deplacement de la fonction DrawProjectiles dans dessin.c, avec des modifications pour que les projectiles suivent le viseur.
 
  */
