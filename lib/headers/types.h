@@ -59,10 +59,11 @@
  * stocker les données échangées entre les joueurs à chaque frame)
  */
 
- /** \version
-* \author Hugues Astier
+/** \version
+ * \author Hugues Astier
  * \date 18/03/2026
- * \brief ajout des types armes, des types projectiles, de modelearme et de quelque champs dans entity 
+ * \brief ajout des types armes, des types projectiles, de modelearme et de
+ * quelque champs dans entity
  */
 
 #include "raylib.h"
@@ -90,6 +91,8 @@ typedef enum GameScreen {
   MULTIJOUEUR,
   CHARGER_PARTIE,
   OPTIONS,
+  GAME_OVER,
+  VICTOIRE,
   EXIT
 } GameScreen;  // Ajoute EXIT
 
@@ -136,14 +139,16 @@ typedef struct {
   bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
 } Block;
 
-
 /**
  * @struct type de balles
  * @brief Représente soit PROJ_GRENADE et PROJ_NORMALE
  */
 
-typedef enum{
-    PROJ_PISTOLET,PROJ_FUSIL,PROJ_SNIPER,PROJ_GRENADE
+typedef enum {
+  PROJ_PISTOLET,
+  PROJ_FUSIL,
+  PROJ_SNIPER,
+  PROJ_GRENADE
 } type_projectile;
 
 /**
@@ -151,72 +156,60 @@ typedef enum{
  * @brief Représente un projectile (balle) dans le jeu.
  */
 typedef struct {
-    
-
-    Vector3 pos;    /**< Position actuelle. */
-    Vector3 vel;    /**< Vecteur vélocité (direction * vitesse). */
-    float yaw;        /**< Rotation horizontale. */
-    float pitch;      /**< Rotation verticale. */
-    float radius;   /**< Rayon de la sphère (hitbox). */
-    bool active;    /**< true si le projectile est actif. */
-    float life;     /**< Temps de vie restant (en secondes). */
-    Color color;     /**<couleur du projectile */
-    int degats;      /**<degat du projectile */
-    type_projectile type;     /**< en fonction balles classiques ou grenade */
-    OwnerType owner; /**< Propriétaire du projectile. */
+  Vector3 pos;          /**< Position actuelle. */
+  Vector3 vel;          /**< Vecteur vélocité (direction * vitesse). */
+  float yaw;            /**< Rotation horizontale. */
+  float pitch;          /**< Rotation verticale. */
+  float radius;         /**< Rayon de la sphère (hitbox). */
+  bool active;          /**< true si le projectile est actif. */
+  float life;           /**< Temps de vie restant (en secondes). */
+  Color color;          /**<couleur du projectile */
+  int degats;           /**<degat du projectile */
+  type_projectile type; /**< en fonction balles classiques ou grenade */
+  OwnerType owner;      /**< Propriétaire du projectile. */
 } Projectile;
 
-
-
-
+/**
+ * @struct TypeArme
+ * @brief Represente PISTOLET,FUSIL ou SNIPER
+ */
+typedef enum { PISTOLET, FUSIL, SNIPER, GRENADE } TypeArme;
 
 /**
-* @struct TypeArme
-* @brief Represente PISTOLET,FUSIL ou SNIPER
-*/
-typedef enum { 
-    PISTOLET, 
-    FUSIL, 
-    SNIPER,
-    GRENADE
-} TypeArme;
-
-/**
-* @struct ModeleArme
-* @brief Represente la fiche technique de chaque arme
-*/
+ * @struct ModeleArme
+ * @brief Represente la fiche technique de chaque arme
+ */
 
 typedef struct {
-    TypeArme type;
-    int munitionsMax;      //Taille du chargeur (ex: 30)
-    float cadenceTir;      // Temps entre deux balles (ex: 0.1s)
-    float vitesseProj;    // Vitesse du projectile
-    int degats;          // Puissance de l'arme
-    const char *nom;       // Pour afficher "AK-47" ou "Glock" à l'écran
-    float tailleProjectile; //taille du projectile
-    Color couleurProjectile; // couleur du projectile
+  TypeArme type;
+  int munitionsMax;         // Taille du chargeur (ex: 30)
+  float cadenceTir;         // Temps entre deux balles (ex: 0.1s)
+  float vitesseProj;        // Vitesse du projectile
+  int degats;               // Puissance de l'arme
+  const char* nom;          // Pour afficher "AK-47" ou "Glock" à l'écran
+  float tailleProjectile;   // taille du projectile
+  Color couleurProjectile;  // couleur du projectile
 } ModeleArme;
-
-
 
 /**
  * @struct Entity
  * @brief Représente une entité du jeu (joueur ou bot).
  */
 typedef struct {
-    Vector3 pos;      /**< Position de l'entité. */
-    float yaw;        /**< Rotation horizontale. */
-    float pitch;      /**< Rotation verticale. */
-    float velocityY;  /**< Vitesse verticale. */
-    bool onGround;    /**< true si l'entité est au sol. */
-    float size;       /**< Taille de l'entité. */
-    int ammo;         /**< Munitions actuelles. */
-    int health;       /**< Points de vie actuels. */
-    int maxHealth;    /**< Points de vie maximum. */
-    int life;         /**< Nombre de vies restantes. */
-    ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
-    float chronoTir;   /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
-    EntityType type;  /**< Type de l'entité. */
+  Vector3 pos;            /**< Position de l'entité. */
+  float yaw;              /**< Rotation horizontale. */
+  float pitch;            /**< Rotation verticale. */
+  float velocityY;        /**< Vitesse verticale. */
+  bool onGround;          /**< true si l'entité est au sol. */
+  float size;             /**< Taille de l'entité. */
+  int ammo;               /**< Munitions actuelles. */
+  int health;             /**< Points de vie actuels. */
+  int maxHealth;          /**< Points de vie maximum. */
+  int life;               /**< Nombre de vies restantes. */
+  ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
+  float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir
+                      suivant */
+  EntityType type; /**< Type de l'entité. */
 } Entity;
 
 /**
@@ -234,12 +227,13 @@ typedef struct {
  * @brief Données échangées entre les joueurs à chaque frame
  */
 typedef struct {
-  Vector3 pos; /**< Position du joueur */
-  float yaw;   /**< Angle de vue horizontal */
-  float pitch; /**< Angle de vue vertical */
-  int tir;     /**< 1 si le joueur tire, 0 sinon */
-  int estMort; /**< 1 si le joueur est mort */
+  Vector3 pos;   /**< Position du joueur */
+  float yaw;     /**< Angle de vue horizontal */
+  float pitch;   /**< Angle de vue vertical */
+  int tir;       /**< 1 si le joueur tire, 0 sinon */
+  int estMort;   /**< 1 si le joueur est mort */
   TypeArme arme; /**< L'arme que le joueur tient actuellement */
+  int life;       /**< Nombre de vies restantes du joueur */
 } PaquetReseau;
 
 #endif

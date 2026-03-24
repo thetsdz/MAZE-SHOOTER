@@ -10,15 +10,9 @@
 #include <string.h>
 #include <time.h>
 
-
-
-
-#include "../lib/headers/audio.h"
-
 #include "../lib/headers/arme.h"
 #include "../lib/headers/asset.h"
 #include "../lib/headers/audio.h"
-#include "../lib/headers/asset.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
@@ -41,7 +35,6 @@ static const char* texteBoutonsLobby[4] = {
     "HEBERGER UNE PARTIE", "REJOINDRE (RECHERCHE LOCALE)",
     "REJOINDRE (IP MANUELLE)", "RETOUR MENU"};
 
-
 // --- VARIABLES STATIQUES POUR LE BROADCAST ---
 static bool rechercheEnCours = false;
 static int udpSocket = -1;
@@ -59,24 +52,22 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
   // --- Logique de Spawn Opposé ---
   InitPlayer(joueur);
   InitPlayer(ennemi);
-  float coinHautGauche = 1.5f;
-  float coinBasDroite =
-      (float)NUM_BLOCKS - 1.5f;  // pour ne pas être DANS le mur du fond
-
   if (estServeur) {
     // Le joueur hébergeant commence en Haut-Gauche
-    joueur->pos = (Vector3){coinHautGauche, 1.0f, coinHautGauche};
+    joueur->pos = (Vector3){-NUM_BLOCKS + 6.5f, 1.0f, -NUM_BLOCKS + 4.5f};
     joueur->yaw = 0.0f;  // Regarde vers le sud
 
     // L'ennemi (Client) commence théoriquement en Bas-Droite
-    ennemi->pos = (Vector3){coinBasDroite, 1.0f, coinBasDroite};
+    ennemi->pos = (Vector3){(float)2 * NUM_BLOCKS - 4.5f, 1.0f,
+                            (float)2 * NUM_BLOCKS - 4.5f};
   } else {
     // Le Client commence en Bas-Droite
-    joueur->pos = (Vector3){coinBasDroite, 1.0f, coinBasDroite};
+    joueur->pos = (Vector3){(float)2 * NUM_BLOCKS - 4.5f, 1.0f,
+                            (float)2 * NUM_BLOCKS - 4.5f};
     joueur->yaw = PI;  // Regarde vers le nord (demi-tour)
 
     // L'ennemi (Serveur) est en Haut-Gauche
-    ennemi->pos = (Vector3){coinHautGauche, 1.0f, coinHautGauche};
+    ennemi->pos = (Vector3){-NUM_BLOCKS + 6.5f, 1.0f, -NUM_BLOCKS + 4.5f};
   }
 
   joueur->type = ENTITY_PLAYER;
@@ -86,7 +77,7 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
 void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D* camera,
-                       ReseauState* reseau) {
+                       ReseauState* reseau, GameScreen* currentScreen) {
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
   UpdatePlayer(joueur, blocks, camera, &ennemi);
   if (joueur->chronoTir > 0) {
@@ -110,7 +101,8 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
       // hauteur/pitch)
       Vector3 dir = Vector3Subtract(camera->target, camera->position);
       dir = Vector3Normalize(dir);
-      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER, joueur->armeEquipee,joueur->yaw, joueur->pitch);
+      ShootProjectile(projs, camera->position, dir, OWNER_PLAYER,
+                      joueur->armeEquipee, joueur->yaw, joueur->pitch);
     } else {
       jeTire = false;
     }
@@ -138,10 +130,25 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
   paquetEnvoi.tir = jeTire ? 1 : 0;
   paquetEnvoi.estMort = 0;
   paquetEnvoi.arme = joueur->armeEquipee.type;
+  paquetEnvoi.life = joueur->life;  // <-- On indique nos vies
 
   // Gestion mort locale
   if (joueur->health <= 0) {
-    paquetEnvoi.estMort = 1;  // On prévient l'autre qu'on est mort
+    paquetEnvoi.estMort = 1;
+    joueur->life--;
+    paquetEnvoi.life = joueur->life;  // <-- On met à jour avec la vie perdue
+
+    if (joueur->life <= 0) {
+      // --- NOUVEAU : On envoie le paquet fatal avant de couper ! ---
+      EnvoyerPaquet(reseau->socket, &paquetEnvoi);
+
+      TraceLog(LOG_INFO, "Game Over !");
+      if (reseau->socket != -1) FermerReseau(reseau->socket);
+      reseau->connected = 0;
+      reseau->socket = -1;
+      *currentScreen = GAME_OVER;
+      return;
+    }
 
     // Respawn Local
     joueur->health = joueur->maxHealth;
@@ -164,7 +171,11 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
 
   // 4. RÉCEPTION
   PaquetReseau paquetRecu;
-  while (RecevoirPaquet(reseau->socket, &paquetRecu)) {
+  paquetRecu.estMort = 0;  // Par sécurité
+  int statutRecu = 0;
+
+  // On stocke le résultat de la réception dans statutRecu
+  while ((statutRecu = RecevoirPaquet(reseau->socket, &paquetRecu)) == 1) {
     ennemi->pos = Vector3Lerp(ennemi->pos, paquetRecu.pos, 0.2f);
     ennemi->yaw = paquetRecu.yaw;
     ennemi->pitch = paquetRecu.pitch;
@@ -180,20 +191,32 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                               sinf(paquetRecu.pitch),
                               cosf(paquetRecu.yaw) * cosf(paquetRecu.pitch)};
       ShootProjectile(projs, originTir, directionTir, OWNER_REMOTE_PLAYER,
-                      ennemi->armeEquipee,ennemi->yaw, ennemi->pitch);
-      TraceLog(LOG_INFO, "Tir ennemi reçu et créé !");
+                      ennemi->armeEquipee, ennemi->yaw, ennemi->pitch);
     }
   }
 
-  if (paquetRecu.estMort) {
-    TraceLog(LOG_INFO, "L'ennemi est mort !");
+  // On gagne SI l'autre a quitté (statut -1) OU s'il est mort sans vies
+  // restantes
+  if (statutRecu == -1 || (paquetRecu.estMort == 1 && paquetRecu.life <= 0)) {
+    TraceLog(LOG_INFO, "Victoire ! L'adversaire est éliminé ou a quitté.");
+
+    // Déconnexion propre
+    if (reseau->socket != -1) FermerReseau(reseau->socket);
+    reseau->connected = 0;
+    reseau->socket = -1;
+
+    *currentScreen = VICTOIRE;
+    return;  // On arrête
+  }
+  // SI l'autre est mort MAIS qu'il lui reste des vies
+  else if (paquetRecu.estMort == 1 && paquetRecu.life > 0) {
+    TraceLog(LOG_INFO, "Kill ! Il reste %d vies à l'adversaire.",
+             paquetRecu.life);
   }
 
   // 5. Physique des balles et Collisions
-  // 'ennemi' est passé comme 'autre' pour que MES balles le touchent
-  // 'joueur' est passé comme 'player' pour que SES balles me touchent
   int scoreTemp = 0;
-  UpdateProjectiles(projs, blocks, &ennemi, joueur, &scoreTemp);
+  UpdateProjectiles(projs, blocks, &ennemi, joueur, &scoreTemp, currentScreen);
 }
 
 void DessinerLobbyMultijoueur(ReseauState* netState) {
@@ -409,7 +432,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
           InitMultijoueur(player, remotePlayer, 0);
           srand(42);
           init_lab(blocks);
-          creer_lab(blocks);
+          creer_lab_multi(blocks);
           srand(time(NULL));
           InitProjectiles(projs);
           *score = 0;
@@ -444,7 +467,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
           InitMultijoueur(player, remotePlayer, 1);
           srand(42);
           init_lab(blocks);
-          creer_lab(blocks);
+          creer_lab_multi(blocks);
           srand(time(NULL));
           InitProjectiles(projs);
           *score = 0;
@@ -472,7 +495,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
             InitMultijoueur(player, remotePlayer, 0);
             srand(42);
             init_lab(blocks);
-            creer_lab(blocks);
+            creer_lab_multi(blocks);
             srand(time(NULL));
             InitProjectiles(projs);
             *score = 0;
@@ -494,7 +517,8 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer,
       }
     }
   } else {
-    UpdateMultijoueur(player, remotePlayer, blocks, projs, camera, netState);
+    UpdateMultijoueur(player, remotePlayer, blocks, projs, camera, netState,
+                      currentScreen);
     if (IsKeyPressed(KEY_BACKSPACE)) {
       FermerReseau(netState->socket);
       netState->connected = 0;
@@ -509,25 +533,16 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Model tabArmes[4], int score,
-                         ReseauState* netState, Model skyModel,
-                         Model wallModel, Model floorModel,
-                         Model botModel, Model tabModels[4]) {
+                         ReseauState* netState, Model skyModel, Model wallModel,
+                         Model floorModel, Model botModel, Model tabModels[4]) {
   if (!netState->connected) {
-    // --- DESSIN DU LOBBY (Appel de la nouvelle fonction) ---
     DessinerLobbyMultijoueur(netState);
   } else {
     Entity dummyBots[18] = {0};
     dummyBots[0] = *remotePlayer;
 
     UpdateDessinGame(dummyBots, blocks, *camera, projs, score, *player, viseur,
-                     tabArmes, skyModel, wallModel, floorModel, botModel,tabModels);
-    DrawText(TextFormat("POS: X: %.2f | Y: %.2f | Z: %.2f", player->pos.x,
-                        player->pos.y, player->pos.z),
-             10, 130, 20, GREEN);
-
-    const char* role = netState->isServer ? "SERVEUR" : "CLIENT";
-    DrawText(TextFormat("[%s] Ping: -- ms", role), 10, 160, 20, YELLOW);
+                     tabArmes, skyModel, wallModel, floorModel, botModel,
+                     tabModels);
   }
 }
-
-

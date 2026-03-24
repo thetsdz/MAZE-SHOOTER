@@ -41,7 +41,7 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur);
 void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D* camera,
-                       ReseauState* reseau);
+                       ReseauState* reseau, GameScreen* currentScreen);
 
 /**
  * \brief Fonction pour gérer la partie multijoueur (lobby + jeu)

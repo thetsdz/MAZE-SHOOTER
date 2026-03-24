@@ -62,63 +62,67 @@ void explosion(Projectile* p) {
 }
 
 // Fonction générique pour tirer (Bot ou Joueur)
-void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, OwnerType owner, ModeleArme arme, float camYaw, float camPitch) {
-    // Normalisation de la direction par sécurité
-    Vector3 dir = Vector3Normalize(direction);
+void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
+                     OwnerType owner, ModeleArme arme, float camYaw,
+                     float camPitch) {
+  // Normalisation de la direction par sécurité
+  Vector3 dir = Vector3Normalize(direction);
 
-    // Point d'apparition un peu devant pour ne pas se tirer dessus
-    Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
-    switch (arme.type) {
-      case PISTOLET:
-        PlayPistolet();
-        break;
-      case FUSIL:
-        PlayMitraillette();
-        break;
-      case SNIPER:
-        PlayPompe();
-        break;
-      case GRENADE:
-        break;
-    }
+  // Point d'apparition un peu devant pour ne pas se tirer dessus
+  Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
+  switch (arme.type) {
+    case PISTOLET:
+      PlayPistolet();
+      break;
+    case FUSIL:
+      PlayMitraillette();
+      break;
+    case SNIPER:
+      PlayPompe();
+      break;
+    case GRENADE:
+      break;
+  }
 
-    for(int i=0; i<MAX_PROJ; i++){
-        if(!projs[i].active){
-            projs[i].active = true;
-            projs[i].pos = spawn;
-            projs[i].vel = Vector3Scale(dir, arme.vitesseProj); // Vitesse du projectile
-            projs[i].radius = arme.tailleProjectile;
-            projs[i].color=arme.couleurProjectile;
-            projs[i].life = 5.0f;
-            projs[i].degats=arme.degats;
-            projs[i].owner = owner; // <-- On définit le propriétaire
-            projs[i].yaw = camYaw * RAD2DEG;   
-            projs[i].pitch = camPitch * RAD2DEG;
-            switch (arme.type) {
-                case PISTOLET : 
-                    projs[i].type=PROJ_PISTOLET; 
-                    break; 
-                case FUSIL : 
-                    projs[i].type=PROJ_FUSIL; 
-                    break;
-                case SNIPER : 
-                    projs[i].type=PROJ_SNIPER; 
-                    break;
-                case GRENADE : 
-                    projs[i].type=PROJ_GRENADE ; 
-                    break;
-                default :   
-                    break;
-            }
-            break;
-        }
+  for (int i = 0; i < MAX_PROJ; i++) {
+    if (!projs[i].active) {
+      projs[i].active = true;
+      projs[i].pos = spawn;
+      projs[i].vel =
+          Vector3Scale(dir, arme.vitesseProj);  // Vitesse du projectile
+      projs[i].radius = arme.tailleProjectile;
+      projs[i].color = arme.couleurProjectile;
+      projs[i].life = 5.0f;
+      projs[i].degats = arme.degats;
+      projs[i].owner = owner;  // <-- On définit le propriétaire
+      projs[i].yaw = camYaw * RAD2DEG;
+      projs[i].pitch = camPitch * RAD2DEG;
+      switch (arme.type) {
+        case PISTOLET:
+          projs[i].type = PROJ_PISTOLET;
+          break;
+        case FUSIL:
+          projs[i].type = PROJ_FUSIL;
+          break;
+        case SNIPER:
+          projs[i].type = PROJ_SNIPER;
+          break;
+        case GRENADE:
+          projs[i].type = PROJ_GRENADE;
+          break;
+        default:
+          break;
+      }
+      break;
     }
+  }
 }
 
 // ... (Début du fichier identique)
 
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Entity** autre, Entity* player, int* score) {
+                       Entity** autre, Entity* player, int* score,
+                       GameScreen* currentScreen) {
   float dt = GetFrameTime();
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) continue;
@@ -231,12 +235,18 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
           // --- GESTION DE LA MORT EN SOLO ---
           if (projs[i].owner == OWNER_BOT && player->health <= 0) {
-            player->health = player->maxHealth;
-            player->ammo = player->armeEquipee.munitionsMax;
-            player->pos =
-                (Vector3){1.5f, 10.0f, 1.5f};  // Position de respawn solo
-            player->velocityY = 0;             // IMPORTANT : stop la chute
-            TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
+            player->life -= 1;
+            if (player->life <= 0) {
+              TraceLog(LOG_INFO, "Game Over !");
+              *currentScreen = GAME_OVER;
+            } else {
+              player->health = player->maxHealth;
+              player->ammo = player->armeEquipee.munitionsMax;
+              player->pos =
+                  (Vector3){1.5f, 10.0f, 1.5f};  // Position de respawn solo
+              player->velocityY = 0;             // IMPORTANT : stop la chute
+              TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
+            }
           }
         }
       }
@@ -305,4 +315,3 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     }
   }
 }
-
