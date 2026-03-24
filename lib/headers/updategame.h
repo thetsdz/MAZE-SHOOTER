@@ -37,6 +37,6 @@ void ChangementArme(Entity *joueur);
 
 void UpdateGame(Entity* player, Entity bot[18],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                Projectile projs[MAX_PROJ], int* score, Camera3D* camera);
+                Projectile projs[MAX_PROJ], int* score, Camera3D* camera, GameScreen* currentScreen);
 
 #endif

@@ -45,7 +45,8 @@ void ChangementArme(Entity* joueur) {
 
 void UpdateGame(Entity* player, Entity bot[18],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                Projectile projs[MAX_PROJ], int* score, Camera3D* camera) {
+                Projectile projs[MAX_PROJ], int* score, Camera3D* camera,
+                GameScreen* currentScreen) {
   // --- Logique du jeu ---
   Entity* bot_ptr = &bot[0];
   UpdatePlayer(player, blocks, camera, &bot_ptr);
@@ -70,14 +71,6 @@ void UpdateGame(Entity* player, Entity bot[18],
   if (IsKeyPressed(KEY_R)) player->ammo = player->armeEquipee.munitionsMax;
   ;
 
-  if (IsKeyPressed(KEY_E) && *score >= SCORE_TRADE &&
-      player->armeEquipee.munitionsMax < MAX_PROJ) {
-    *score -= SCORE_TRADE;
-    player->armeEquipee.munitionsMax += 2;
-    TraceLog(LOG_INFO, "Achat amélioration : nouvelle capacité max = %d",
-             player->ammo);
-  }
-
   bool veutTirer = false;
   if (player->armeEquipee.type == FUSIL) {
     veutTirer = IsMouseButtonDown(MOUSE_BUTTON_LEFT);  // Continu
@@ -90,12 +83,12 @@ void UpdateGame(Entity* player, Entity bot[18],
                       cosf(player->yaw) * cosf(player->pitch)};
     Vector3 startPos = {player->pos.x, player->pos.y + 0.5f, player->pos.z};
 
-    
-    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee,player->yaw,player->pitch);
+    ShootProjectile(projs, startPos, camDir, OWNER_PLAYER, player->armeEquipee,
+                    player->yaw, player->pitch);
 
     player->ammo--;
     player->chronoTir =
         player->armeEquipee.cadenceTir;  // On réinitialise le délai
   }
-  UpdateProjectiles(projs, blocks, &bot, player, score);
+  UpdateProjectiles(projs, blocks, &bot, player, score, currentScreen);
 }

@@ -16,5 +16,10 @@ void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
 /** @brief Affichage du labyrinthe*/
-void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel, Model floorModel);
+void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel,
+               Model floorModel);
+
+/** @brief Génération du labyrinthe*/
+void creer_lab_multi(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
+
 #endif
