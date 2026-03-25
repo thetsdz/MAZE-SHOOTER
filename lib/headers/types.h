@@ -234,6 +234,8 @@ typedef struct {
   int estMort;   /**< 1 si le joueur est mort */
   TypeArme arme; /**< L'arme que le joueur tient actuellement */
   int life;       /**< Nombre de vies restantes du joueur */
+  int isPing;      // 0=normal, 1=ping aller, 2=ping retour
+  double timestamp; // Pour mesurer le RTT
 } PaquetReseau;
 
 #endif
