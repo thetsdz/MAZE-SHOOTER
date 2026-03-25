@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lib/headers/cryptage.h"
+#include "../../lib/headers/cryptage.h"
 
 /* --- Structures de test --- */
 typedef struct {
