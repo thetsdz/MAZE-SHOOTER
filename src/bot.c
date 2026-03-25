@@ -246,10 +246,10 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // --- Physique & Mouvement (Gravité) ---
 
   // PARTIE SAUT DE BOT s'il est bloqué ou aléatoirement
-  static float moveTimer = 0.0f;
-  moveTimer += dt;
+  static float moveTimer = 10.0f;
+  moveTimer += (dt/18.0f);
 
-  if (fmodf(moveTimer, 4.0f) < 0.1f && bot->onGround) {
+  if (fmodf(moveTimer, 5.0f) < 0.1f && bot->onGround) {
     bot->velocityY = 0.35f;  // Petit saut
     bot->onGround = false;
   }
@@ -352,12 +352,12 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     }
   }
 
-  if (botBottom <= closestGround) {
-    nextPos.y = closestGround + botHalf;
+  if (botBottom < closestGround && bot->velocityY <= 0) {
+    nextPos.y = closestGround ; // botHalf;
     bot->velocityY = 0;
     bot->onGround = true;
   }
 
-  // Validation finale
+  //Validation finale
   bot->pos = nextPos;
 }

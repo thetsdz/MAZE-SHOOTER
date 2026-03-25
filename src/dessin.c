@@ -279,7 +279,7 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   DrawLevel(blocks, wallModel, floorModel);
 
   for (int b = 0; b < 18; b++) {
-    Vector3 drawPos = bot[b].pos;
+    Vector3 drawPos = {bot[b].pos.x,bot[b].pos.y,bot[b].pos.z};
     Matrix transform = MatrixIdentity();
     transform =
         MatrixMultiply(transform, MatrixRotateX(bot[b].pitch * DEG2RAD));

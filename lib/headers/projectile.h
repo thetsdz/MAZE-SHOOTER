@@ -35,10 +35,10 @@ pour le bot
  /** \version 5.0
  *  \author Hugues Astier
  *  \date 18/03/2026
- *  \brief Changeement de logique de detection des projectiles en colision sur le bot, ajout des grenades, et des differents type de projectile 
+ *  \brief Changement de logique de detection des projectiles en colision sur le bot, ajout des grenades, et des differents type de projectile 
  *  en focntion de l'arme.
  *  Ajout de la fonction explosion, gravite et RebondirGrenade pour gerer la grenade, plus ajout des textures sur les projectiles 
- * Systeme de projectiles fonctiennels 
+ *  Systeme de projectiles fonctiennels 
  */
 
 

@@ -59,7 +59,7 @@
  * stocker les données échangées entre les joueurs à chaque frame)
  */
 
-/** \version
+/** \version 8.0
  * \author Hugues Astier
  * \date 18/03/2026
  * \brief ajout des types armes, des types projectiles, de modelearme et de
