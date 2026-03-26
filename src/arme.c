@@ -1,6 +1,4 @@
 
-
-
 #include "arme.h"
 
 ModeleArme ObtenirModeleArme(TypeArme type) {

@@ -59,7 +59,7 @@
  * stocker les données échangées entre les joueurs à chaque frame)
  */
 
-/** \version 8.0
+ /** \version 8.0
  * \author Hugues Astier
  * \date 18/03/2026
  * \brief ajout des types armes, des types projectiles, de modelearme et de
@@ -101,9 +101,9 @@ typedef enum GameScreen {
  * @brief Définit le type d'une entité (joueur ou bot).
  */
 typedef enum {
-  ENTITY_PLAYER,       /**< Entité contrôlée par le joueur. */
-  ENTITY_BOT,          /**< Entité contrôlée par l'IA. */
-  ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
+    ENTITY_PLAYER,       /**< Entité contrôlée par le joueur. */
+    ENTITY_BOT,          /**< Entité contrôlée par l'IA. */
+    ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
 } EntityType;
 
 /**
@@ -111,10 +111,10 @@ typedef enum {
  * @brief Définit le propriétaire d'un projectile.
  */
 typedef enum {
-  OWNER_PLAYER,       /**< Projectile tiré par le joueur. */
-  OWNER_BOT,          /**< Projectile tiré par un bot. */
-  OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau).
-                       */
+    OWNER_PLAYER,       /**< Projectile tiré par le joueur. */
+    OWNER_BOT,          /**< Projectile tiré par un bot. */
+    OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau).
+                         */
 } OwnerType;
 
 /**
@@ -122,8 +122,8 @@ typedef enum {
  * @brief Coordonnées pour la pile DFS (parcours du labyrinthe).
  */
 typedef struct {
-  int i; /**< Indice de ligne. */
-  int j; /**< Indice de colonne. */
+    int i; /**< Indice de ligne. */
+    int j; /**< Indice de colonne. */
 } Coord;
 
 /**
@@ -131,12 +131,12 @@ typedef struct {
  * @brief Représente un bloc du labyrinthe (mur ou couloir).
  */
 typedef struct {
-  Vector3 pos;  /**< Position centrale du bloc. */
-  float width;  /**< Largeur du bloc (axe X). */
-  float height; /**< Hauteur du bloc (axe Y). */
-  float depth;  /**< Profondeur du bloc (axe Z). */
-  Color color;  /**< Couleur du bloc pour le rendu. */
-  bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
+    Vector3 pos;  /**< Position centrale du bloc. */
+    float width;  /**< Largeur du bloc (axe X). */
+    float height; /**< Hauteur du bloc (axe Y). */
+    float depth;  /**< Profondeur du bloc (axe Z). */
+    Color color;  /**< Couleur du bloc pour le rendu. */
+    bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
 } Block;
 
 /**
@@ -217,9 +217,9 @@ typedef struct {
  * @brief Contient l'état de la connexion réseau
  */
 typedef struct {
-  int socket;    /**< Le socket de communication (-1 si déconnecté) */
-  int isServer;  /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
-  int connected; /**< 1 si la partie a commencé, 0 sinon */
+    int socket;    /**< Le socket de communication (-1 si déconnecté) */
+    int isServer;  /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
+    int connected; /**< 1 si la partie a commencé, 0 sinon */
 } ReseauState;
 
 /**
@@ -237,5 +237,20 @@ typedef struct {
   int isPing;      // 0=normal, 1=ping aller, 2=ping retour
   double timestamp; // Pour mesurer le RTT
 } PaquetReseau;
+
+typedef enum {
+    THEME_HERBE = 0,
+    THEME_BETON,
+    THEME_NEIGE,
+    THEME_LAVE,
+    NB_THEMES
+} ThemeId;
+
+typedef struct {
+    const char *nom;
+    const char *wallTexPath;
+    const char *floorTexPath;
+    const char *skyTexPath;
+} ThemeInfo;
 
 #endif
