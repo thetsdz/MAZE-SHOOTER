@@ -1,11 +1,9 @@
 #ifndef ARME_H
 #define ARME_H
 
-#include "types.h"
 #include "raymath.h"
+#include "types.h"
 #include <stdio.h>
-
-
 
 /** \version 1.0
  * \author Astier Hugues
@@ -16,5 +14,3 @@
 ModeleArme ObtenirModeleArme(TypeArme type);
 
 #endif
-
-

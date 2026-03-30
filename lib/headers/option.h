@@ -14,6 +14,6 @@
  *   \brief Gére la creation/dessin des chaques boutons et zone d'informations
  *   \param <GameScreen* currentScreen> Etat de l'ecran actuel
  */
-void GererOption(GameScreen* currentScreen);
+void GererOption(GameScreen *currentScreen);
 
 #endif

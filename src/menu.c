@@ -10,56 +10,45 @@
 
 // Variables statiques pour gérer la sélection
 static int selectedButton = 0;
-static const char *texteBoutons[5] = {
-    "NOUVELLE PARTIE",
-    "MULTIJOUEUR",
-    "CHARGER DERNIERE PARTIE SAUVEGARDÉE",
-    "OPTIONS",
-    "QUITTER"};
+static const char *texteBoutons[5] = {"NOUVELLE PARTIE", "MULTIJOUEUR",
+                                      "CHARGER DERNIERE PARTIE SAUVEGARDÉE",
+                                      "OPTIONS", "QUITTER"};
 
 /**
  *   \brief Gere en fonction de si les touches haut,bas,droite,gauche ou entrée
  * sont utilisées
  *   \param <Game screen **currentScreen> etat de l'ecran à modifier en question
  */
-void GestionClavier(GameScreen **currentScreen)
-{
-  if (IsKeyPressed(KEY_DOWN))
-  {
-    selectedButton = (selectedButton + 1) % 5;
-  }
-  else if (IsKeyPressed(KEY_UP))
-  {
-    selectedButton = (selectedButton - 1 + 5) % 5;
-  }
-  else
-  {
-    if (IsKeyPressed(KEY_ENTER))
-    {
-      switch (selectedButton)
-      {
-      case 0:
-        **currentScreen = NOUVELLE_PARTIE;
-        DisableCursor();
-        break;
-      case 1:
-        **currentScreen = MULTIJOUEUR;
-        break;
-      case 2:
-        **currentScreen = CHARGER_PARTIE;
-        break;
-      case 3:
-        **currentScreen = OPTIONS;
-        break;
-      case 4:
-        **currentScreen = EXIT;
-        break;
-      default:
-        **currentScreen = MENU;
-        break;
-      }
+void GestionClavier(GameScreen **currentScreen) {
+    if (IsKeyPressed(KEY_DOWN)) {
+        selectedButton = (selectedButton + 1) % 5;
+    } else if (IsKeyPressed(KEY_UP)) {
+        selectedButton = (selectedButton - 1 + 5) % 5;
+    } else {
+        if (IsKeyPressed(KEY_ENTER)) {
+            switch (selectedButton) {
+            case 0:
+                **currentScreen = NOUVELLE_PARTIE;
+                DisableCursor();
+                break;
+            case 1:
+                **currentScreen = MULTIJOUEUR;
+                break;
+            case 2:
+                **currentScreen = CHARGER_PARTIE;
+                break;
+            case 3:
+                **currentScreen = OPTIONS;
+                break;
+            case 4:
+                **currentScreen = EXIT;
+                break;
+            default:
+                **currentScreen = MENU;
+                break;
+            }
+        }
     }
-  }
 }
 
 /**
@@ -69,105 +58,94 @@ void GestionClavier(GameScreen **currentScreen)
  *   \param <int indice_bouton>
  */
 void GestionSouris(GameScreen **currentScreen, Rectangle rect,
-                   int indice_bouton)
-{
-  if (CheckCollisionPointRec(GetMousePosition(), rect))
-  {
-    selectedButton = indice_bouton;
+                   int indice_bouton) {
+    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        selectedButton = indice_bouton;
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-    {
-      switch (indice_bouton)
-      {
-      case 0:
-        **currentScreen = NOUVELLE_PARTIE;
-        DisableCursor();
-        break;
-      case 1:
-        **currentScreen = MULTIJOUEUR;
-        break;
-      case 2:
-        **currentScreen = CHARGER_PARTIE;
-        break;
-      case 3:
-        **currentScreen = OPTIONS;
-        break;
-      case 4:
-        **currentScreen = EXIT;
-        break;
-      default:
-        **currentScreen = MENU;
-        break;
-      }
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            switch (indice_bouton) {
+            case 0:
+                **currentScreen = NOUVELLE_PARTIE;
+                DisableCursor();
+                break;
+            case 1:
+                **currentScreen = MULTIJOUEUR;
+                break;
+            case 2:
+                **currentScreen = CHARGER_PARTIE;
+                break;
+            case 3:
+                **currentScreen = OPTIONS;
+                break;
+            case 4:
+                **currentScreen = EXIT;
+                break;
+            default:
+                **currentScreen = MENU;
+                break;
+            }
+        }
     }
-  }
 }
 
 /**
  *   \brief  Gère le menu principal
  *   \param <Game screen *currentScreen> Etat de l'ecran actuel
  */
-void GererMenu(GameScreen *currentScreen)
-{
-  PlayMenuMusic();
+void GererMenu(GameScreen *currentScreen) {
+    PlayMenuMusic();
 
-  ShowCursor();
-  int sw = GetScreenWidth();
-  int sh = GetScreenHeight();
-  DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255});
+    ShowCursor();
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+    DrawRectangle(0, 0, sw, sh, (Color){10, 10, 20, 255});
 
-  // 1. Gestion des entrées
-  GestionClavier(&currentScreen);
+    // 1. Gestion des entrées
+    GestionClavier(&currentScreen);
 
-  // 2. Paramètres des boutons
-  float btnW = 500;
-  float btnH = 50;
-  float posX = (sw - btnW) / 2.0f;
-  float departY = sh / 2 - 30;
+    // 2. Paramètres des boutons
+    float btnW = 500;
+    float btnH = 50;
+    float posX = (sw - btnW) / 2.0f;
+    float departY = sh / 2 - 30;
 
-  for (int i = 0; i < 5; i++)
-  {
-    Rectangle rect = {posX, departY + i * 70, btnW, btnH};
+    for (int i = 0; i < 5; i++) {
+        Rectangle rect = {posX, departY + i * 70, btnW, btnH};
 
-    // 3. Gestion souris pour ce bouton précis
-    GestionSouris(&currentScreen, rect, i);
+        // 3. Gestion souris pour ce bouton précis
+        GestionSouris(&currentScreen, rect, i);
 
-    // 4. Couleurs selon sélection
-    Color couleurFond;
-    Color couleurTexte;
-    Color couleurBordure;
+        // 4. Couleurs selon sélection
+        Color couleurFond;
+        Color couleurTexte;
+        Color couleurBordure;
 
-    if (i == selectedButton)
-    {
-      couleurFond = (Color){50, 50, 80, 255};
-      couleurTexte = WHITE;
-      couleurBordure = WHITE;
+        if (i == selectedButton) {
+            couleurFond = (Color){50, 50, 80, 255};
+            couleurTexte = WHITE;
+            couleurBordure = WHITE;
+        } else {
+            couleurFond = (Color){30, 30, 50, 255};
+            couleurTexte = LIGHTGRAY;
+            couleurBordure = DARKGRAY;
+        }
+
+        // 5. Dessin
+        DrawRectangleRec(rect, couleurFond);
+        DrawRectangleLinesEx(rect, 2, couleurBordure);
+        int tW = MeasureText(texteBoutons[i], 20);
+        DrawText(texteBoutons[i], rect.x + (rect.width - tW) / 2,
+                 rect.y + (rect.height - 20) / 2, 20, couleurTexte);
     }
-    else
-    {
-      couleurFond = (Color){30, 30, 50, 255};
-      couleurTexte = LIGHTGRAY;
-      couleurBordure = DARKGRAY;
-    }
 
-    // 5. Dessin
-    DrawRectangleRec(rect, couleurFond);
-    DrawRectangleLinesEx(rect, 2, couleurBordure);
-    int tW = MeasureText(texteBoutons[i], 20);
-    DrawText(texteBoutons[i],
-             rect.x + (rect.width - tW) / 2,
-             rect.y + (rect.height - 20) / 2,
-             20, couleurTexte);
-  }
-
-  // Titres et textes fixes
-  DrawText("MAZE SHOOTER",
-           sw / 2 - MeasureText("MAZE SHOOTER", 40) / 2,
-           sh / 4 - 50, 40, WHITE);
-  DrawText("MENU PRINCIPAL",
-           sw / 2 - MeasureText("MENU PRINCIPAL", 25) / 2,
-           sh / 4, 25, LIGHTGRAY);
-  DrawText("Utilise les flèches et Entrée pour naviguer",
-           sw / 2 - MeasureText("Utilise les flèches et Entrée pour naviguer", 15) / 2,
-           sh - 50, 15, LIGHTGRAY);
+    // Titres et textes fixes
+    DrawText("MAZE SHOOTER", sw / 2 - MeasureText("MAZE SHOOTER", 40) / 2,
+             sh / 4 - 50, 40, WHITE);
+    DrawText("MENU PRINCIPAL", sw / 2 - MeasureText("MENU PRINCIPAL", 25) / 2,
+             sh / 4, 25, LIGHTGRAY);
+    DrawText(
+        "Utilise les flèches et Entrée pour naviguer",
+        sw / 2 -
+            MeasureText("Utilise les flèches et Entrée pour naviguer", 15) / 2,
+        sh - 50, 15, LIGHTGRAY);
 }
