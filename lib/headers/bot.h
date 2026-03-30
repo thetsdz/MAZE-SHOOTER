@@ -3,8 +3,8 @@
 
 #include "projectile.h"
 #include "raylib.h"
-#include "raymath.h"
 #include "types.h"
+#include "raymath.h"
 
 /** \brief Initialise le robot
     \param Le robot passé en paramètre

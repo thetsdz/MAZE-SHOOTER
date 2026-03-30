@@ -1,8 +1,9 @@
 #ifndef ENDGAME_H
 #define ENDGAME_H
 
-#include "raylib.h"
+
 #include "types.h"
+#include "raylib.h"
 
 /** \version 1.0
  * \author Corentin Jammes

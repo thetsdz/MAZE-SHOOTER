@@ -1,8 +1,9 @@
 #ifndef ARME_H
 #define ARME_H
 
-#include "raymath.h"
+
 #include "types.h"
+#include "raymath.h"
 #include <stdio.h>
 
 /** \version 1.0

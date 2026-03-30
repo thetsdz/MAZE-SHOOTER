@@ -47,8 +47,8 @@
  * \brief ajout de l'initialisation et la gestion des nouvelles armes.
  */
 
-#include "raymath.h"
 #include "types.h"
+#include "raymath.h"
 
 /** @brief Réinitialise les variables du joueur (position spawn, vitesse
  * nulle)*/
