@@ -1,8 +1,9 @@
 #ifndef ENDGAME_H
 #define ENDGAME_H
 
-#include "raylib.h"
+
 #include "types.h"
+#include "raylib.h"
 
 /** \version 1.0
  * \author Corentin Jammes
@@ -17,7 +18,7 @@
  *   \param <GameScreen* currentScreen> Etat de l'ecran actuel
  *   \param <int score> Score final du joueur
  */
-void GererGameOver(GameScreen* currentScreen, int score);
+void GererGameOver(GameScreen *currentScreen, int score);
 
 /**
  *   \brief Gére la creation/dessin des chaques boutons et zone d'informations
@@ -25,5 +26,5 @@ void GererGameOver(GameScreen* currentScreen, int score);
  *   \param <GameScreen* currentScreen> Etat de l'ecran actuel
  *   \param <int score> Score final du joueur
  */
-void GererVictoire(GameScreen* currentScreen, int score);
+void GererVictoire(GameScreen *currentScreen, int score);
 #endif

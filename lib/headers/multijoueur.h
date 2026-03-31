@@ -27,7 +27,7 @@
  * \param <Entity* ennemi> l'ennemi distant(client)
  * \param <int estServeur> 1 si le joueur est le serveur, 0 sinon
  */
-void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur);
+void InitMultijoueur(Entity *joueur, Entity *ennemi, int estServeur);
 
 /**
  * \brief La boucle principale du mode multi
@@ -38,10 +38,10 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur);
  * \param <Camera3D* camera> la caméra
  * \param <ReseauState* reseau> l'état du réseau
  */
-void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
+void UpdateMultijoueur(Entity *joueur, Entity *ennemi,
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Projectile projs[MAX_PROJ], Camera3D* camera,
-                       ReseauState* reseau, GameScreen* currentScreen);
+                       Projectile projs[MAX_PROJ], Camera3D *camera,
+                       ReseauState *reseau, GameScreen *currentScreen);
 
 /**
  * \brief Fonction pour gérer la partie multijoueur (lobby + jeu)
@@ -56,17 +56,17 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi,
  * \param <int* score> un pointeur vers le score du joueur
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
-void partie_multijoueur(Entity* player, Entity* remotePlayer,
+void partie_multijoueur(Entity *player, Entity *remotePlayer,
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                        Projectile projs[MAX_PROJ], Camera3D* camera,
-                        ReseauState* netState, bool* jeuInitialise, int* score,
-                        GameScreen* currentScreen);
+                        Projectile projs[MAX_PROJ], Camera3D *camera,
+                        ReseauState *netState, bool *jeuInitialise, int *score,
+                        GameScreen *currentScreen);
 
 /**
  * \brief Dessine le lobby d'attente multijoueur
  * \param <ReseauState* netState> etat du reseau
  */
-void DessinerLobbyMultijoueur(ReseauState* netState);
+void DessinerLobbyMultijoueur(ReseauState *netState);
 
 /**
  * \brief Dessine le mode multijoueur
@@ -74,20 +74,10 @@ void DessinerLobbyMultijoueur(ReseauState* netState);
  */
 // multijoueur.h
 // multijoueur.h
-void DessinerMultijoueur(
-    Entity* player,
-    Entity* remotePlayer,
-    Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-    Projectile projs[MAX_PROJ],
-    Camera3D* camera,
-    Texture2D viseur,
-    Model tabArmes[4],
-    int score,
-    ReseauState* netState,
-    Model skyModel,
-    Model wallModel,
-    Model floorModel,
-    Model botModel,
-    Model tabModels[4]
-);
+void DessinerMultijoueur(Entity *player, Entity *remotePlayer,
+                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                         Projectile projs[MAX_PROJ], Camera3D *camera,
+                         Texture2D viseur, Model tabArmes[4], int score,
+                         ReseauState *netState, Model skyModel, Model wallModel,
+                         Model floorModel, Model botModel, Model tabModels[4]);
 #endif

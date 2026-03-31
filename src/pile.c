@@ -2,8 +2,8 @@
  * \file pile.c
  */
 
-#include <stdlib.h>
 #include "../lib/headers/pile.h"
+#include <stdlib.h>
 
 typedef struct Element {
     Coord coord;
@@ -12,12 +12,10 @@ typedef struct Element {
 
 static Element *top = NULL;
 
-void initpile(void) {
-    top = NULL;
-}
+void initpile(void) { top = NULL; }
 
 void empiler(int i, int j) {
-    Element *nouv = (Element*)malloc(sizeof(Element));
+    Element *nouv = (Element *)malloc(sizeof(Element));
     nouv->coord.i = i;
     nouv->coord.j = j;
     nouv->next = top;
@@ -26,7 +24,7 @@ void empiler(int i, int j) {
 
 Coord depiler(void) {
     Coord coord = {-1, -1};
-    if(top != NULL) {
+    if (top != NULL) {
         Element *tmp = top;
         coord = top->coord;
         top = top->next;
@@ -35,6 +33,4 @@ Coord depiler(void) {
     return coord;
 }
 
-int pilevide(void) {
-    return top == NULL;
-}
+int pilevide(void) { return top == NULL; }

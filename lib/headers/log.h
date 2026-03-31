@@ -14,7 +14,7 @@
  * @param filename Chemin du fichier log
  * @return 1 si succès, 0 si erreur
  */
-int InitLog(const char* filename);
+int InitLog(const char *filename);
 
 /**
  * @brief Ferme le fichier log
@@ -27,6 +27,6 @@ void CloseLog(void);
  * @param text Format string
  * @param args Arguments variables
  */
-void LogToFile(int logLevel, const char* text, va_list args);
+void LogToFile(int logLevel, const char *text, va_list args);
 
 #endif

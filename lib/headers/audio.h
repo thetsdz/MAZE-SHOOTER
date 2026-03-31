@@ -23,7 +23,7 @@ typedef struct {
     Sound walk;         /**< Son des pas du joueur */
     Sound heart;        /**< Son du battement de cœur (vie faible) */
     Sound reload;       /**< Son du rechargement */
-    Sound explosion;       /**< Son de l'explosion de la grenade */
+    Sound explosion;    /**< Son de l'explosion de la grenade */
 
 } GameAudio;
 

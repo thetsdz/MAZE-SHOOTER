@@ -34,7 +34,7 @@ int InitServeur(int port);
  * \param <int port> le port vers lequel envoyer les infos
  * \return le socket du client
  */
-int InitClient(const char* adresseIP, int port);
+int InitClient(const char *adresseIP, int port);
 
 /**
  * \brief Vérifie si quelqu'un essaie de se connecter (Uniquement pour le
@@ -49,7 +49,7 @@ int AttendreClient(int socketServeur);
  * \param <int socket> le socket de la communication
  * \param <PaquetReseau* paquet> le paquet à envoyer
  */
-void EnvoyerPaquet(int socket, PaquetReseau* paquet);
+void EnvoyerPaquet(int socket, PaquetReseau *paquet);
 
 /**
  * \brief Reçoit les infos de l'autre
@@ -57,7 +57,7 @@ void EnvoyerPaquet(int socket, PaquetReseau* paquet);
  * \param <PaquetReseau* paquet> le paquet à recevoir
  * \return 1 si un paquet est reçu, 0 sinon
  */
-int RecevoirPaquet(int socket, PaquetReseau* paquet);
+int RecevoirPaquet(int socket, PaquetReseau *paquet);
 
 /**
  * \brief Coupe la communication
@@ -85,5 +85,5 @@ int InitUDPBroadcastListener(int port);
  * \param ipSortie Tableau de char (ex: char ip[20]) qui contiendra l'IP trouvée
  * \return 1 si un serveur est trouvé, 0 sinon
  */
-int RecevoirBroadcast(int sock, char* ipSortie);
+int RecevoirBroadcast(int sock, char *ipSortie);
 #endif

@@ -16,8 +16,10 @@
 /** \version 3.0
  * \author Hugues Astier
  * \date 17/03/2026
- * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du bot qui pivote pour suivre le joueur. 
- * Deplacement de la fonction DrawProjectiles dans dessin.c, avec des modifications pour que les projectiles suivent le viseur.
+ * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du
+ * bot qui pivote pour suivre le joueur. Deplacement de la fonction
+ * DrawProjectiles dans dessin.c, avec des modifications pour que les
+ * projectiles suivent le viseur.
  */
 
 /** \version 4.0
@@ -26,21 +28,14 @@
  * \brief ajout de la minimap
  */
 
-
-
 #include "types.h"
-
-
-
 
 /**
  * @brief permet de dessiner les projectiles à chaque frame
- * @param projs Pointeur vers le tableau de projetiles 
+ * @param projs Pointeur vers le tableau de projetiles
  * @param tabModels tableau de texture des differrents projectiles (trié)
  */
 void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
-
-
 
 /**
  * @brief Gere l'affichage de la map en haut à droite

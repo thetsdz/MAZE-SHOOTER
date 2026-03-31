@@ -34,13 +34,13 @@ et ajout du bot dans le fichier de sauvegarde
  * \param <Entity* bot> récupère les infos du bot
  * \param <int* score> récupère le score de la partie
  */
-void sauvegarder(Entity* player, Entity bot[18], int* score);
+void sauvegarder(Entity *player, Entity bot[18], int *score);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte
  *   \param <Entity* player> charge les infos du joueur
  *   \param <Entity* bot> charge les infos du bot
  *   \param <int* score> charge le score de la partie
  */
-void chargerSauvegarde(Entity* player, Entity bot[18], int* score);
+void chargerSauvegarde(Entity *player, Entity bot[18], int *score);
 
 #endif
