@@ -23,6 +23,7 @@
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/updategame.h"
+#include "../lib/headers/heal.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -82,6 +83,7 @@ int main(void) {
     Entity player;
     Entity bot[18];
     Entity remotePlayer;
+    Heal heal[10];
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];
     Projectile projs[MAX_PROJ];
     int score = 0;
@@ -176,6 +178,8 @@ int main(void) {
             InitPlayer(&player);
             for (int i = 0; i < 18; i++)
                 InitBot(&bot[i], blocks);
+            for (int i=0; i < 10;i++)
+                InitHeal(&heal[i],blocks);
             init_lab(blocks);
             creer_lab(blocks);
             InitProjectiles(projs);
@@ -191,7 +195,7 @@ int main(void) {
         }
         case NOUVELLE_PARTIE: {
             StopAllMusic();
-            UpdateGame(&player, bot, blocks, projs, &score, &camera,
+            UpdateGame(&player, bot,heal, blocks, projs, &score, &camera,
                        &currentScreen);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
@@ -201,7 +205,7 @@ int main(void) {
         }
         case MULTIJOUEUR: {
             StopAllMusic();
-            partie_multijoueur(&player, &remotePlayer, blocks, projs, &camera,
+            partie_multijoueur(&player, &remotePlayer,heal, blocks, projs, &camera,
                                &netState, &jeuInitialise, &score,
                                &currentScreen);
             break;
@@ -212,7 +216,7 @@ int main(void) {
                 chargement = true;
                 DisableCursor();
             }
-            UpdateGame(&player, bot, blocks, projs, &score, &camera,
+            UpdateGame(&player, bot,heal, blocks, projs, &score, &camera,
                        &currentScreen);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
@@ -255,19 +259,19 @@ int main(void) {
             break;
         }
         case NOUVELLE_PARTIE: {
-            UpdateDessinGame(bot, blocks, camera, projs, score, player, viseur,
+            UpdateDessinGame(bot,heal, blocks, camera, projs, score, player, viseur,
                              tabArmes, skyModel, wallModel, floorModel,
                              botModel, tabProjModels);
             break;
         }
         case MULTIJOUEUR: {
-            DessinerMultijoueur(&player, &remotePlayer, blocks, projs, &camera,
+            DessinerMultijoueur(&player, &remotePlayer, heal,blocks, projs, &camera,
                                 viseur, tabArmes, score, &netState, skyModel,
                                 wallModel, floorModel, botModel, tabProjModels);
             break;
         }
         case CHARGER_PARTIE: {
-            UpdateDessinGame(bot, blocks, camera, projs, score, player, viseur,
+            UpdateDessinGame(bot,heal, blocks, camera, projs, score, player, viseur,
                              tabArmes, skyModel, wallModel, floorModel,
                              botModel, tabProjModels);
             break;

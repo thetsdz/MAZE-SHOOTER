@@ -11,6 +11,7 @@
 #include "../lib/headers/arme.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
+#include "../lib/headers/heal.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/sauvegarde.h"
@@ -43,7 +44,7 @@ void ChangementArme(Entity *joueur) {
     }
 }
 
-void UpdateGame(Entity *player, Entity bot[18],
+void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], int *score, Camera3D *camera,
                 GameScreen *currentScreen) {
@@ -53,6 +54,9 @@ void UpdateGame(Entity *player, Entity bot[18],
 
     for (int i = 0; i < 18; i++) {
         UpdateBot(&bot[i], blocks, player->pos, projs);
+    }
+    for(int i = 0; i < 10; i++) {
+        UpdateHeal(&heal[i],player,blocks);
     }
 
     if (IsKeyPressed(KEY_Y))

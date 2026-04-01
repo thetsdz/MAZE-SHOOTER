@@ -14,6 +14,7 @@
 #include "../lib/headers/asset.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/dessin.h"
+#include "../lib/headers/heal.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
@@ -77,12 +78,16 @@ void InitMultijoueur(Entity *joueur, Entity *ennemi, int estServeur) {
     ennemi->type = ENTITY_REMOTE_PLAYER;
 }
 
-void UpdateMultijoueur(Entity *joueur, Entity *ennemi,
+void UpdateMultijoueur(Entity *joueur, Entity *ennemi,Heal heal[10],
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D *camera,
                        ReseauState *reseau, GameScreen *currentScreen) {
     // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
     UpdatePlayer(joueur, blocks, camera, &ennemi);
+    for( int i = 0; i < 10; i++) {
+        UpdateHeal(&heal[i],joueur,blocks);
+        UpdateHeal(&heal[i],ennemi,blocks);
+    }
     if (joueur->chronoTir > 0) {
         joueur->chronoTir -= GetFrameTime();
     }
@@ -362,7 +367,7 @@ void DessinerLobbyMultijoueur(ReseauState *netState) {
     }
 }
 
-void partie_multijoueur(Entity *player, Entity *remotePlayer,
+void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                         Projectile projs[MAX_PROJ], Camera3D *camera,
                         ReseauState *netState, bool *jeuInitialise, int *score,
@@ -559,7 +564,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer,
             }
         }
     } else {
-        UpdateMultijoueur(player, remotePlayer, blocks, projs, camera, netState,
+        UpdateMultijoueur(player, remotePlayer,heal, blocks, projs, camera, netState,
                           currentScreen);
         if (IsKeyPressed(KEY_BACKSPACE)) {
             FermerReseau(netState->socket);
@@ -571,7 +576,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer,
     }
 }
 
-void DessinerMultijoueur(Entity *player, Entity *remotePlayer,
+void DessinerMultijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D *camera,
                          Texture2D viseur, Model tabArmes[4], int score,
@@ -583,7 +588,7 @@ void DessinerMultijoueur(Entity *player, Entity *remotePlayer,
         Entity dummyBots[18] = {0};
         dummyBots[0] = *remotePlayer;
 
-        UpdateDessinGame(dummyBots, blocks, *camera, projs, score, *player,
+        UpdateDessinGame(dummyBots,heal, blocks, *camera, projs, score, *player,
                          viseur, tabArmes, skyModel, wallModel, floorModel,
                          botModel, tabModels);
     }

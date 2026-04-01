@@ -38,7 +38,7 @@ void InitMultijoueur(Entity *joueur, Entity *ennemi, int estServeur);
  * \param <Camera3D* camera> la caméra
  * \param <ReseauState* reseau> l'état du réseau
  */
-void UpdateMultijoueur(Entity *joueur, Entity *ennemi,
+void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal heal[10],
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D *camera,
                        ReseauState *reseau, GameScreen *currentScreen);
@@ -56,7 +56,7 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi,
  * \param <int* score> un pointeur vers le score du joueur
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
-void partie_multijoueur(Entity *player, Entity *remotePlayer,
+void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                         Projectile projs[MAX_PROJ], Camera3D *camera,
                         ReseauState *netState, bool *jeuInitialise, int *score,
@@ -73,8 +73,7 @@ void DessinerLobbyMultijoueur(ReseauState *netState);
  * \param <Entity* player> le joueur local
  */
 // multijoueur.h
-// multijoueur.h
-void DessinerMultijoueur(Entity *player, Entity *remotePlayer,
+void DessinerMultijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D *camera,
                          Texture2D viseur, Model tabArmes[4], int score,
