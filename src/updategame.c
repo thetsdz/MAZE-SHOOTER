@@ -17,40 +17,41 @@
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 
-void ChangementArme(Entity *joueur) {
-    // F1 : Pistolet
-    if (IsKeyPressed(KEY_F1)) {
-        joueur->armeEquipee = ObtenirModeleArme(PISTOLET);
-        joueur->ammo = joueur->armeEquipee
-                           .munitionsMax; // On recharge auto au changement ?
-        joueur->chronoTir = 0;
-    }
-    // F2 : Fusil
-    if (IsKeyPressed(KEY_F2)) {
-        joueur->armeEquipee = ObtenirModeleArme(FUSIL);
-        joueur->ammo = joueur->armeEquipee.munitionsMax;
-        joueur->chronoTir = 0;
-    }
-    // F3 : Sniper
-    if (IsKeyPressed(KEY_F3)) {
-        joueur->armeEquipee = ObtenirModeleArme(SNIPER);
-        joueur->ammo = joueur->armeEquipee.munitionsMax;
-        joueur->chronoTir = 0;
-    }
-    if (IsKeyPressed(KEY_F4)) {
-        joueur->armeEquipee = ObtenirModeleArme(GRENADE);
-        joueur->ammo = joueur->armeEquipee.munitionsMax;
-        joueur->chronoTir = 0;
-    }
+void ChangementArme(Entity* joueur) {
+  // F1 : Pistolet
+  if (IsKeyPressed(KEY_F1)) {
+    
+    joueur->armeEquipee = ObtenirModeleArme(PISTOLET);
+    joueur->ammo =
+        joueur->armeEquipee.munitionsMax;  // On recharge auto au changement ?
+    joueur->chronoTir = 0;
+  }
+  // F2 : Fusil
+  if (IsKeyPressed(KEY_F3) && joueur->score>=4) {
+    joueur->armeEquipee = ObtenirModeleArme(FUSIL);
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
+    joueur->chronoTir = 0;
+  }
+  // F3 : Sniper
+  if (IsKeyPressed(KEY_F2) && joueur->score>=2) {
+    joueur->armeEquipee = ObtenirModeleArme(SNIPER);
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
+    joueur->chronoTir = 0;
+  }
+  if (IsKeyPressed(KEY_F4) && joueur->score>=6) {
+    joueur->armeEquipee = ObtenirModeleArme(GRENADE);
+    joueur->ammo = joueur->armeEquipee.munitionsMax;
+    joueur->chronoTir = 0;
+  }
 }
 
 void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                Projectile projs[MAX_PROJ], int *score, Camera3D *camera,
-                GameScreen *currentScreen) {
-    // --- Logique du jeu ---
-    Entity *bot_ptr = &bot[0];
-    UpdatePlayer(player, blocks, camera, &bot_ptr);
+                Projectile projs[MAX_PROJ], Camera3D* camera,
+                GameScreen* currentScreen) {
+  // --- Logique du jeu ---
+  Entity* bot_ptr = &bot[0];
+  UpdatePlayer(player, blocks, camera, &bot_ptr);
 
     for (int i = 0; i < 18; i++) {
         UpdateBot(&bot[i], blocks, player->pos, projs);
@@ -59,8 +60,7 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         UpdateHeal(&heal[i],player,blocks);
     }
 
-    if (IsKeyPressed(KEY_Y))
-        sauvegarder(player, bot, score);
+  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot);
 
     if (IsKeyPressed(KEY_R)) {
         player->ammo = player->armeEquipee.munitionsMax;
@@ -92,9 +92,9 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         ShootProjectile(projs, startPos, camDir, OWNER_PLAYER,
                         player->armeEquipee, player->yaw, player->pitch);
 
-        player->ammo--;
-        player->chronoTir =
-            player->armeEquipee.cadenceTir; // On réinitialise le délai
-    }
-    UpdateProjectiles(projs, blocks, &bot, player, score, currentScreen);
+    player->ammo--;
+    player->chronoTir =
+        player->armeEquipee.cadenceTir;  // On réinitialise le délai
+  }
+  UpdateProjectiles(projs, blocks, &bot, player, currentScreen);
 }

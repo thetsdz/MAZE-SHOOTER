@@ -20,6 +20,11 @@
  * broadcast) + refonte de l'interface du lobby pour gérer les 2 méthodes de
  * connexion + ajout de messages d'erreur et d'instructions dans le lobby
  */
+ /** \version 3.1
+ *  \author Hugues Astier
+ *  \date 01/04/2026
+ *  \brief Prise en compte du score dans l'entité
+ */
 
 /**
  * \brief Initialise les positions de départ opposées
@@ -53,14 +58,14 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal heal[10],
  * \param <ReseauState* netState> l'état du réseau
  * \param <bool* jeuInitialise> un pointeur vers une variable indiquant si le
  * jeu est initialisé
- * \param <int* score> un pointeur vers le score du joueur
+
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
 void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                        Projectile projs[MAX_PROJ], Camera3D *camera,
-                        ReseauState *netState, bool *jeuInitialise, int *score,
-                        GameScreen *currentScreen);
+                        Projectile projs[MAX_PROJ], Camera3D* camera,
+                        ReseauState* netState, bool* jeuInitialise,
+                        GameScreen* currentScreen);
 
 /**
  * \brief Dessine le lobby d'attente multijoueur
@@ -73,10 +78,21 @@ void DessinerLobbyMultijoueur(ReseauState *netState);
  * \param <Entity* player> le joueur local
  */
 // multijoueur.h
-void DessinerMultijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
+
+void DessinerMultijoueur(Entity *player,
+                         Entity *remotePlayer,
+                         Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                         Projectile projs[MAX_PROJ], Camera3D *camera,
-                         Texture2D viseur, Model tabArmes[4], int score,
-                         ReseauState *netState, Model skyModel, Model wallModel,
-                         Model floorModel, Model botModel, Model tabModels[4]);
+                         Projectile projs[MAX_PROJ],
+                         Camera3D *camera,
+                         Texture2D viseur,
+                         Model tabArmes[4],
+                         ReseauState *netState,
+                         Model skyModel,
+                         Model wallModel,
+                         Model floorModel,
+                         Model botModel,
+                         Model tabModels[4]);
+
+
 #endif

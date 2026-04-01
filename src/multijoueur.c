@@ -254,9 +254,8 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi,Heal heal[10],
     }
 
     // 5. Physique des balles et Collisions
-    int scoreTemp = 0;
-    UpdateProjectiles(projs, blocks, &ennemi, joueur, &scoreTemp,
-                      currentScreen);
+   
+    UpdateProjectiles(projs, blocks, &ennemi, joueur, currentScreen);
 }
 
 void DessinerLobbyMultijoueur(ReseauState *netState) {
@@ -370,8 +369,9 @@ void DessinerLobbyMultijoueur(ReseauState *netState) {
 void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                         Projectile projs[MAX_PROJ], Camera3D *camera,
-                        ReseauState *netState, bool *jeuInitialise, int *score,
-                        GameScreen *currentScreen) {
+                        ReseauState *netState, bool *jeuInitialise, 
+                        GameScreen *currentScreen)
+{
     // 1. LOBBY (Si on n'est pas encore connecté)
     if (!netState->connected) {
         // Si on n'est ni serveur, ni en train de chercher, ni en train de taper
@@ -480,7 +480,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                     creer_lab_multi(blocks);
                     srand(time(NULL));
                     InitProjectiles(projs);
-                    *score = 0;
+                    player->score = 0;
                     *jeuInitialise = true;
                     DisableCursor();
                 } else {
@@ -515,7 +515,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                     creer_lab_multi(blocks);
                     srand(time(NULL));
                     InitProjectiles(projs);
-                    *score = 0;
+                    player->score = 0;
                     *jeuInitialise = true;
                     DisableCursor();
                 }
@@ -543,7 +543,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
                         creer_lab_multi(blocks);
                         srand(time(NULL));
                         InitProjectiles(projs);
-                        *score = 0;
+                        player->score = 0;
                         *jeuInitialise = true;
                         DisableCursor();
                     }
@@ -579,7 +579,7 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer, Heal heal[10],
 void DessinerMultijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D *camera,
-                         Texture2D viseur, Model tabArmes[4], int score,
+                         Texture2D viseur, Model tabArmes[4],
                          ReseauState *netState, Model skyModel, Model wallModel,
                          Model floorModel, Model botModel, Model tabModels[4]) {
     if (!netState->connected) {
@@ -588,7 +588,7 @@ void DessinerMultijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
         Entity dummyBots[18] = {0};
         dummyBots[0] = *remotePlayer;
 
-        UpdateDessinGame(dummyBots,heal, blocks, *camera, projs, score, *player,
+        UpdateDessinGame(dummyBots,heal, blocks, *camera, projs, *player,
                          viseur, tabArmes, skyModel, wallModel, floorModel,
                          botModel, tabModels);
     }

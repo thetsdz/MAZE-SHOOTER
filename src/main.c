@@ -51,7 +51,8 @@ static void RechargerTheme(Model *wallModel, Model *floorModel,
     Mesh floorMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     *floorModel = LoadModelFromMesh(floorMesh);
     floorModel->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *floorTex;
-}
+  }
+
 
 int main(void) {
     // --- Initialisation du log ---
@@ -86,7 +87,6 @@ int main(void) {
     Heal heal[10];
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];
     Projectile projs[MAX_PROJ];
-    int score = 0;
     ReseauState netState = {-1, 0, 0};
 
     // --- Caméra ---
@@ -104,13 +104,11 @@ int main(void) {
     Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
     Model botModel = LoadModel("../assets/models/robots/Robot.glb");
+
     Model tabProjModels[5];
-    tabProjModels[0] =
-        LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
-    tabProjModels[1] =
-        LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
-    tabProjModels[2] =
-        LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
+    tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
+    tabProjModels[1] =LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
+    tabProjModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
     tabProjModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
     tabProjModels[4] = LoadModel("../assets/models/projectiles/Explosion.glb");
 
@@ -183,7 +181,6 @@ int main(void) {
             init_lab(blocks);
             creer_lab(blocks);
             InitProjectiles(projs);
-            score = 0;
             jeuInitialise = true;
         }
 
@@ -195,7 +192,7 @@ int main(void) {
         }
         case NOUVELLE_PARTIE: {
             StopAllMusic();
-            UpdateGame(&player, bot,heal, blocks, projs, &score, &camera,
+            UpdateGame(&player, bot,heal, blocks, projs, &camera,
                        &currentScreen);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
@@ -206,17 +203,16 @@ int main(void) {
         case MULTIJOUEUR: {
             StopAllMusic();
             partie_multijoueur(&player, &remotePlayer,heal, blocks, projs, &camera,
-                               &netState, &jeuInitialise, &score,
-                               &currentScreen);
+                               &netState, &jeuInitialise,&currentScreen);
             break;
         }
         case CHARGER_PARTIE: {
             if (!chargement) {
-                chargerSauvegarde(&player, bot, &score);
+                chargerSauvegarde(&player, bot);
                 chargement = true;
                 DisableCursor();
             }
-            UpdateGame(&player, bot,heal, blocks, projs, &score, &camera,
+            UpdateGame(&player, bot,heal, blocks, projs, &camera,
                        &currentScreen);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
@@ -234,14 +230,14 @@ int main(void) {
             break;
         }
         case GAME_OVER:
-            GererGameOver(&currentScreen, score);
+            GererGameOver(&currentScreen, player.score);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
                 jeuInitialise = false;
             }
             break;
         case VICTOIRE:
-            GererVictoire(&currentScreen, score);
+            GererVictoire(&currentScreen, player.score);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
                 jeuInitialise = false;
@@ -259,19 +255,21 @@ int main(void) {
             break;
         }
         case NOUVELLE_PARTIE: {
-            UpdateDessinGame(bot,heal, blocks, camera, projs, score, player, viseur,
+            UpdateDessinGame(bot,heal, blocks, camera, projs, player, viseur,
+
                              tabArmes, skyModel, wallModel, floorModel,
                              botModel, tabProjModels);
             break;
         }
         case MULTIJOUEUR: {
             DessinerMultijoueur(&player, &remotePlayer, heal,blocks, projs, &camera,
-                                viseur, tabArmes, score, &netState, skyModel,
+                                viseur, tabArmes, &netState, skyModel,
                                 wallModel, floorModel, botModel, tabProjModels);
             break;
         }
         case CHARGER_PARTIE: {
-            UpdateDessinGame(bot,heal, blocks, camera, projs, score, player, viseur,
+
+            UpdateDessinGame(bot,heal, blocks, camera, projs, player, viseur,
                              tabArmes, skyModel, wallModel, floorModel,
                              botModel, tabProjModels);
             break;
@@ -296,7 +294,7 @@ int main(void) {
         FermerReseau(netState.socket);
     }
 
-    TraceLog(LOG_INFO, "Fin de partie | Score=%d | maxAmmo=%d", score,
+    TraceLog(LOG_INFO, "Fin de partie | Score=%d | maxAmmo=%d", player.score,
              player.ammo);
     CloseLog();
 
