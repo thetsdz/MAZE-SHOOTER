@@ -36,11 +36,11 @@ typedef struct {
   uint32_t checksum;  // L'empreinte de sécurité
 } SaveFile;
 
-void sauvegarder(Entity* player, Entity bot[18], int* score) {
+void sauvegarder(Entity* player, Entity bot[18]) {
   SaveFile save;
 
   // Remplissage de la structure de données
-  save.gameData.score = *score;
+  save.gameData.score = player->score;
   save.gameData.ammo = player->ammo;
 
   save.gameData.x = player->pos.x;
@@ -81,7 +81,7 @@ void sauvegarder(Entity* player, Entity bot[18], int* score) {
   }
 }
 
-void chargerSauvegarde(Entity* player, Entity bot[18], int* score) {
+void chargerSauvegarde(Entity* player, Entity bot[18]) {
   // Lecture Binaire
   // Note le "rb" (Read Binary) au lieu de "r"
   FILE* fr = fopen("save.dat", "rb");
@@ -119,7 +119,7 @@ void chargerSauvegarde(Entity* player, Entity bot[18], int* score) {
   }
 
   // Application des données (Si tout est bon)
-  *score = save.gameData.score;
+  player->score = save.gameData.score;
   player->ammo = save.gameData.ammo;
 
   player->pos.x = save.gameData.x;

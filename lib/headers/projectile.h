@@ -41,6 +41,11 @@ pour le bot
  *  Systeme de projectiles fonctiennels 
  */
 
+ /** \version 5.1
+ *  \author Hugues Astier
+ *  \date 18/03/2026
+ *  \brief Adaptation du cgangement de score
+ */
 
 
 #include <stdio.h>
@@ -58,7 +63,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les
  * tirs actifs*/
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Entity** autre, Entity* player, int* score, GameScreen* currentScreen);
+                       Entity** autre, Entity* player, GameScreen* currentScreen);
 
 
 

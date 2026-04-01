@@ -28,6 +28,7 @@ void InitPlayer(Entity* player) {
                           // modèle (ici 12 ou 10 selon ton choix)
   player->chronoTir =
       0.0f;  // On initialise le chrono à 0 pour pouvoir tirer immédiatement
+  player->score=0;
 }
 
 void UpdatePlayer(Entity* player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],

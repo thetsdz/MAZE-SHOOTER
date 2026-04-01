@@ -67,9 +67,9 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
                      float camPitch) {
   // Normalisation de la direction par sécurité
   Vector3 dir = Vector3Normalize(direction);
-
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
+
   switch (arme.type) {
     case PISTOLET:
       PlayPistolet();
@@ -121,7 +121,7 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
 // ... (Début du fichier identique)
 
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Entity** autre, Entity* player, int* score,
+                       Entity** autre, Entity* player,
                        GameScreen* currentScreen) {
   float dt = GetFrameTime();
   for (int i = 0; i < MAX_PROJ; i++) {
@@ -159,12 +159,10 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
       projs[i].life -= dt;
       if (projs[i].life <= 0.0f && projs[i].pos.y != 0)
         explosion(&projs[i]);  // pas deja explosé alors boom
-    } else {
-      projs[i].pos =
-          Vector3Add(projs[i].pos,
-                     Vector3Scale(projs[i].vel,
-                                  dt));  // sinon on calcul la nouvelle position
-                                         // pour tout les autres projectiles
+    }
+    else {
+      projs[i].pos =Vector3Add(projs[i].pos,Vector3Scale(projs[i].vel,dt)); // sinon on calcul la nouvelle position
+                                                                            // pour tout les autres projectiles
       projs[i].life -= dt;
     }
     if (projs[i].life <= 0.0f && projs[i].type != PROJ_GRENADE) {
@@ -187,7 +185,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
           if ((*autre)->health <= 0) {
-            *score += 1;
+            player->score += 1;
             // Si c'est le BOT, on le fait respawn ailleurs
           }
           continue;
@@ -204,7 +202,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
             if ((*autre)[j].health <= 0) {
-              *score += 1;
+              player->score += 1;
               (*autre)[j].health = (*autre)[j].maxHealth;
               (*autre)[j].pos = (Vector3){(float)(rand() % NUM_BLOCKS), 10.0f,
                                           (float)(rand() % NUM_BLOCKS)};
@@ -216,9 +214,10 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
       }
     }
 
-    // 2. LES BALLES ENNEMIES (Bot ou Remote) me touchent MOI
+    // 2. LES BALLES ENNEMIES (Bot ou Remote ou mes propres grenades !) me touchent MOI
     else if (projs[i].owner == OWNER_REMOTE_PLAYER ||
-             projs[i].owner == OWNER_BOT) {
+             projs[i].owner == OWNER_BOT ||
+             (projs[i].owner == OWNER_PLAYER && projs[i].type==PROJ_GRENADE)) {
       bool aToucheJoueur = false;
 
       // A. Vérification de la collision avec le Joueur
@@ -267,7 +266,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
             if ((*autre)[j].health <= 0) {
-              *score += 1;
+              player->score += 1;
               (*autre)[j].health = (*autre)[j].maxHealth;
               (*autre)[j].pos = (Vector3){(float)(rand() % NUM_BLOCKS), 10.0f,
                                           (float)(rand() % NUM_BLOCKS)};

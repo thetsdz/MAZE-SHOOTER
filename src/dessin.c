@@ -184,7 +184,7 @@ void minimap(Entity player, Entity bot[18],
 /*  HUD                                                                 */
 /* ------------------------------------------------------------------ */
 
-static void DrawHUD(Entity player, int score) {
+static void DrawHUD(Entity player) {
   const int PX = 10;
   const int PW = 220;
   const int PAD = 8;
@@ -235,7 +235,7 @@ static void DrawHUD(Entity player, int score) {
   DrawPanel(PX, py, PW, 48);
 
   DrawText("SCORE", PX + PAD, py + 6, 10, COL_LABEL);
-  DrawText(TextFormat("%d", score), PX + PAD, py + 20, 16, COL_SCORE);
+  DrawText(TextFormat("%d", player.score), PX + PAD, py + 20, 16, COL_SCORE);
 
   DrawText("FPS", PX + 95, py + 6, 10, COL_LABEL);
   DrawText(TextFormat("%d", GetFPS()), PX + 95, py + 20, 16, COL_FPS);
@@ -263,7 +263,7 @@ static void DrawHUD(Entity player, int score) {
 /* ------------------------------------------------------------------ */
 
 void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                      Camera3D camera, Projectile projs[MAX_PROJ], int score,
+                      Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
                       Model botModel, Model tabProjModels[]) {
@@ -293,7 +293,7 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   EndMode3D();
 
   /* --- UI 2D --- */
-  DrawHUD(player, score);
+  DrawHUD(player);
 
   DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
 

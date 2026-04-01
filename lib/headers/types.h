@@ -66,6 +66,11 @@
  * quelque champs dans entity
  */
 
+ /** \version 8.1
+ * \author Hugues Astier
+ * \date 01/04/2026
+ * \brief ajout du champ score dans Entity
+ */
 #include "raylib.h"
 
 /** @brief Nombre total de blocs dans le labyrinthe*/
@@ -206,6 +211,7 @@ typedef struct {
   int health;             /**< Points de vie actuels. */
   int maxHealth;          /**< Points de vie maximum. */
   int life;               /**< Nombre de vies restantes. */
+  int score;
   ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
   float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir
                       suivant */

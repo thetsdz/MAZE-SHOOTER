@@ -58,3 +58,5 @@ ModeleArme ObtenirModeleArme(TypeArme type) {
     }
     return m;
 }
+
+
