@@ -10,6 +10,7 @@
 #include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
+#include "../lib/headers/endGame.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/menu.h"
@@ -229,7 +230,14 @@ int main(void) {
             break;
         }
         case GAME_OVER:
+            GererGameOver(&currentScreen, score);
+            if (IsKeyPressed(KEY_BACKSPACE)) {
+                currentScreen = MENU;
+                jeuInitialise = false;
+            }
+            break;
         case VICTOIRE:
+            GererVictoire(&currentScreen, score);
             if (IsKeyPressed(KEY_BACKSPACE)) {
                 currentScreen = MENU;
                 jeuInitialise = false;
