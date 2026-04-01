@@ -241,6 +241,7 @@ int main(void) {
             }
             break;
         }
+        
 
         // --- Dessin selon l'état ---
         BeginDrawing();
