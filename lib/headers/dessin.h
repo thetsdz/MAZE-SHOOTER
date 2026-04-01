@@ -28,6 +28,16 @@
  * \brief ajout de la minimap
  */
 
+ /** \version 5.0
+ * \author Hugues Astier
+ * \date 17/03/2026
+ * \brief Changement de la prise en compte du score (passer en champs de entité) en vue de changer le changement d'arme
+ */
+ 
+ 
+
+
+
 #include "types.h"
 
 /**
@@ -52,13 +62,12 @@ void minimap(Entity player, Entity bot[18],
  * @param blocks Grille de blocs du niveau (pour dessiner les murs et couloirs)
  * @param camera Caméra 3D (pour dessiner la scène en perspective)
  * @param projs Tableau de projectiles actifs (pour les dessiner)
- * @param score Score actuel du joueur (pour l'afficher à l'écran)
  * @param player Entité du joueur (pour afficher les munitions)
  * @param viseur Texture du viseur à dessiner au centre de l'écran
  * @param armeTex Texture de l'arme à dessiner en bas de l'écran
  */
 void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                      Camera3D camera, Projectile projs[MAX_PROJ], int score,
+                      Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
                       Model botModel, Model tabProjModels[]);

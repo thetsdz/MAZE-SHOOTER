@@ -36,12 +36,12 @@ typedef struct {
     uint32_t checksum; // L'empreinte de sécurité
 } SaveFile;
 
-void sauvegarder(Entity *player, Entity bot[18], int *score) {
-    SaveFile save;
+void sauvegarder(Entity* player, Entity bot[18]) {
+  SaveFile save;
 
-    // Remplissage de la structure de données
-    save.gameData.score = *score;
-    save.gameData.ammo = player->ammo;
+  // Remplissage de la structure de données
+  save.gameData.score = player->score;
+  save.gameData.ammo = player->ammo;
 
     save.gameData.x = player->pos.x;
     save.gameData.y = player->pos.y;
@@ -81,14 +81,14 @@ void sauvegarder(Entity *player, Entity bot[18], int *score) {
     }
 }
 
-void chargerSauvegarde(Entity *player, Entity bot[18], int *score) {
-    // Lecture Binaire
-    // Note le "rb" (Read Binary) au lieu de "r"
-    FILE *fr = fopen("save.dat", "rb");
-    if (!fr) {
-        printf("[Chargement] Aucune sauvegarde trouvée.\n");
-        return;
-    }
+void chargerSauvegarde(Entity* player, Entity bot[18]) {
+  // Lecture Binaire
+  // Note le "rb" (Read Binary) au lieu de "r"
+  FILE* fr = fopen("save.dat", "rb");
+  if (!fr) {
+    printf("[Chargement] Aucune sauvegarde trouvée.\n");
+    return;
+  }
 
     SaveFile save;
     size_t lu = fread(&save, sizeof(SaveFile), 1, fr);
@@ -118,9 +118,9 @@ void chargerSauvegarde(Entity *player, Entity bot[18], int *score) {
         return;
     }
 
-    // Application des données (Si tout est bon)
-    *score = save.gameData.score;
-    player->ammo = save.gameData.ammo;
+  // Application des données (Si tout est bon)
+  player->score = save.gameData.score;
+  player->ammo = save.gameData.ammo;
 
     player->pos.x = save.gameData.x;
     player->pos.y = save.gameData.y;
