@@ -35,10 +35,10 @@ pour le bot
  /** \version 5.0
  *  \author Hugues Astier
  *  \date 18/03/2026
- *  \brief Changeement de logique de detection des projectiles en colision sur le bot, ajout des grenades, et des differents type de projectile 
+ *  \brief Changement de logique de detection des projectiles en colision sur le bot, ajout des grenades, et des differents type de projectile 
  *  en focntion de l'arme.
  *  Ajout de la fonction explosion, gravite et RebondirGrenade pour gerer la grenade, plus ajout des textures sur les projectiles 
- * Systeme de projectiles fonctiennels 
+ *  Systeme de projectiles fonctiennels 
  */
 
 
@@ -58,7 +58,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction, Own
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les
  * tirs actifs*/
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Entity** autre, Entity* player, int* score);
+                       Entity** autre, Entity* player, int* score, GameScreen* currentScreen);
 
 
 

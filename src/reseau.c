@@ -2,9 +2,6 @@
  * \file reseau.c
  */
 
-
-
-
 // --- SECTION IMPORTANTE POUR WINDOWS ---
 // On doit définir ces macros AVANT d'inclure winsock2.h pour éviter
 // que Windows ne définisse des symboles comme Rectangle, CloseWindow,
@@ -123,7 +120,7 @@ int AttendreClient(int socketServeur) {
   socklen_t len = sizeof(clientAddr);
 #endif
 
-  // Sur Linux, &len est maintenant correctement typé (socklen_t*). 
+  // Sur Linux, &len est maintenant correctement typé (socklen_t*).
   // Sur Windows, il reste (int*).
   int clientSock = accept(socketServeur, (struct sockaddr*)&clientAddr, &len);
 
@@ -144,8 +141,11 @@ int RecevoirPaquet(int socket, PaquetReseau* paquet) {
   int recus = recv(socket, (char*)paquet, sizeof(PaquetReseau), 0);
   if (recus == sizeof(PaquetReseau)) {
     return 1;
+  } else if (recus == 0) {
+    return -1;  // -1 signifie que l'autre joueur s'est déconnecté (connexion
+                // fermée)
   }
-  return 0;
+  return 0;  // 0 signifie juste qu'il n'y a pas de nouveau message
 }
 
 void FermerReseau(int socket) {
@@ -167,7 +167,7 @@ int InitUDPBroadcastSender(void) {
   // Autorise l'envoi en broadcast
   setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (const char*)&opt, sizeof(opt));
   SetNonBlocking(sock);
-  
+
   return sock;
 }
 
@@ -176,9 +176,9 @@ void EnvoyerBroadcast(int sock, int port) {
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
-  addr.sin_addr.s_addr = INADDR_BROADCAST; // 255.255.255.255
+  addr.sin_addr.s_addr = INADDR_BROADCAST;  // 255.255.255.255
 
-  const char* msg = "MAZE_HOST"; // Notre mot de passe de reconnaissance
+  const char* msg = "MAZE_HOST";  // Notre mot de passe de reconnaissance
   sendto(sock, msg, strlen(msg), 0, (struct sockaddr*)&addr, sizeof(addr));
 }
 
@@ -194,12 +194,12 @@ int InitUDPBroadcastListener(int port) {
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
-  addr.sin_addr.s_addr = INADDR_ANY; // Ecoute sur toutes les interfaces
+  addr.sin_addr.s_addr = INADDR_ANY;  // Ecoute sur toutes les interfaces
 
   if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
     return -1;
   }
-  
+
   SetNonBlocking(sock);
   return sock;
 }
@@ -207,14 +207,15 @@ int InitUDPBroadcastListener(int port) {
 int RecevoirBroadcast(int sock, char* ipSortie) {
   char buffer[32];
   struct sockaddr_in senderAddr;
-  
+
 #ifdef _WIN32
   int len = sizeof(senderAddr);
 #else
   socklen_t len = sizeof(senderAddr);
 #endif
 
-  int n = recvfrom(sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&senderAddr, &len);
+  int n = recvfrom(sock, buffer, sizeof(buffer) - 1, 0,
+                   (struct sockaddr*)&senderAddr, &len);
   if (n > 0) {
     buffer[n] = '\0';
     // Si c'est bien notre jeu qui diffuse
