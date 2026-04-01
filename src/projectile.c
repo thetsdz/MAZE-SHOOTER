@@ -217,7 +217,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     // 2. LES BALLES ENNEMIES (Bot ou Remote ou mes propres grenades !) me touchent MOI
     else if (projs[i].owner == OWNER_REMOTE_PLAYER ||
              projs[i].owner == OWNER_BOT ||
-             (projs[i].owner == OWNER_PLAYER && projs[i].type=PROJ_GRENADE)) {
+             (projs[i].owner == OWNER_PLAYER && projs[i].type==PROJ_GRENADE)) {
       bool aToucheJoueur = false;
 
       // A. Vérification de la collision avec le Joueur

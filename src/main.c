@@ -102,13 +102,11 @@ int main(void) {
     Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
     Model botModel = LoadModel("../assets/models/robots/Robot.glb");
+
     Model tabProjModels[5];
-    tabProjModels[0] =
-        LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
-    tabProjModels[1] =
-        LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
-    tabProjModels[2] =
-        LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
+    tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
+    tabProjModels[1] =LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
+    tabProjModels[2] = LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
     tabProjModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
     tabProjModels[4] = LoadModel("../assets/models/projectiles/Explosion.glb");
 

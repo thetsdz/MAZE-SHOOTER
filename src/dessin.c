@@ -199,6 +199,7 @@ static void DrawHUD(Entity player) {
   const int PAD = 8;
   int py = 10;
 
+
     /* ---- Panneau VIE -------------------------------------------- */
     DrawPanel(PX, py, PW, 58);
 
@@ -268,9 +269,8 @@ static void DrawHUD(Entity player) {
              PX + PAD, py + 7, 10, COL_HINT_GOLD);
 }
 
-/* ------------------------------------------------------------------ */   Model botModel, Model tabProjModels[]) {
+/* ------------------------------------------------------------------ */   
     /* --- Rendu 3D --- */
-    BeginMode3D(camera);
 
 /*  Point d'entrée principal                                            */
 /* ------------------------------------------------------------------ */

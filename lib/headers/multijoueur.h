@@ -85,7 +85,7 @@ void DessinerMultijoueur(
     Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     Projectile projs[MAX_PROJ],
     Camera3D* camera,
-    Texture2D viseur,score
+    Texture2D viseur,
     Model tabArmes[4],
     ReseauState* netState,
     Model skyModel,
