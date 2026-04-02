@@ -185,7 +185,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
           if ((*autre)->health <= 0) {
-            player->score += 1;
+            continue;  // L'autre gère sa propre mort et son respawn, on n'intervient pas ici
             // Si c'est le BOT, on le fait respawn ailleurs
           }
           continue;

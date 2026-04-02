@@ -174,12 +174,14 @@ int main(void) {
         if ((currentScreen == NOUVELLE_PARTIE && !jeuInitialise) ||
             (currentScreen == CHARGER_PARTIE && !jeuInitialise)) {
             InitPlayer(&player);
+            init_lab(blocks); // <--- RE-INITIALISE les positions Y et l'état isWall de TOUS les blocs
+            creer_lab(blocks);
             for (int i = 0; i < 18; i++)
                 InitBot(&bot[i], blocks);
+                
             for (int i=0; i < 10;i++)
                 InitHeal(&heal[i],blocks);
-            init_lab(blocks);
-            creer_lab(blocks);
+
             InitProjectiles(projs);
             jeuInitialise = true;
         }
