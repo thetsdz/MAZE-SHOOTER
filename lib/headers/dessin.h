@@ -53,7 +53,7 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
  * @param Bot Entite Bot
  * @param blocks Labyrinthe
  */
-void minimap(Entity player, Entity bot[18],
+void minimap(Entity player, Entity bot[18],Heal heal[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
 /**
@@ -66,7 +66,8 @@ void minimap(Entity player, Entity bot[18],
  * @param viseur Texture du viseur à dessiner au centre de l'écran
  * @param armeTex Texture de l'arme à dessiner en bas de l'écran
  */
-void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+
+void UpdateDessinGame(Entity bot[18],Heal heal[10], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,

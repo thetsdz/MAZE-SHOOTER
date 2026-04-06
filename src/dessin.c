@@ -12,6 +12,7 @@
 #include "../lib/headers/level.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
+#include "../lib/headers/heal.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -131,7 +132,7 @@ static void DrawBar(int x, int y, int w, int h, float ratio, Color fg) {
 /*  Minimap                                                             */
 /* ------------------------------------------------------------------ */
 
-void minimap(Entity player, Entity bot[18],
+void minimap(Entity player, Entity bot[18],Heal heal[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
     int minimapX = GetScreenWidth() - MINIMAP_W - MINIMAP_PADDING;
     int minimapY = MINIMAP_PADDING;
@@ -182,11 +183,17 @@ void minimap(Entity player, Entity bot[18],
         int botDotY = minimapY + (int)((bot[b].pos.z - originZ) * scaleY);
         DrawRectangle(botDotX - 3, botDotY - 3, 6, 6, RED);
     }
+    /* Heal (bleu) */
+    for (int h = 0; h < 10; h++) {
+        int healDotX = minimapX + (int)((heal[h].pos.x - originX) * scaleX);
+        int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
+        DrawRectangle(healDotX - 3, healDotY - 3, 6, 6, GREEN);
+    } 
 
     /* Joueur (vert, par-dessus) */
     int playerDotX = minimapX + (int)((player.pos.x - originX) * scaleX);
     int playerDotY = minimapY + (int)((player.pos.z - originZ) * scaleY);
-    DrawRectangle(playerDotX - 3, playerDotY - 3, 6, 6, GREEN);
+    DrawRectangle(playerDotX - 3, playerDotY - 3, 6, 6, BLUE);
 }
 
 /* ------------------------------------------------------------------ */
@@ -275,7 +282,8 @@ static void DrawHUD(Entity player) {
 /*  Point d'entrée principal                                            */
 /* ------------------------------------------------------------------ */
 
-void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+
+void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
@@ -289,7 +297,13 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     rlEnableBackfaceCulling();
     rlEnableDepthMask();
 
+    
+
     DrawLevel(blocks, wallModel, floorModel);
+    
+    for(int i = 0; i < 10; i++) {
+        DrawCube(heal[i].pos,1.0f,1.0f,1.0f, GREEN);
+    }
 
     for (int b = 0; b < 18; b++) {
         Vector3 drawPos = {bot[b].pos.x, bot[b].pos.y, bot[b].pos.z};
@@ -316,5 +330,5 @@ void UpdateDessinGame(Entity bot[18], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     while (player.armeEquipee.type != tab[i])
         i++;
     DessinerArme(tabArmes[i], i);
-    minimap(player, bot, blocks);
+    minimap(player, bot,heal, blocks);
 }

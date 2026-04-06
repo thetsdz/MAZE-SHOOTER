@@ -39,7 +39,7 @@
 
 void ChangementArme(Entity *joueur);
 
-void UpdateGame(Entity *player, Entity bot[18],
+void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], Camera3D* camera, GameScreen* currentScreen);
 

@@ -259,4 +259,13 @@ typedef struct {
     const char *skyTexPath;
 } ThemeInfo;
 
+/**
+ * @struct Heal
+ * @brief Petit objet de soin que le joueur peut ramasser pour récupérer des points de vie
+ */
+typedef struct{
+    Vector3 pos;            /**< Position de l'objet. */
+    int healAmount;         /**< Quantité de soin fournie par l'objet. */
+} Heal;
+
 #endif
