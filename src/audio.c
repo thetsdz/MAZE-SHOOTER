@@ -18,6 +18,7 @@ void InitGameAudio(void) {
     g_audio.heart = LoadSound("../assets/audio/heart.wav");
     g_audio.reload = LoadSound("../assets/audio/reload.wav");
     g_audio.explosion = LoadSound("../assets/audio/explosion.mp3");
+    g_audio.heal = LoadSound("../assets/audio/heal.mp3");
 }
 
 void UnloadGameAudio(void) {
@@ -29,6 +30,7 @@ void UnloadGameAudio(void) {
     UnloadSound(g_audio.walk);
     UnloadSound(g_audio.heart);
     UnloadSound(g_audio.explosion);
+    UnloadSound(g_audio.heal);
 }
 
 void UpdateGameAudio(void) {
@@ -64,6 +66,7 @@ void PlayMitraillette(void) { PlaySound(g_audio.mitraillette); }
 void PlayPompe(void) { PlaySound(g_audio.pompe); }
 void PlayReload(void) { PlaySound(g_audio.reload); }
 void PlayExplosion(void) { PlaySound(g_audio.explosion); }
+void PlayHeal(void) { PlaySound(g_audio.heal); }
 
 void PlayWalk(void) {
     if (!IsSoundPlaying(g_audio.walk)) {

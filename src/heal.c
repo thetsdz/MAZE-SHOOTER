@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #include "../lib/headers/heal.h"
-
+#include "../lib/headers/audio.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/player.h"
 
@@ -62,6 +62,7 @@ void UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]
             player->health = player->maxHealth; // Ne pas dépasser la santé max
         // Réinitialiser la position de l'objet de soin
         InitHeal(heal, blocks);
+        PlayHeal();
     }
 
 
