@@ -1,0 +1,120 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+
+\begin{document}
+
+\begin{titlepage}
+    \noindent
+    %\includegraphics[height=3cm]{TP2/univ.png}
+    \hfill
+    %\includegraphics[height=2.5cm]{TP2/ic2.png}
+   \begin{center}
+        \vspace{0.7cm}
+        \huge \textbf{\textcolor{blue}{Le Mans Université}} \\ Licence Informatique \textit{2ème année} \\ Module 174UPO2 Rapport de Projet
+    \end{center}
+    \begin{center}
+        \Huge \textbf{MAZE-SHOOTER} \\
+        \vspace{0.7cm}
+        \Large DEQUIREZ Thomas \\ JAMMES Corentin \\ ASTIER Hugues\\
+        \vspace{0.7cm}
+        \large \today
+    \end{center}
+
+\end{titlepage}
+
+
+
+\tableofcontents 
+
+\newpage
+\section{Introduction}
+\section{Conception}
+
+\subsection{Cahier des charges}
+Le cahier des charges à respecter suit les points suivants : 
+\begin{itemize}
+    \item Réaliser un jeu par groupe (de trois ici)
+    \item Utiliser le language C
+    \item Utiliser une librairie graphique comme SDL ou RAYLIB
+    \item Se servir de GIT 
+    \item Suivre un model de gestion de projet 
+    \item Utiliser doxygen
+\end{itemize} 
+
+\smallskip
+On a utilisé la librairie graphique Raylib, ainsi que GIT avec quatre branche (master, corentin, Thomas et HUgues) et on a suivit modèle linéaire.
+
+
+\subsection{Fonctionnalités du jeu}
+Dans MAZE-SHOOTER il y a deux modes de jeu principaux. Dans un premier temps, un mode solo, dans lequel le joueur doit survivre le plus longtemps 
+possible face à des robots et des boss. Il doit en éliminer autant que possible.
+ Et un mode multijoueur, dans lequel les joueurs s'affrontent entre eux dans un labyrinthe revisité pour facilité les combats longue distance.
+Il est aussi possible de changer les textures via le menu "options".
+
+\section{Organisation du projet}
+\subsection{Reparition des tâches}
+\subsection{Planning prévisionnel}
+\subsection{Outils utilisés}
+Pour ce projet, nous avons utilisé plusieurs outils pour faciliter le développement et la collaboration. Nous avons utilisé Git pour le contrôle de version,
+ce qui nous a permis de travailler simultanément sur différentes parties du code sans conflits majeurs. Pour la gestion des tâches et du planning,  nous avons
+utilisé un diagramme de Gantt, où nous avons assigné des tâches à chaque membre de l'équipe. Pour la gestion du rendu graphique, nous avons utilisé la 
+librairie raylib, qui nous a permis de créer des graphismes 2D et 3D de manière efficace. Pour le rapport, nous avons utilisé overleaf, qui nous a permis de 
+collaborer sur la rédaction du document en temps réel. Pour la documentation, nous avons utilisé Doxygen, qui nous a permis de générer automatiquement la 
+documentation du code à l'aide de nos commentaires. Enfin, pour la communication, nous avons utilisé instagram, qui nous a permis de discuter en temps réel 
+et de partager des idées rapidement.
+\section{Développement}
+
+
+
+\subsection{Logique d'execution du  jeu et fonctionnement du menu}
+\indent Dans cette section on explique la logique de fonctionnement du fichier main.c, et par la même ocasion, la naviguation du joueur dans le menu du jeu.
+Ce menu permet d'afficher différents boutons utilent à la navigation du joueur CF photo ANNEXE ... .
+\\
+\\
+Pour comprendre comment fonctionnent la logique du jeu dans main.c, on a besoin d'une variable importante : CurrentScreen, c'est un pointeur sur un Gamescreen, qui decris l'etat de jeu actuel. 
+Cet variable peut prendre diverse valeurs comme NOUVELLE PARTIE, CHARGER PARTIE ou encore MENU. Par default currentScreen vaut MENU. 
+Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle while tournant tant qu'une variable running n'est pas mise à FALSE (ou que le joueur ne supprime pas sa fenetre).
+Dans cette boucle il faut distinguer la partie logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde que vaut la variable CurrentScreen. Dans la partie logique on mets à jours les variables globales, on appel des fonctions autonomes qui initialisent ou mettent à jours nos variables globales en fonction de différents test.
+Un bonne exemple de fonction destiné à la partie logique est UpdateGame(...) (HREF SUR ARGU ET COMM EN ANNEXE)  qui mets à jours toute la logique du jeu en mode solo. 
+Une fois la logique à jours un peut dessiner. Le second switch entre en jeu et permet de lancer les bonne fonction de dessin toujours en fonction de la valeurs de CurrentScreen
+Desormais, pour le menu, il suffit de voir que lorsque CurrentScreen vaut MENU on appel les fonctions gerant la souris, le clavier et on dessinent les boutons voulus.
+
+
+
+
+
+\subsection{Création de la carte}
+\subsection{Joueur, déplacement et gestion de la vie, soin}
+\subsection{Bots, leurs IA, spawn, boss}
+Concernant les bots, ils sont guidés par une intelligence artificielle simple mais efficace. Ils empreintent le chemin le plus court vers le joueur dans le 
+labyrinthe, mais dès qu'ils détectent le joueur à une certaine distance, ils commencent à le poursuivre. Ils utilisent un algorithme de recherche de chemin pour 
+trouver le chemin le plus court vers le joueur, en évitant les obstacles du labyrinthe. Les bots ont également une capacité d'attaque, et lorsqu'ils sont 
+suffisamment proches du joueur, ils peuvent lui infliger des dégâts. Les boss, quant à eux, sont des ennemis plus puissants avec des comportements plus complexes. 
+Ils utilisent un sniper plutot que le glock des bots normaux, ce qui fait qu'ils infligent un nombre de dégats beaucoup plus élevé, leur IA est beaucoup plus 
+précise (ils ne ratent pas une cible à moins qu'elle ne soit cachée derrière un mur ou qu'elle bouge très rapidement) et ils ont plus de points de vie que les 
+bots normaux. Ils apparaissent à des moments clés du jeu pour offrir un défi supplémentaire au joueur. Néanmoins, ils se déplacent 2 fois moins vite que les bots 
+normaux ce qui fait qu'ils sont plus facile à fuir que les bots normaux, mais ils sont plus dangereux s'ils arrivent à vous toucher. les bots et les boss ont la 
+même logique de spawn, ils apparaissent à des endroits aléatoires du labyrinthe, bien que les boss apparaissent tout les 50 kills de bots classiques. 
+
+L'algorithme de recherche de chemin utilise 3 matrices. La première se nomme \emph{visited} et contient des booléens indiquant si une case à dejà été visitée ou pas, la deuxième contient 
+quelle case a été visitée avant d'arriver à la case actuelle, et la troisième contient la liste des cases à visiter. Ces trois matrices permettent d'éffectuer une 
+recherche en largeur pour trouver le chemin le plus court vers le joueur. Donc comme si on versait de l'eau dans le labyrinthe à partir de la position du bot, et 
+que l'eau se propageait dans toutes les directions en évitant les murs, la troisième matrice contiendrait la liste des cases où l'eau est présente à chaque instant, 
+la première matrice indiquerait quelles cases ont déjà été touchées par l'eau, et la deuxième matrice indiquerait pour chaque case quelle est la case précédente 
+d'où l'eau est venue. Lorsque l'eau atteint la position du joueur, on peut remonter le chemin en utilisant la deuxième matrice pour trouver le chemin le plus court 
+vers le joueur.
+\subsection{Tir et armes}
+\subsection{Multijoueur, réseaux}
+\subsection{Interface graphique, sons}
+\section{Résultats et conclusion}
+\subsection{Bilan temporel}
+\subsection{Bilan de la conformité aux cahiers des charges}
+\subsection{Améliorations possibles}
+\section{Annexes}
+
+
+\end{document}

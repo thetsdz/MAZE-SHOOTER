@@ -13,7 +13,8 @@
  * \brief ajout de nouvelles textures (mur,sol ciel et bot).
  */
 
-/** \version 3.0
+/** \version 3000000000289a1030000001a
+.0
  * \author Hugues Astier
  * \date 17/03/2026
  * \brief Ajout de nouvelles textures (bot,projectiles,armes), avec texture du
@@ -54,7 +55,7 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
  * @param blocks Labyrinthe
  */
 void minimap(Entity player, Entity bot[18],Heal heal[10],
-             Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
+             Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss, bool IsBossAlive);
 
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
@@ -71,5 +72,5 @@ void UpdateDessinGame(Entity bot[18],Heal heal[10], Block blocks[NUM_BLOCKS][NUM
                       Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel, Model tabProjModels[]);
+                      Model botModel, Model tabProjModels[], Entity* boss, bool IsBossAlive);
 #endif

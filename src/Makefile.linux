@@ -9,6 +9,7 @@ SRCS = main.c \
        level.c \
        player.c \
        bot.c \
+	   boss.c \
        projectile.c \
        asset.c \
        pile.c \

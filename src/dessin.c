@@ -133,7 +133,7 @@ static void DrawBar(int x, int y, int w, int h, float ratio, Color fg) {
 /* ------------------------------------------------------------------ */
 
 void minimap(Entity player, Entity bot[18],Heal heal[10],
-             Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
+             Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss, bool IsBossAlive) {
     int minimapX = GetScreenWidth() - MINIMAP_W - MINIMAP_PADDING;
     int minimapY = MINIMAP_PADDING;
 
@@ -189,7 +189,12 @@ void minimap(Entity player, Entity bot[18],Heal heal[10],
         int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
         DrawRectangle(healDotX - 3, healDotY - 3, 6, 6, GREEN);
     } 
-
+    /* Boss (violet)*/
+    if (IsBossAlive) {
+        int bossDotX = minimapX + (int)((boss->pos.x - originX) * scaleX);
+        int bossDotY = minimapY + (int)((boss->pos.z - originZ) * scaleY);
+        DrawRectangle(bossDotX - 3, bossDotY - 3, 6, 6, PURPLE);
+    }
     /* Joueur (vert, par-dessus) */
     int playerDotX = minimapX + (int)((player.pos.x - originX) * scaleX);
     int playerDotY = minimapY + (int)((player.pos.z - originZ) * scaleY);
@@ -287,7 +292,7 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM
                       Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
                       Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel, Model tabProjModels[]) {
+                      Model botModel, Model tabProjModels[], Entity* boss, bool IsBossAlive) {
     /* --- Rendu 3D --- */
     BeginMode3D(camera);
 
@@ -330,5 +335,5 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM
     while (player.armeEquipee.type != tab[i])
         i++;
     DessinerArme(tabArmes[i], i);
-    minimap(player, bot,heal, blocks);
+    minimap(player, bot,heal, blocks, boss, IsBossAlive);
 }
