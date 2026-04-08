@@ -588,8 +588,9 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Model tabArmes[4],
-                         ReseauState* netState, Model skyModel, Model wallModel,
-                         Model floorModel, Model botModel, Model tabModels[4]) {
+                         ReseauState* netState, Model healModel, Model skyModel,
+                         Model wallModel, Model floorModel, Model botModel,
+                         Model tabModels[4]) {
   if (!netState->connected) {
     DessinerLobbyMultijoueur(netState);
   } else {
@@ -597,8 +598,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
     dummyBots[0] = *remotePlayer;
 
     UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
-                     tabArmes, skyModel, wallModel, floorModel, botModel,
-                     tabModels);
+                 tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
+                 tabModels);
   }
   DrawText(TextFormat("Ping: %.0f ms", ping), 10, GetScreenHeight() - 30, 20,
            YELLOW);

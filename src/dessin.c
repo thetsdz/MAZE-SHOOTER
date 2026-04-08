@@ -51,9 +51,6 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]) {
         switch (projs[i].type) {
         case PROJ_PISTOLET: {
             float s = 0.25f;
-            // On combine le fait de le coucher (90°) AVEC ton inclinaison
-            // (Pitch) sur l'axe X (Mets un "+" ou un "-" devant le pitch selon
-            // si la balle monte ou descend)
             Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD);
             rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
 
@@ -62,9 +59,7 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]) {
             break;
         }
         case PROJ_FUSIL: {
-            float s = 0.25f; // Taille du fusil
-            // On fait EXACTEMENT comme le pistolet : on combine le 90° et le
-            // pitch sur l'axe X !
+            float s = 0.25f;
             Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD);
             rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
 
@@ -75,37 +70,25 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]) {
 
         case PROJ_SNIPER: {
             float s = 0.25f;
-            // On utilise la MÊME logique de rotation que le pistolet
-            // Si le sniper est "perpendiculaire", on garde le (90.0f - pitch)
             Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD);
             rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
-
-            // LA SEULE DIFFÉRENCE POSSIBLE :
-            // Si la balle de sniper pointe à gauche/droite au lieu de devant,
-            // on ajoute un petit quart de tour final ici :
-            // rot = MatrixMultiply(MatrixRotateZ(90.0f * DEG2RAD), rot);
 
             tabProjModels[PROJ_SNIPER].transform = rot;
             DrawModel(tabProjModels[PROJ_SNIPER], projs[i].pos, s, WHITE);
             break;
         }
         case PROJ_GRENADE: {
-            // on affiche deux models en fonction de si la grenade a explosé ou
-            // non
             if (projs[i].radius == 3.0f) {
                 float s = 17.0f;
                 DrawModel(tabProjModels[4], projs[i].pos, s, WHITE);
                 break;
             } else {
                 float s = 0.2f;
-                // Pas de rotation complexe nécessaire pour la grenade
                 DrawModel(tabProjModels[PROJ_GRENADE], projs[i].pos, s, WHITE);
                 break;
             }
         }
         }
-        // pour  tester taille balle mettre le switch en commentaire et prendre
-        // DrawSphere DrawSphere(projs[i].pos, projs[i].radius, projs[i].color);
     }
 }
 
@@ -132,7 +115,7 @@ static void DrawBar(int x, int y, int w, int h, float ratio, Color fg) {
 /*  Minimap                                                             */
 /* ------------------------------------------------------------------ */
 
-void minimap(Entity player, Entity bot[18],Heal heal[10],
+void minimap(Entity player, Entity bot[18], Heal heal[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
     int minimapX = GetScreenWidth() - MINIMAP_W - MINIMAP_PADDING;
     int minimapY = MINIMAP_PADDING;
@@ -183,14 +166,14 @@ void minimap(Entity player, Entity bot[18],Heal heal[10],
         int botDotY = minimapY + (int)((bot[b].pos.z - originZ) * scaleY);
         DrawRectangle(botDotX - 3, botDotY - 3, 6, 6, RED);
     }
-    /* Heal (bleu) */
+    /* Heal (vert) */
     for (int h = 0; h < 10; h++) {
         int healDotX = minimapX + (int)((heal[h].pos.x - originX) * scaleX);
         int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
         DrawRectangle(healDotX - 3, healDotY - 3, 6, 6, GREEN);
-    } 
+    }
 
-    /* Joueur (vert, par-dessus) */
+    /* Joueur (bleu, par-dessus) */
     int playerDotX = minimapX + (int)((player.pos.x - originX) * scaleX);
     int playerDotY = minimapY + (int)((player.pos.z - originZ) * scaleY);
     DrawRectangle(playerDotX - 3, playerDotY - 3, 6, 6, BLUE);
@@ -205,7 +188,6 @@ static void DrawHUD(Entity player) {
   const int PW = 220;
   const int PAD = 8;
   int py = 10;
-
 
     /* ---- Panneau VIE -------------------------------------------- */
     DrawPanel(PX, py, PW, 58);
@@ -276,18 +258,15 @@ static void DrawHUD(Entity player) {
              PX + PAD, py + 7, 10, COL_HINT_GOLD);
 }
 
-/* ------------------------------------------------------------------ */   
-    /* --- Rendu 3D --- */
-
+/* ------------------------------------------------------------------ */
 /*  Point d'entrée principal                                            */
 /* ------------------------------------------------------------------ */
 
-
-void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+void UpdateDessinGame(Entity bot[18], Heal heal[10], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                       Camera3D camera, Projectile projs[MAX_PROJ],
                       Entity player, Texture2D viseur, Model tabArmes[],
-                      Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel, Model tabProjModels[]) {
+                      Model healModel, Model skyModel, Model wallModel, Model floorModel,
+                      Model botModel, Model tabProjModels[]){
     /* --- Rendu 3D --- */
     BeginMode3D(camera);
 
@@ -297,12 +276,14 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM
     rlEnableBackfaceCulling();
     rlEnableDepthMask();
 
-    
-
     DrawLevel(blocks, wallModel, floorModel);
-    
-    for(int i = 0; i < 10; i++) {
-        DrawCube(heal[i].pos,1.0f,1.0f,1.0f, GREEN);
+
+    /* --- Heals avec modèle 3D, rotation et flottement --- */
+    for (int i = 0; i < 10; i++) {
+        float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
+        Vector3 drawPos = { heal[i].pos.x, heal[i].pos.y + hover, heal[i].pos.z };
+        healModel.transform = MatrixRotateY((float)GetTime() * 60.0f * DEG2RAD);
+        DrawModel(healModel, drawPos, 0.4f, WHITE);
     }
 
     for (int b = 0; b < 18; b++) {
@@ -320,8 +301,8 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM
     DrawProjectiles(projs, tabProjModels);
     EndMode3D();
 
-  /* --- UI 2D --- */
-  DrawHUD(player);
+    /* --- UI 2D --- */
+    DrawHUD(player);
 
     DessinerViseur(viseur, GetScreenWidth(), GetScreenHeight());
 
@@ -330,5 +311,5 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],Block blocks[NUM_BLOCKS][NUM
     while (player.armeEquipee.type != tab[i])
         i++;
     DessinerArme(tabArmes[i], i);
-    minimap(player, bot,heal, blocks);
+    minimap(player, bot, heal, blocks);
 }

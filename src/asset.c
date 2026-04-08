@@ -47,3 +47,11 @@ void DessinerArme(Model ModeleArme, int indexArme) {
 
     EndMode3D();
 }
+
+
+Model ChargerHeal(void) {
+    Model m = LoadModel("assets/models/heal/heal.obj");
+    if (m.meshCount == 0)
+        printf("ERREUR: Impossible de charger le modèle heal\n");
+    return m;
+}
