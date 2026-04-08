@@ -66,7 +66,7 @@
  * quelque champs dans entity
  */
 
- /** \version 8.1
+/** \version 8.1
  * \author Hugues Astier
  * \date 01/04/2026
  * \brief ajout du champ score dans Entity
@@ -91,24 +91,25 @@
 // types.h
 
 typedef enum GameScreen {
-    MENU,
-    NOUVELLE_PARTIE,
-    MULTIJOUEUR,
-    CHARGER_PARTIE,
-    OPTIONS,
-    GAME_OVER,
-    VICTOIRE,
-    EXIT
-} GameScreen; // Ajoute EXIT
+  MENU,
+  NOUVELLE_PARTIE,
+  MULTIJOUEUR,
+  CHARGER_PARTIE,
+  OPTIONS,
+  GAME_OVER,
+  VICTOIRE,
+  EXIT
+} GameScreen;  // Ajoute EXIT
 
 /**
  * @enum EntityType
  * @brief Définit le type d'une entité (joueur ou bot).
  */
 typedef enum {
-    ENTITY_PLAYER,       /**< Entité contrôlée par le joueur. */
-    ENTITY_BOT,          /**< Entité contrôlée par l'IA. */
-    ENTITY_REMOTE_PLAYER /** < L'autre joueur humain (reseau). */
+  ENTITY_PLAYER,        /**< Entité contrôlée par le joueur. */
+  ENTITY_BOT,           /**< Entité contrôlée par l'IA. */
+  ENTITY_REMOTE_PLAYER, /** < L'autre joueur humain (reseau). */
+  ENTITY_BOSS           /**< Entité du boss final. */
 } EntityType;
 
 /**
@@ -116,10 +117,11 @@ typedef enum {
  * @brief Définit le propriétaire d'un projectile.
  */
 typedef enum {
-    OWNER_PLAYER,       /**< Projectile tiré par le joueur. */
-    OWNER_BOT,          /**< Projectile tiré par un bot. */
-    OWNER_REMOTE_PLAYER /**< Projectile tiré par l'autre joueur humain (reseau).
-                         */
+  OWNER_PLAYER,        /**< Projectile tiré par le joueur. */
+  OWNER_BOT,           /**< Projectile tiré par un bot. */
+  OWNER_REMOTE_PLAYER, /**< Projectile tiré par l'autre joueur humain
+                          (reseau). */
+  OWNER_BOSS           /**< Projectile tiré par le boss. */
 } OwnerType;
 
 /**
@@ -127,8 +129,8 @@ typedef enum {
  * @brief Coordonnées pour la pile DFS (parcours du labyrinthe).
  */
 typedef struct {
-    int i; /**< Indice de ligne. */
-    int j; /**< Indice de colonne. */
+  int i; /**< Indice de ligne. */
+  int j; /**< Indice de colonne. */
 } Coord;
 
 /**
@@ -136,12 +138,12 @@ typedef struct {
  * @brief Représente un bloc du labyrinthe (mur ou couloir).
  */
 typedef struct {
-    Vector3 pos;  /**< Position centrale du bloc. */
-    float width;  /**< Largeur du bloc (axe X). */
-    float height; /**< Hauteur du bloc (axe Y). */
-    float depth;  /**< Profondeur du bloc (axe Z). */
-    Color color;  /**< Couleur du bloc pour le rendu. */
-    bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
+  Vector3 pos;  /**< Position centrale du bloc. */
+  float width;  /**< Largeur du bloc (axe X). */
+  float height; /**< Hauteur du bloc (axe Y). */
+  float depth;  /**< Profondeur du bloc (axe Z). */
+  Color color;  /**< Couleur du bloc pour le rendu. */
+  bool isWall;  /**< true si c'est un mur, false si c'est un couloir. */
 } Block;
 
 /**
@@ -150,10 +152,10 @@ typedef struct {
  */
 
 typedef enum {
-    PROJ_PISTOLET,
-    PROJ_FUSIL,
-    PROJ_SNIPER,
-    PROJ_GRENADE
+  PROJ_PISTOLET,
+  PROJ_FUSIL,
+  PROJ_SNIPER,
+  PROJ_GRENADE
 } type_projectile;
 
 /**
@@ -161,17 +163,17 @@ typedef enum {
  * @brief Représente un projectile (balle) dans le jeu.
  */
 typedef struct {
-    Vector3 pos;          /**< Position actuelle. */
-    Vector3 vel;          /**< Vecteur vélocité (direction * vitesse). */
-    float yaw;            /**< Rotation horizontale. */
-    float pitch;          /**< Rotation verticale. */
-    float radius;         /**< Rayon de la sphère (hitbox). */
-    bool active;          /**< true si le projectile est actif. */
-    float life;           /**< Temps de vie restant (en secondes). */
-    Color color;          /**<couleur du projectile */
-    int degats;           /**<degat du projectile */
-    type_projectile type; /**< en fonction balles classiques ou grenade */
-    OwnerType owner;      /**< Propriétaire du projectile. */
+  Vector3 pos;          /**< Position actuelle. */
+  Vector3 vel;          /**< Vecteur vélocité (direction * vitesse). */
+  float yaw;            /**< Rotation horizontale. */
+  float pitch;          /**< Rotation verticale. */
+  float radius;         /**< Rayon de la sphère (hitbox). */
+  bool active;          /**< true si le projectile est actif. */
+  float life;           /**< Temps de vie restant (en secondes). */
+  Color color;          /**<couleur du projectile */
+  int degats;           /**<degat du projectile */
+  type_projectile type; /**< en fonction balles classiques ou grenade */
+  OwnerType owner;      /**< Propriétaire du projectile. */
 } Projectile;
 
 /**
@@ -186,14 +188,14 @@ typedef enum { PISTOLET, FUSIL, SNIPER, GRENADE } TypeArme;
  */
 
 typedef struct {
-    TypeArme type;
-    int munitionsMax;        // Taille du chargeur (ex: 30)
-    float cadenceTir;        // Temps entre deux balles (ex: 0.1s)
-    float vitesseProj;       // Vitesse du projectile
-    int degats;              // Puissance de l'arme
-    const char *nom;         // Pour afficher "AK-47" ou "Glock" à l'écran
-    float tailleProjectile;  // taille du projectile
-    Color couleurProjectile; // couleur du projectile
+  TypeArme type;
+  int munitionsMax;         // Taille du chargeur (ex: 30)
+  float cadenceTir;         // Temps entre deux balles (ex: 0.1s)
+  float vitesseProj;        // Vitesse du projectile
+  int degats;               // Puissance de l'arme
+  const char* nom;          // Pour afficher "AK-47" ou "Glock" à l'écran
+  float tailleProjectile;   // taille du projectile
+  Color couleurProjectile;  // couleur du projectile
 } ModeleArme;
 
 /**
@@ -201,16 +203,16 @@ typedef struct {
  * @brief Représente une entité du jeu (joueur ou bot).
  */
 typedef struct {
-  Vector3 pos;            /**< Position de l'entité. */
-  float yaw;              /**< Rotation horizontale. */
-  float pitch;            /**< Rotation verticale. */
-  float velocityY;        /**< Vitesse verticale. */
-  bool onGround;          /**< true si l'entité est au sol. */
-  float size;             /**< Taille de l'entité. */
-  int ammo;               /**< Munitions actuelles. */
-  int health;             /**< Points de vie actuels. */
-  int maxHealth;          /**< Points de vie maximum. */
-  int life;               /**< Nombre de vies restantes. */
+  Vector3 pos;     /**< Position de l'entité. */
+  float yaw;       /**< Rotation horizontale. */
+  float pitch;     /**< Rotation verticale. */
+  float velocityY; /**< Vitesse verticale. */
+  bool onGround;   /**< true si l'entité est au sol. */
+  float size;      /**< Taille de l'entité. */
+  int ammo;        /**< Munitions actuelles. */
+  int health;      /**< Points de vie actuels. */
+  int maxHealth;   /**< Points de vie maximum. */
+  int life;        /**< Nombre de vies restantes. */
   int score;
   ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
   float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir
@@ -223,9 +225,9 @@ typedef struct {
  * @brief Contient l'état de la connexion réseau
  */
 typedef struct {
-    int socket;    /**< Le socket de communication (-1 si déconnecté) */
-    int isServer;  /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
-    int connected; /**< 1 si la partie a commencé, 0 sinon */
+  int socket;    /**< Le socket de communication (-1 si déconnecté) */
+  int isServer;  /**< 1 si on est l'Hôte (Serveur), 0 si on est Client */
+  int connected; /**< 1 si la partie a commencé, 0 sinon */
 } ReseauState;
 
 /**
@@ -233,39 +235,40 @@ typedef struct {
  * @brief Données échangées entre les joueurs à chaque frame
  */
 typedef struct {
-    Vector3 pos;      /**< Position du joueur */
-    float yaw;        /**< Angle de vue horizontal */
-    float pitch;      /**< Angle de vue vertical */
-    int tir;          /**< 1 si le joueur tire, 0 sinon */
-    int estMort;      /**< 1 si le joueur est mort */
-    TypeArme arme;    /**< L'arme que le joueur tient actuellement */
-    int life;         /**< Nombre de vies restantes du joueur */
-    int isPing;       // 0=normal, 1=ping aller, 2=ping retour
-    double timestamp; // Pour mesurer le RTT
+  Vector3 pos;       /**< Position du joueur */
+  float yaw;         /**< Angle de vue horizontal */
+  float pitch;       /**< Angle de vue vertical */
+  int tir;           /**< 1 si le joueur tire, 0 sinon */
+  int estMort;       /**< 1 si le joueur est mort */
+  TypeArme arme;     /**< L'arme que le joueur tient actuellement */
+  int life;          /**< Nombre de vies restantes du joueur */
+  int isPing;        // 0=normal, 1=ping aller, 2=ping retour
+  double timestamp;  // Pour mesurer le RTT
 } PaquetReseau;
 
 typedef enum {
-    THEME_HERBE = 0,
-    THEME_BETON,
-    THEME_NEIGE,
-    THEME_LAVE,
-    NB_THEMES
+  THEME_HERBE = 0,
+  THEME_BETON,
+  THEME_NEIGE,
+  THEME_LAVE,
+  NB_THEMES
 } ThemeId;
 
 typedef struct {
-    const char *nom;
-    const char *wallTexPath;
-    const char *floorTexPath;
-    const char *skyTexPath;
+  const char* nom;
+  const char* wallTexPath;
+  const char* floorTexPath;
+  const char* skyTexPath;
 } ThemeInfo;
 
 /**
  * @struct Heal
- * @brief Petit objet de soin que le joueur peut ramasser pour récupérer des points de vie
+ * @brief Petit objet de soin que le joueur peut ramasser pour récupérer des
+ * points de vie
  */
-typedef struct{
-    Vector3 pos;            /**< Position de l'objet. */
-    int healAmount;         /**< Quantité de soin fournie par l'objet. */
+typedef struct {
+  Vector3 pos;    /**< Position de l'objet. */
+  int healAmount; /**< Quantité de soin fournie par l'objet. */
 } Heal;
 
 #endif

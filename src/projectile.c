@@ -122,7 +122,7 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
 
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Entity** autre, Entity* player,
-                       GameScreen* currentScreen) {
+                       GameScreen* currentScreen, bool* IsBossAlive, Entity* boss) {
   float dt = GetFrameTime();
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) continue;
@@ -159,10 +159,12 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
       projs[i].life -= dt;
       if (projs[i].life <= 0.0f && projs[i].pos.y != 0)
         explosion(&projs[i]);  // pas deja explosé alors boom
-    }
-    else {
-      projs[i].pos =Vector3Add(projs[i].pos,Vector3Scale(projs[i].vel,dt)); // sinon on calcul la nouvelle position
-                                                                            // pour tout les autres projectiles
+    } else {
+      projs[i].pos =
+          Vector3Add(projs[i].pos,
+                     Vector3Scale(projs[i].vel,
+                                  dt));  // sinon on calcul la nouvelle position
+                                         // pour tout les autres projectiles
       projs[i].life -= dt;
     }
     if (projs[i].life <= 0.0f && projs[i].type != PROJ_GRENADE) {
@@ -172,7 +174,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
     // --- NOUVELLE LOGIQUE DE COLLISION AABB ---
 
-    // 1. MES BALLES touchent l'AUTRE (Bot ou RemotePlayer)
+    // 1. MES BALLES touchent l'AUTRE (Bot ou boss ou RemotePlayer)
     if (projs[i].owner == OWNER_PLAYER) {
       if ((*autre)->type == ENTITY_REMOTE_PLAYER) {
         float h = ((*autre)->size / 2.0f);
@@ -185,7 +187,8 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
           if ((*autre)->health <= 0) {
-            continue;  // L'autre gère sa propre mort et son respawn, on n'intervient pas ici
+            continue;  // L'autre gère sa propre mort et son respawn, on
+                       // n'intervient pas ici
             // Si c'est le BOT, on le fait respawn ailleurs
           }
           continue;
@@ -212,12 +215,33 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           }
         }
       }
+      if (boss != NULL && boss->type == ENTITY_BOSS) {
+        float h = (boss->size / 2.0f);
+        float r = projs[i].radius;
+
+        if (fabsf(projs[i].pos.x - boss->pos.x) < (r + h) &&
+            fabsf(projs[i].pos.y - (boss->pos.y + h)) < (r + h) &&
+            fabsf(projs[i].pos.z - boss->pos.z) < (r + h)) {
+            
+          boss->health -= projs[i].degats;
+          if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
+
+          if (boss->health <= 0) {
+            player->score += 25;
+            boss->health = boss->maxHealth;
+            *IsBossAlive = false; // Le boss meurt
+          }
+        }
+      }
     }
 
-    // 2. LES BALLES ENNEMIES (Bot ou Remote ou mes propres grenades !) me touchent MOI
-    else if (projs[i].owner == OWNER_REMOTE_PLAYER ||
+    // 2. LES BALLES ENNEMIES (Bot ou Remote ou mes propres grenades !) me
+    // touchent MOI
+    else if (projs[i].owner == OWNER_BOSS ||
+      projs[i].owner == OWNER_REMOTE_PLAYER ||
              projs[i].owner == OWNER_BOT ||
-             (projs[i].owner == OWNER_PLAYER && projs[i].type==PROJ_GRENADE)) {
+             (projs[i].owner == OWNER_PLAYER &&
+              projs[i].type == PROJ_GRENADE)) {
       bool aToucheJoueur = false;
 
       // A. Vérification de la collision avec le Joueur
@@ -247,12 +271,27 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
               TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
             }
           }
+          else if (projs[i].owner == OWNER_BOSS && player->health <= 0) {
+            player->life -= 1;
+            if (player->life <= 0) {
+              TraceLog(LOG_INFO, "Game Over !");
+              *currentScreen = GAME_OVER;
+              *IsBossAlive = false;
+            } else {
+              player->health = player->maxHealth;
+              player->ammo = player->armeEquipee.munitionsMax;
+              player->pos =
+                  (Vector3){1.5f, 10.0f, 1.5f};  // Position de respawn solo
+              player->velocityY = 0;             // IMPORTANT : stop la chute
+              TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
+            }
+          }
         }
       }
 
       // B. Vérification de la collision avec d'autres Bots (seulement si le
       // projectile appartient à un bot et n'a pas déjà touché le joueur)
-      if (!aToucheJoueur && projs[i].owner == OWNER_BOT) {
+      if (!aToucheJoueur && projs[i].owner == OWNER_BOSS) {
         for (int j = 0; j < 18; j++) {
           if ((*autre)[j].type != ENTITY_BOT) continue;
 
@@ -266,7 +305,6 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
             if ((*autre)[j].health <= 0) {
-              player->score += 1;
               (*autre)[j].health = (*autre)[j].maxHealth;
               (*autre)[j].pos = (Vector3){(float)(rand() % NUM_BLOCKS), 10.0f,
                                           (float)(rand() % NUM_BLOCKS)};

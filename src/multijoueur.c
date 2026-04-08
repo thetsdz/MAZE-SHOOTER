@@ -267,7 +267,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     }
   // 5. Physique des balles et Collisions
 
-  UpdateProjectiles(projs, blocks, &ennemi, joueur, currentScreen);
+  UpdateProjectiles(projs, blocks, &ennemi, joueur, currentScreen,false, NULL);
 }
 
 void DessinerLobbyMultijoueur(ReseauState* netState) {
@@ -598,7 +598,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
 
     UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
                      tabArmes, skyModel, wallModel, floorModel, botModel,
-                     tabModels);
+                     tabModels,NULL, false);
   }
   DrawText(TextFormat("Ping: %.0f ms", ping), 10, GetScreenHeight() - 30, 20,
            YELLOW);

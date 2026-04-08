@@ -77,11 +77,13 @@ int main(void) {
   bool jeuInitialise = false;
   bool running = true;
   bool chargement = false;
+  bool IsBossAlive=false;
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
   Entity bot[18];
   Entity remotePlayer;
+  Entity boss;
   Heal heal[10];
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
@@ -191,10 +193,11 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         StopAllMusic();
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen);
+        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
+          IsBossAlive = false;
         }
         break;
       }
@@ -210,11 +213,12 @@ int main(void) {
           chargement = true;
           DisableCursor();
         }
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen);
+        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
           chargement = false;
+          IsBossAlive = false;
         }
         break;
       }
@@ -270,7 +274,7 @@ int main(void) {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
 
                          tabArmes, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels);
+                         tabProjModels, &boss, IsBossAlive);
         break;
       }
       case MULTIJOUEUR: {
@@ -282,7 +286,7 @@ int main(void) {
       case CHARGER_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
                          tabArmes, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels);
+                         tabProjModels, &boss, IsBossAlive);
         break;
       }
       case OPTIONS: {

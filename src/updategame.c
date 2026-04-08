@@ -11,6 +11,7 @@
 #include "../lib/headers/arme.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
+#include "../lib/headers/boss.h"
 #include "../lib/headers/heal.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
@@ -48,11 +49,17 @@ void ChangementArme(Entity* joueur) {
 void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], Camera3D* camera,
-                GameScreen* currentScreen) {
+                GameScreen* currentScreen, Entity* boss, bool* IsBossAlive) {
   // --- Logique du jeu ---
   Entity* bot_ptr = &bot[0];
   UpdatePlayer(player, blocks, camera, &bot_ptr);
-
+    
+    if(*IsBossAlive ==  true)
+        UpdateBoss(boss, blocks, player->pos, projs);
+    else if(((player->score)%50==0) && (player->score)!=0){
+        *IsBossAlive=true;
+        InitBoss(boss, blocks);
+    }
     for (int i = 0; i < 18; i++) {
         UpdateBot(&bot[i], blocks, player->pos, projs);
     }
@@ -77,6 +84,10 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         player->ammo = player->armeEquipee.munitionsMax;
     ;
 
+    if(IsKeyPressed(KEY_M))
+        player->score+=50;
+    if(IsKeyPressed(KEY_Q))
+        player->pos = boss-> pos;
     bool veutTirer = false;
     if (player->armeEquipee.type == FUSIL) {
         veutTirer = IsMouseButtonDown(MOUSE_BUTTON_LEFT); // Continu
@@ -96,5 +107,5 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
     player->chronoTir =
         player->armeEquipee.cadenceTir;  // On réinitialise le délai
   }
-  UpdateProjectiles(projs, blocks, &bot, player, currentScreen);
+  UpdateProjectiles(projs, blocks, &bot, player, currentScreen, IsBossAlive, boss);
 }
