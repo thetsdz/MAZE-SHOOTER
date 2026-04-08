@@ -38,7 +38,7 @@ void ChangementArme(Entity* joueur) {
     joueur->ammo = joueur->armeEquipee.munitionsMax;
     joueur->chronoTir = 0;
   }
-  if (IsKeyPressed(KEY_F4)) { //&& joueur->score>=6
+  if (IsKeyPressed(KEY_F4) && joueur->score>=6) { 
     joueur->armeEquipee = ObtenirModeleArme(GRENADE);
     joueur->ammo = joueur->armeEquipee.munitionsMax;
     joueur->chronoTir = 0;
