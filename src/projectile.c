@@ -174,12 +174,12 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
 
     // --- NOUVELLE LOGIQUE DE COLLISION AABB ---
 
-    // 1. MES BALLES touchent l'AUTRE (Bot ou boss ou RemotePlayer)
+    // 1. MES BALLES touchent l'AUTRE (Bot ou RemotePlayer) OU me touchent MOI
     if (projs[i].owner == OWNER_PLAYER) {
       if ((*autre)->type == ENTITY_REMOTE_PLAYER) {
         float h = ((*autre)->size / 2.0f);
         float r = projs[i].radius;
-
+        //Condition pour que le projectile touche un Bot RP
         if (fabsf(projs[i].pos.x - (*autre)->pos.x) < (r + h) &&
             fabsf(projs[i].pos.y - ((*autre)->pos.y + h)) < (r + h) &&
             fabsf(projs[i].pos.z - (*autre)->pos.z) < (r + h)) {
@@ -193,7 +193,8 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           }
           continue;
         }
-      } else if ((*autre)[0].type == ENTITY_BOT) {
+      } 
+      else if ((*autre)[0].type == ENTITY_BOT) {
         for (int j = 0; j < 18; j++) {
           float h = ((*autre)[j].size / 2.0f);
           float r = projs[i].radius;
@@ -230,6 +231,36 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
             player->score += 25;
             boss->health = boss->maxHealth;
             *IsBossAlive = false; // Le boss meurt
+          }
+        }
+      }
+      if (projs[i].type==PROJ_GRENADE){
+        // A. Vérification de la collision avec le Joueur
+        if (player->health > 0) {
+          float h = player->size / 2.0f;
+          float r = projs[i].radius;
+          
+          if (fabsf(projs[i].pos.x - player->pos.x) < (r + h) &&
+              fabsf(projs[i].pos.y - (player->pos.y + h)) < (r + h) &&
+              fabsf(projs[i].pos.z - player->pos.z) < (r + h)) {
+            player->health -= projs[i].degats;
+            //if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
+
+            // --- GESTION DE LA MORT EN SOLO ---
+            if (projs[i].owner == OWNER_PLAYER && player->health <= 0) {
+              player->life -= 1;
+              if (player->life <= 0) {
+                TraceLog(LOG_INFO, "Game Over !");
+                *currentScreen = GAME_OVER;
+              } else {
+                player->health = player->maxHealth;
+                player->ammo = player->armeEquipee.munitionsMax;
+                player->pos =
+                    (Vector3){1.5f, 10.0f, 1.5f};  // Position de respawn solo
+                player->velocityY = 0;             // IMPORTANT : stop la chute
+                TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
+              }
+            }
           }
         }
       }
