@@ -27,18 +27,18 @@ void ChangementArme(Entity* joueur) {
     joueur->chronoTir = 0;
   }
   // F2 : Fusil
-  if (IsKeyPressed(KEY_F3) && joueur->score>=4) {
+  if (IsKeyPressed(KEY_F3) && (joueur->score>=4 || joueur->armeUnlock[1]==0)) {
     joueur->armeEquipee = ObtenirModeleArme(FUSIL);
     joueur->ammo = joueur->armeEquipee.munitionsMax;
     joueur->chronoTir = 0;
   }
   // F3 : Sniper
-  if (IsKeyPressed(KEY_F2) && joueur->score>=2) {
+  if (IsKeyPressed(KEY_F2) && (joueur->score>=2 || joueur->armeUnlock[0]==0) ) {
     joueur->armeEquipee = ObtenirModeleArme(SNIPER);
     joueur->ammo = joueur->armeEquipee.munitionsMax;
     joueur->chronoTir = 0;
   }
-  if (IsKeyPressed(KEY_F4) && joueur->score>=6) { 
+  if (IsKeyPressed(KEY_F4) && (joueur->score>=6 || joueur->armeUnlock[2]==0) ) { 
     joueur->armeEquipee = ObtenirModeleArme(GRENADE);
     joueur->ammo = joueur->armeEquipee.munitionsMax;
     joueur->chronoTir = 0;
@@ -51,13 +51,22 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 GameScreen* currentScreen) {
   // --- Logique du jeu ---
   Entity* bot_ptr = &bot[0];
+  int armeUnlock=-1;
   UpdatePlayer(player, blocks, camera, &bot_ptr);
 
     for (int i = 0; i < 18; i++) {
         UpdateBot(&bot[i], blocks, player->pos, projs);
     }
     for(int i = 0; i < 10; i++) {
-        UpdateHeal(&heal[i],player,blocks);
+        armeUnlock=UpdateHeal(&heal[i],player,blocks);
+        if (armeUnlock!=0) {
+          switch (armeUnlock){
+            case 1 : player->armeUnlock[1]=0; break; // par convention le tableau represente sniper,fusil,grenade mais fusil vaut 1 (bref mal organisé je sais)
+            case 2 : player->armeUnlock[0]=0; break;
+            case 3 : player->armeUnlock[2]=0; break;
+            default : break;
+          }
+        }
     }
 
   if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot);

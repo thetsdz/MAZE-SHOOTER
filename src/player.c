@@ -29,6 +29,7 @@ void InitPlayer(Entity *player) {
     player->chronoTir =
         0.0f; // On initialise le chrono à 0 pour pouvoir tirer immédiatement
     player->score = 0;
+    player->armeUnlock[0] = -1; player->armeUnlock[1] = -1; player->armeUnlock[2] = -1; //On a le droit a aucune arme par default 
 }
 
 void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],

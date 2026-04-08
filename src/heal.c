@@ -12,7 +12,7 @@
 #include "../lib/headers/heal.h"
 #include "../lib/headers/types.h"
 #include "../lib/headers/player.h"
-#include 
+ 
 // Structure pour représenter une position dans la grille du labyrinthe
 typedef struct {
     int i;
@@ -26,7 +26,6 @@ void InitHeal(Heal *heal,
     int i, j;
     int random = rand() % 100; 
     int randomWeapon = rand() % 100;
-    heal->weaponType = -1;
 
     if(random <50){
         heal->healAmount = 20;
@@ -40,21 +39,22 @@ void InitHeal(Heal *heal,
     else{
         heal -> healAmount = 100;
     }
+
     if (randomWeapon < 70) {
         // 70% de chance : Pas d'arme en plus
-        heal->weaponType = -1;
+        heal->arme = PISTOLET;
     }
     else if (randomWeapon < 88) {
         // 18% de chance (88 - 70) : Sniper
-        heal->weaponType = ARME_SNIPER; 
+        heal->arme= SNIPER; //SNIPER vaut 2
     }
     else if (randomWeapon < 97) {
         // 9% de chance (97 - 88) : Fusil d'Assaut
-        heal->weaponType = ARME_ASSAULT;
+        heal->arme = FUSIL; // FUSIL vaut 1
     }
     else {
         // 3% de chance (100 - 97) : Grenade
-        heal->weaponType = ARME_GRENADE;
+        heal->arme = GRENADE; // GRENADE vaut 3 (je sais mal fais faut réorganiser mais plus tard)
     }
 
 
@@ -70,21 +70,22 @@ void InitHeal(Heal *heal,
     heal->pos.y = 0.5f;
 }
 
-void UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
+int UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
     // Vérifier la distance entre le joueur et l'objet de soin
     float dx = heal->pos.x - player->pos.x;
     float dz = heal->pos.z - player->pos.z;
     float distance = sqrtf(dx * dx + dz * dz);
+    int armeUnlock=-1;
 
     if (distance < 1.0f) { // Seuil de ramassage (1 mètre)
         player->health += heal->healAmount; // Soigner le joueur
-
-
+        armeUnlock=heal->arme;
         if (player->health > player->maxHealth)
             player->health = player->maxHealth; // Ne pas dépasser la santé max
         // Réinitialiser la position de l'objet de soin
         InitHeal(heal, blocks);
+        
     }
-
+    return armeUnlock;
 
 }

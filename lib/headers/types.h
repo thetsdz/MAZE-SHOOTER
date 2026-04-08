@@ -211,8 +211,9 @@ typedef struct {
   int health;             /**< Points de vie actuels. */
   int maxHealth;          /**< Points de vie maximum. */
   int life;               /**< Nombre de vies restantes. */
-  int score;
+  int score;               /**<Son score */
   ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
+  int armeUnlock[3];       /**< permet de voir si une arme est debloqué (sniper,fusil,grenade) toutes les cases valent -1 par default (0 sinon)  */
   float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir
                       suivant */
   EntityType type; /**< Type de l'entité. */
@@ -266,7 +267,7 @@ typedef struct {
 typedef struct{
     Vector3 pos;            /**< Position de l'objet. */
     int healAmount;         /**< Quantité de soin fournie par l'objet. */
-    TypeArme arme ;           /**< Vaut -1 si aucune arme  */
+    TypeArme arme ;           /**< Vaut -1 si aucune arme sinon 1,2 et 3 pour le sniper le fusil d'assault et la grenade */
 } Heal;
 
 #endif
