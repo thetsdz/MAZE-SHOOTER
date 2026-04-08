@@ -252,9 +252,10 @@ typedef struct {
   int life;          /**< Nombre de vies restantes du joueur */
   int isPing;        // 0=normal, 1=ping aller, 2=ping retour
   double timestamp;  // Pour mesurer le RTT
+  int healRamasses[10]; // 1 si l'objet i a été ramassé par moi ce tour-ci, 0 sinon
 } PaquetReseau;
 
-typedef enum {000000000289a1030000001a
+typedef enum {
 
   THEME_HERBE = 0,
   THEME_BETON,

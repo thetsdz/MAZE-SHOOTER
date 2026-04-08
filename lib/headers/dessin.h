@@ -29,15 +29,12 @@
  * \brief ajout de la minimap
  */
 
- /** \version 5.0
+/** \version 5.0
  * \author Hugues Astier
  * \date 17/03/2026
- * \brief Changement de la prise en compte du score (passer en champs de entité) en vue de changer le changement d'arme
+ * \brief Changement de la prise en compte du score (passer en champs de entité)
+ * en vue de changer le changement d'arme
  */
- 
- 
-
-
 
 #include "types.h"
 
@@ -46,7 +43,7 @@
  * @param projs Pointeur vers le tableau de projetiles
  * @param tabModels tableau de texture des differrents projectiles (trié)
  */
-void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
+void DrawProjectiles(Projectile* projs, Model tabProjModels[]);
 
 /**
  * @brief Gere l'affichage de la map en haut à droite
@@ -54,8 +51,9 @@ void DrawProjectiles(Projectile *projs, Model tabProjModels[]);
  * @param Bot Entite Bot
  * @param blocks Labyrinthe
  */
-void minimap(Entity player, Entity bot[18],Heal heal[10],
-             Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss, bool IsBossAlive);
+void minimap(Entity player, Entity bot[18], Heal heal[10],
+             Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss,
+             bool IsBossAlive);
 
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
@@ -68,9 +66,11 @@ void minimap(Entity player, Entity bot[18],Heal heal[10],
  * @param armeTex Texture de l'arme à dessiner en bas de l'écran
  */
 
-void UpdateDessinGame(Entity bot[18],Heal heal[10], Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                      Camera3D camera, Projectile projs[MAX_PROJ],
-                      Entity player, Texture2D viseur, Model tabArmes[],
-                      Model skyModel, Model wallModel, Model floorModel,
-                      Model botModel, Model tabProjModels[], Entity* boss, bool IsBossAlive);
+void UpdateDessinGame(Entity bot[18], Heal heal[10],
+                      Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
+                      Projectile projs[MAX_PROJ], Entity player,
+                      Texture2D viseur, Model tabArmes[], Model skyModel,
+                      Model wallModel, Model floorModel, Model botModel,
+                      Model tabProjModels[], Entity* boss, bool IsBossAlive,
+                      Model bossModel);
 #endif

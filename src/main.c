@@ -104,6 +104,7 @@ int main(void) {
   Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
+  Model bossModel = LoadModel("../assets/models/boss/boss.glb");
 
   Model tabProjModels[5];
   tabProjModels[0] =
@@ -274,7 +275,7 @@ int main(void) {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
 
                          tabArmes, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive);
+                         tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case MULTIJOUEUR: {
@@ -286,7 +287,7 @@ int main(void) {
       case CHARGER_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
                          tabArmes, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive);
+                         tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case OPTIONS: {
@@ -322,6 +323,7 @@ int main(void) {
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
+  UnloadModel(bossModel);
   UnloadModel(wallModel);
   UnloadModel(floorModel);
 
