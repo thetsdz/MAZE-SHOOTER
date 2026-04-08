@@ -35,15 +35,44 @@
 \section{Conception}
 \subsection{Cahier des charges}
 \subsection{Fonctionnalités du jeu}
+Dans MAZE-SHOOTER il y a deux modes de jeu principaux. Dans un premier temps, un mode solo, dans lequel le joueur doit survivre le plus longtemps 
+possible face à des robots et des boss. Il doit en éliminer autant que possible.
+ Et un mode multijoueur, dans lequel les joueurs s'affrontent entre eux dans un labyrinthe revisité pour facilité les combats longue distance.
+Il est aussi possible de changer les textures via le menu "options".
+
 \section{Organisation du projet}
 \subsection{Reparition des tâches}
 \subsection{Planning prévisionnel}
 \subsection{Outils utilisés}
+Pour ce projet, nous avons utilisé plusieurs outils pour faciliter le développement et la collaboration. Nous avons utilisé Git pour le contrôle de version,
+ce qui nous a permis de travailler simultanément sur différentes parties du code sans conflits majeurs. Pour la gestion des tâches et du planning,  nous avons
+utilisé un diagramme de Gantt, où nous avons assigné des tâches à chaque membre de l'équipe. Pour la gestion du rendu graphique, nous avons utilisé la 
+librairie raylib, qui nous a permis de créer des graphismes 2D et 3D de manière efficace. Pour le rapport, nous avons utilisé overleaf, qui nous a permis de 
+collaborer sur la rédaction du document en temps réel. Pour la documentation, nous avons utilisé Doxygen, qui nous a permis de générer automatiquement la 
+documentation du code à l'aide de nos commentaires. Enfin, pour la communication, nous avons utilisé instagram, qui nous a permis de discuter en temps réel 
+et de partager des idées rapidement.
 \section{Développement}
 \subsection{Menu}
 \subsection{Création de la carte}
-\subsection{Joueur, déplacement et gestion de la vie}
-\subsection{Bots, leurs IA, spawn}
+\subsection{Joueur, déplacement et gestion de la vie, soin}
+\subsection{Bots, leurs IA, spawn, boss}
+Concernant les bots, ils sont guidés par une intelligence artificielle simple mais efficace. Ils empreintent le chemin le plus court vers le joueur dans le 
+labyrinthe, mais dès qu'ils détectent le joueur à une certaine distance, ils commencent à le poursuivre. Ils utilisent un algorithme de recherche de chemin pour 
+trouver le chemin le plus court vers le joueur, en évitant les obstacles du labyrinthe. Les bots ont également une capacité d'attaque, et lorsqu'ils sont 
+suffisamment proches du joueur, ils peuvent lui infliger des dégâts. Les boss, quant à eux, sont des ennemis plus puissants avec des comportements plus complexes. 
+Ils utilisent un sniper plutot que le glock des bots normaux, ce qui fait qu'ils infligent un nombre de dégats beaucoup plus élevé, leur IA est beaucoup plus 
+précise (ils ne ratent pas une cible à moins qu'elle ne soit cachée derrière un mur ou qu'elle bouge très rapidement) et ils ont plus de points de vie que les 
+bots normaux. Ils apparaissent à des moments clés du jeu pour offrir un défi supplémentaire au joueur. Néanmoins, ils se déplacent 2 fois moins vite que les bots 
+normaux ce qui fait qu'ils sont plus facile à fuir que les bots normaux, mais ils sont plus dangereux s'ils arrivent à vous toucher. les bots et les boss ont la 
+même logique de spawn, ils apparaissent à des endroits aléatoires du labyrinthe, bien que les boss apparaissent tout les 50 kills de bots classiques. 
+
+L'algorithme de recherche de chemin utilise 3 matrices. La première se nomme \emph{visited} et contient des booléens indiquant si une case à dejà été visitée ou pas, la deuxième contient 
+quelle case a été visitée avant d'arriver à la case actuelle, et la troisième contient la liste des cases à visiter. Ces trois matrices permettent d'éffectuer une 
+recherche en largeur pour trouver le chemin le plus court vers le joueur. Donc comme si on versait de l'eau dans le labyrinthe à partir de la position du bot, et 
+que l'eau se propageait dans toutes les directions en évitant les murs, la troisième matrice contiendrait la liste des cases où l'eau est présente à chaque instant, 
+la première matrice indiquerait quelles cases ont déjà été touchées par l'eau, et la deuxième matrice indiquerait pour chaque case quelle est la case précédente 
+d'où l'eau est venue. Lorsque l'eau atteint la position du joueur, on peut remonter le chemin en utilisant la deuxième matrice pour trouver le chemin le plus court 
+vers le joueur.
 \subsection{Tir et armes}
 \subsection{Multijoueur, réseaux}
 \subsection{Interface graphique, sons}
