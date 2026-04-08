@@ -25,6 +25,9 @@ void InitHeal(Heal *heal,
     float offset = NUM_BLOCKS - 1; // Le même offset que dans level.c
     int i, j;
     int random = rand() % 100; 
+    int randomWeapon = rand() % 100;
+    heal->weaponType = -1;
+
     if(random <50){
         heal->healAmount = 20;
     }
@@ -37,6 +40,24 @@ void InitHeal(Heal *heal,
     else{
         heal -> healAmount = 100;
     }
+    if (randomWeapon < 70) {
+        // 70% de chance : Pas d'arme en plus
+        heal->weaponType = -1;
+    }
+    else if (randomWeapon < 88) {
+        // 18% de chance (88 - 70) : Sniper
+        heal->weaponType = ARME_SNIPER; 
+    }
+    else if (randomWeapon < 97) {
+        // 9% de chance (97 - 88) : Fusil d'Assaut
+        heal->weaponType = ARME_ASSAULT;
+    }
+    else {
+        // 3% de chance (100 - 97) : Grenade
+        heal->weaponType = ARME_GRENADE;
+    }
+
+
     // On boucle jusqu'à trouver une case qui N'EST PAS un mur
     do {
         // rand() % NUM_BLOCKS donne un nombre entre 0 et 50

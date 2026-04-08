@@ -266,6 +266,7 @@ typedef struct {
 typedef struct{
     Vector3 pos;            /**< Position de l'objet. */
     int healAmount;         /**< Quantité de soin fournie par l'objet. */
+    TypeArme arme ;           /**< Vaut -1 si aucune arme  */
 } Heal;
 
 #endif
