@@ -5,6 +5,6 @@
 *.bin
 
 
-./bin/
+bin/
 doc/html/
 doc/latex/
