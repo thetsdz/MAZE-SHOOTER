@@ -10,10 +10,9 @@
 #include <stdbool.h>
 
 #include "../lib/headers/heal.h"
-
 #include "../lib/headers/types.h"
 #include "../lib/headers/player.h"
-
+#include 
 // Structure pour représenter une position dans la grille du labyrinthe
 typedef struct {
     int i;
@@ -58,6 +57,8 @@ void UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]
 
     if (distance < 1.0f) { // Seuil de ramassage (1 mètre)
         player->health += heal->healAmount; // Soigner le joueur
+
+
         if (player->health > player->maxHealth)
             player->health = player->maxHealth; // Ne pas dépasser la santé max
         // Réinitialiser la position de l'objet de soin
