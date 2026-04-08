@@ -19,7 +19,7 @@
 [INFO] GL: Supported extensions count: 231
 [INFO] GL: OpenGL device information:
 [INFO]     > Vendor:   Intel
-[INFO]     > Renderer: Mesa Intel(R) UHD Graphics 630 (CML GT2)
+[INFO]     > Renderer: Mesa Intel(R) UHD Graphics 630 (CFL GT2)
 [INFO]     > Version:  4.6 (Core Profile) Mesa 25.0.7-0ubuntu0.24.04.2
 [INFO]     > GLSL:     4.60
 [INFO] GL: VAO extension detected, VAO functions loaded successfully
@@ -193,5 +193,5 @@
 [INFO] FILEIO: [../assets/images/sky.png] File loaded successfully
 [INFO] IMAGE: Data loaded successfully (2048x1536 | R8G8B8A8 | 1 mipmaps)
 [INFO] TEXTURE: [ID 7] Cubemap texture loaded successfully (512x512)
-[INFO] Serveur trouvé à l'IP : 172.18.41.162
-[INFO] Fin de partie | Score=0 | maxAmmo=11
+[INFO] Serveur trouvé à l'IP : 172.18.41.72
+[INFO] Fin de partie | Score=0 | maxAmmo=12
