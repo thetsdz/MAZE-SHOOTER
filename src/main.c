@@ -215,12 +215,20 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          // On vérifie le résultat du chargement
-          bool succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, blocks, heal);
-          if (!succes) {
-             joueurATriche = true;
-             timerTriche = 0.0f; // On initialise le chronomètre à 0
+          int succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, heal);
+          
+          if (succes == 1) {
+             // Fichier introuvable ou corrompu ! On retourne au menu direct.
+             currentScreen = MENU;
+             jeuInitialise = false;
+             break; // On coupe court à l'exécution
           }
+          else if (succes == 2) {
+             // Triche détectée (modification propre du fichier)
+             joueurATriche = true;
+             timerTriche = 0.0f;
+          }
+          
           chargement = true;
           DisableCursor();
         }

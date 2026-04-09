@@ -19,6 +19,8 @@ re:
 info:
 	$(MAKE) -f $(MAKEFILE) info
 
+run:
+	$(MAKE) -f $(MAKEFILE) run
 %:
 	$(MAKE) -f $(MAKEFILE) $@
 

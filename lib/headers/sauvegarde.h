@@ -30,10 +30,10 @@ et ajout du bot dans le fichier de sauvegarde
  score (passer en champs de entity)
 */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "types.h"
 
@@ -44,15 +44,14 @@ et ajout du bot dans le fichier de sauvegarde
  * \param <int* score> récupère le score de la partie
  */
 void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
-                 Block blocks[NUM_BLOCKS][NUM_BLOCKS], Heal heal[10]);
+                 Heal heal[10]);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte
  *   \param <Entity* player> charge les infos du joueur
  *   \param <Entity* bot> charge les infos du bot
  *   \param <int* score> charge le score de la partie
  */
-bool chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
-                       bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Heal heal[10]);
+int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
+                      bool* IsBossAlive, Heal heal[10]);
 
 #endif
