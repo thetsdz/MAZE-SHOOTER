@@ -33,6 +33,7 @@ et ajout du bot dans le fichier de sauvegarde
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "types.h"
 
@@ -50,7 +51,7 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
  *   \param <Entity* bot> charge les infos du bot
  *   \param <int* score> charge le score de la partie
  */
-void chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
+bool chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
                        bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Heal heal[10]);
 

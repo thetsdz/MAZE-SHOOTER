@@ -78,6 +78,7 @@ int main(void) {
   bool running = true;
   bool chargement = false;
   bool IsBossAlive=false;
+  bool joueurATriche = false;
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
@@ -88,6 +89,7 @@ int main(void) {
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
   ReseauState netState = {-1, 0, 0};
+  float timerTriche = 0.0f; // chronomètre pour l'écran de triche
 
   // --- Caméra ---
   Camera3D camera = {0};
@@ -213,16 +215,41 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          chargerSauvegarde(&player, bot,&boss, &IsBossAlive, blocks, heal);
+          // On vérifie le résultat du chargement
+          bool succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, blocks, heal);
+          if (!succes) {
+             joueurATriche = true;
+             timerTriche = 0.0f; // On initialise le chronomètre à 0
+          }
           chargement = true;
           DisableCursor();
         }
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+        
+        // Si le joueur a triché, on fait tourner le chronomètre
+        if (joueurATriche) {
+            timerTriche += GetFrameTime(); // Ajoute le temps écoulé depuis la dernière frame
+            
+            // Si 5 secondes se sont écoulées
+            if (timerTriche >= 5.0f) {
+                currentScreen = NOUVELLE_PARTIE; // On bascule sur l'écran de jeu
+                jeuInitialise = false;           // Force la réinitialisation des entités pour une partie neuve
+                joueurATriche = false;           // Enlève l'alerte
+                chargement = false;              // Réinitialise l'état de chargement
+                IsBossAlive = false;
+                timerTriche = 0.0f;
+            }
+        } 
+        // On update le jeu que si la sauvegarde est valide
+        else {
+            UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+        }
+        
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
           chargement = false;
           IsBossAlive = false;
+          joueurATriche = false; // Réinitialiser le drapeau
         }
         break;
       }
@@ -284,9 +311,15 @@ int main(void) {
         break;
       }
       case CHARGER_PARTIE: {
-        UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive, bossModel);
+        if (joueurATriche) {
+            // Dessiner uniquement l'écran d'alerte si triche
+            DrawTricheur(GetScreenWidth());
+        } else {
+            // Sinon on dessine le jeu normal
+            UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
+                             tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
+                             tabProjModels, &boss, IsBossAlive, bossModel);
+        }
         break;
       }
       case OPTIONS: {

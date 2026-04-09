@@ -8,9 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h> 
 
 #include "../lib/headers/cryptage.h"
 #include "../lib/headers/types.h"
+#include "../lib/headers/dessin.h"
 
 // CLÉ DE CRYPTAGE (À ne pas partager ou modifié !)
 // générer avec : openssl rand -hex 32
@@ -99,15 +101,13 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
   }
 }
 
-void chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
+bool chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
                        bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Heal heal[10]) {
-  // Lecture Binaire
-  // Note le "rb" (Read Binary) au lieu de "r"
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
-    return;
+    return false; // Échec
   }
 
   SaveFile save;
@@ -115,29 +115,16 @@ void chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   fclose(fr);
 
   if (lu != 1) {
-    printf(
-        "[Chargement] Erreur : Fichier de sauvegarde corrompu ou "
-        "incomplet.\n");
-    return;
+    printf("[Chargement] Erreur : Fichier de sauvegarde corrompu.\n");
+    return false; // Échec
   }
 
-  // Décryptage
-  // RC4 est symétrique donc on rappelle la fonction pour décrypter
-  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY,
-            strlen(GAME_KEY));
-
-  // Vérification Anti-Triche
-  // On recalcule le checksum sur les données qu'on vient de décrypter
-  uint32_t verif =
-      calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
+  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY, strlen(GAME_KEY));
+  uint32_t verif = calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
 
   if (verif != save.checksum) {
-    printf(
-        "ALERTE TRICHE : Le fichier de sauvegarde a été modifié "
-        "manuellement "
-        "!\n");
-    // Ici tu peux décider de bloquer le chargement, ou mettre le score à 0
-    return;
+    printf("ALERTE TRICHE : Le fichier de sauvegarde a été modifié manuellement !\n");
+    return false; // Indique qu'il y a eu triche
   }
 
   // Application des données (Si tout est bon)
@@ -174,4 +161,5 @@ void chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
     }
 
   printf("[Chargement] Partie chargée avec succès !\n");
+  return true; // Succès
 }

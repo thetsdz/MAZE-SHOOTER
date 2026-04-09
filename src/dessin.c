@@ -311,7 +311,19 @@ static void DrawBossBar(Entity* boss, int screenWidth) {
   int hpTextWidth = MeasureText(hpText, 15);
   DrawText(hpText, screenWidth / 2 - hpTextWidth / 2, posY + 5, 15, RAYWHITE);
 }
-
+/*--------------------------------------------------------------------*/
+/* Le joueur a triché !!!*/
+/*--------------------------------------------------------------------*/
+void DrawTricheur(int screenWidth) {
+  // Le message indiquant que le joueur a triché
+  const char* msgTriche =
+      "ALERTE TRICHE : Fichier de sauvegarde modifié manuellement ! Votre "
+      "progression à été réinitialisée.\n                                    "
+      "La partie sera lancée dans 5 secondes...";
+  int nameWidth = MeasureText(msgTriche, 20);
+  DrawText(msgTriche, screenWidth / 2 - nameWidth / 2, GetScreenHeight() / 2,
+           20, RED);
+}
 /* ------------------------------------------------------------------ */
 /* --- Rendu 3D --- */
 
@@ -321,10 +333,10 @@ static void DrawBossBar(Entity* boss, int screenWidth) {
 void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
-                      Texture2D viseur, Model tabArmes[],Model healModel, Model skyModel,
-                      Model wallModel, Model floorModel, Model botModel,
-                      Model tabProjModels[], Entity* boss, bool IsBossAlive,
-                      Model bossModel) {
+                      Texture2D viseur, Model tabArmes[], Model healModel,
+                      Model skyModel, Model wallModel, Model floorModel,
+                      Model botModel, Model tabProjModels[], Entity* boss,
+                      bool IsBossAlive, Model bossModel) {
   /* --- Rendu 3D --- */
   BeginMode3D(camera);
 
@@ -337,11 +349,11 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   DrawLevel(blocks, wallModel, floorModel);
 
   for (int i = 0; i < 10; i++) {
-		float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
-		Vector3 drawPos = { heal[i].pos.x, heal[i].pos.y + hover, heal[i].pos.z };
-		healModel.transform = MatrixRotateY((float)GetTime() * 60.0f * DEG2RAD);
-		DrawModel(healModel, drawPos, 0.4f, WHITE);
-	}
+    float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
+    Vector3 drawPos = {heal[i].pos.x, heal[i].pos.y + hover, heal[i].pos.z};
+    healModel.transform = MatrixRotateY((float)GetTime() * 60.0f * DEG2RAD);
+    DrawModel(healModel, drawPos, 0.4f, WHITE);
+  }
 
   for (int b = 0; b < 18; b++) {
     if (bot[b].health <= 0) continue;
@@ -384,8 +396,8 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   DrawProjectiles(projs, tabProjModels);
   EndMode3D();
 
-	/* --- UI 2D --- */
-	DrawHUD(player);
+  /* --- UI 2D --- */
+  DrawHUD(player);
 
   if (IsBossAlive && boss->health > 0) {
     DrawBossBar(boss, GetScreenWidth());
