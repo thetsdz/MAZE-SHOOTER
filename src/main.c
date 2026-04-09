@@ -106,6 +106,9 @@ int main(void) {
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
   Model bossModel = LoadModel("../assets/models/boss/boss.glb");
 
+  // --- Modèle heal ---
+  Model healModel = LoadModel("../assets/models/heal/heal.glb");
+
   Model tabProjModels[5];
   tabProjModels[0] =
       LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
@@ -231,18 +234,14 @@ int main(void) {
         running = false;
         break;
       }
-        // --- Dans la boucle while de src/main.c ---
 
       case GAME_OVER:
         GererGameOver(&currentScreen, player.score);
-        // Si l'écran a changé (clic sur Retour ou touche Entrée), on
-        // réinitialise
         if (currentScreen == MENU) {
           jeuInitialise = false;
           IsBossAlive = false;
           chargement = false;  // Important si vous utilisiez une sauvegarde
         }
-        // On garde aussi la sécurité du Backspace au cas où
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -251,7 +250,6 @@ int main(void) {
 
       case VICTOIRE:
         GererVictoire(&currentScreen, player.score);
-        // Même logique pour la victoire
         if (currentScreen == MENU) {
           jeuInitialise = false;
           IsBossAlive = false;
@@ -270,30 +268,28 @@ int main(void) {
 
     switch (currentScreen) {
       case MENU: {
-        // Le dessin est géré dans GererMenu
         break;
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
 
-                         tabArmes, skyModel, wallModel, floorModel, botModel,
+                         tabArmes,healModel, skyModel, wallModel, floorModel, botModel,
                          tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs,
-                            &camera, viseur, tabArmes, &netState, skyModel,
-                            wallModel, floorModel, botModel, tabProjModels);
+        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs, &camera,
+                    viseur, tabArmes, &netState, healModel, skyModel,
+                    wallModel, floorModel, botModel, tabProjModels);
         break;
       }
       case CHARGER_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, skyModel, wallModel, floorModel, botModel,
+                         tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
                          tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case OPTIONS: {
-        // Le dessin est géré dans GererOption
         break;
       }
       case EXIT: {
@@ -326,6 +322,7 @@ int main(void) {
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadModel(bossModel);
+  UnloadModel(healModel);
   UnloadModel(wallModel);
   UnloadModel(floorModel);
 

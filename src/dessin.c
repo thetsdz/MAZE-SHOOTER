@@ -178,7 +178,7 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
     int botDotY = minimapY + (int)((bot[b].pos.z - originZ) * scaleY);
     DrawRectangle(botDotX - 3, botDotY - 3, 6, 6, RED);
   }
-  /* Heal (bleu) */
+  /* Heal (vert) */
   for (int h = 0; h < 10; h++) {
     int healDotX = minimapX + (int)((heal[h].pos.x - originX) * scaleX);
     int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
@@ -190,7 +190,7 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
     int bossDotY = minimapY + (int)((boss->pos.z - originZ) * scaleY);
     DrawRectangle(bossDotX - 3, bossDotY - 3, 6, 6, PURPLE);
   }
-  /* Joueur (vert, par-dessus) */
+  /* Joueur (bleu, par-dessus) */
   int playerDotX = minimapX + (int)((player.pos.x - originX) * scaleX);
   int playerDotY = minimapY + (int)((player.pos.z - originZ) * scaleY);
   DrawRectangle(playerDotX - 3, playerDotY - 3, 6, 6, BLUE);
@@ -321,7 +321,7 @@ static void DrawBossBar(Entity* boss, int screenWidth) {
 void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
-                      Texture2D viseur, Model tabArmes[], Model skyModel,
+                      Texture2D viseur, Model tabArmes[],Model healModel, Model skyModel,
                       Model wallModel, Model floorModel, Model botModel,
                       Model tabProjModels[], Entity* boss, bool IsBossAlive,
                       Model bossModel) {
@@ -337,8 +337,11 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   DrawLevel(blocks, wallModel, floorModel);
 
   for (int i = 0; i < 10; i++) {
-    DrawCube(heal[i].pos, 1.0f, 1.0f, 1.0f, GREEN);
-  }
+		float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
+		Vector3 drawPos = { heal[i].pos.x, heal[i].pos.y + hover, heal[i].pos.z };
+		healModel.transform = MatrixRotateY((float)GetTime() * 60.0f * DEG2RAD);
+		DrawModel(healModel, drawPos, 0.4f, WHITE);
+	}
 
   for (int b = 0; b < 18; b++) {
     if (bot[b].health <= 0) continue;
@@ -381,8 +384,8 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   DrawProjectiles(projs, tabProjModels);
   EndMode3D();
 
-  /* --- UI 2D --- */
-  DrawHUD(player);
+	/* --- UI 2D --- */
+	DrawHUD(player);
 
   if (IsBossAlive && boss->health > 0) {
     DrawBossBar(boss, GetScreenWidth());

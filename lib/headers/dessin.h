@@ -69,7 +69,7 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
 void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
-                      Texture2D viseur, Model tabArmes[], Model skyModel,
+                      Texture2D viseur, Model tabArmes[],Model healModel, Model skyModel,
                       Model wallModel, Model floorModel, Model botModel,
                       Model tabProjModels[], Entity* boss, bool IsBossAlive,
                       Model bossModel);

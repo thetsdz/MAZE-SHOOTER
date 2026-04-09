@@ -29,4 +29,6 @@ void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight);
 */
 void DessinerArme(Model ModelArme, int indexArme);
 
+Model ChargerHeal(void);
+
 #endif
