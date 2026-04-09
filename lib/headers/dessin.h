@@ -36,6 +36,12 @@
  * en vue de changer le changement d'arme
  */
 
+ /** \version 5.5
+ * \author Hugues Astier
+ * \date 09/04/2026
+ * \brief ajout de l'inventaire d'arme
+ */
+
 #include "types.h"
 
 /**
@@ -72,5 +78,5 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Texture2D viseur, Model tabArmes[], Model skyModel,
                       Model wallModel, Model floorModel, Model botModel,
                       Model tabProjModels[], Entity* boss, bool IsBossAlive,
-                      Model bossModel);
+                      Model bossModel, Texture2D iconesArmes[]);
 #endif

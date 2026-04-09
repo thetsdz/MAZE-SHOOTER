@@ -178,11 +178,13 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
     int botDotY = minimapY + (int)((bot[b].pos.z - originZ) * scaleY);
     DrawRectangle(botDotX - 3, botDotY - 3, 6, 6, RED);
   }
-  /* Heal (bleu) */
+  /* Heal (Vert) */
   for (int h = 0; h < 10; h++) {
     int healDotX = minimapX + (int)((heal[h].pos.x - originX) * scaleX);
     int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
     DrawRectangle(healDotX - 3, healDotY - 3, 6, 6, GREEN);
+
+
   }
   /* Boss (violet)*/
   if (IsBossAlive) {
@@ -200,7 +202,7 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
 /*  HUD                                                                 */
 /* ------------------------------------------------------------------ */
 
-static void DrawHUD(Entity player) {
+static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
   const int PX = 10;
   const int PW = 220;
   const int PAD = 8;
@@ -261,8 +263,68 @@ static void DrawHUD(Entity player) {
     Color vc = (v < player.life) ? COL_HP_LO : COL_BAR_BG;
     DrawCircle(PX + 163 + v * 16, py + 33, 5, vc);
   }
-
   py += 56;
+
+
+
+/* ---- Panneau INVENTAIRE ARMES (2x2) -------------------------- */
+  // Calcul de la taille des cases pour que ça rentre parfaitement dans PW
+  int cellWidth = (PW - (PAD * 3)) / 2; // La largeur reste calculée pour remplir le panneau
+  int cellHeight = 60;
+  int panelHeight = (cellHeight * 2) + (PAD * 3);
+  // On dessine le fond global du panneau
+  DrawPanel(PX, py, PW, panelHeight);
+
+
+  for (int i = 0; i < 4; i++) {
+    int col = i % 2;
+    int row = i / 2;
+
+    // --- CORRECTION 1 : cx utilise cellWidth, cy utilise cellHeight ---
+    int cx = PX + PAD + col * (cellWidth + PAD);
+    int cy = py + PAD + row * (cellHeight + PAD);
+
+    bool isUnlocked = false;
+    if (i == 0) isUnlocked = true;
+    else if (i == 1 && player.armeUnlock[0] == 0) isUnlocked = true;
+    else if (i == 2 && player.armeUnlock[1] == 0) isUnlocked = true;
+    else if (i == 3 && player.armeUnlock[2] == 0) isUnlocked = true;
+
+    DrawRectangle(cx, cy, cellWidth, cellHeight, (Color){ 30, 30, 30, 255 });
+
+    if (isUnlocked) {
+        DrawRectangleLines(cx, cy, cellWidth, cellHeight, COL_AMMO);
+
+        if (player.armeEquipee.type == (TypeArme)i) { 
+            DrawRectangleLinesEx((Rectangle){cx, cy, cellWidth, cellHeight}, 2, GOLD);
+        }
+
+        if (iconesArmes[i].id != 0) {
+            // --- CORRECTION 2 : Le scale se base sur cellHeight ! ---
+            float scale = (float)(cellHeight - 4) / iconesArmes[i].height;
+            
+            // --- BONUS : Centrage parfait en largeur ---
+            // On calcule l'espace vide restant en largeur et on le divise par 2
+            float imgRealWidth = iconesArmes[i].width * scale;
+            float offsetX = (cellWidth - imgRealWidth) / 2.0f;
+            
+            DrawTextureEx(iconesArmes[i], (Vector2){ cx + offsetX, cy + 2 }, 0.0f, scale, WHITE);
+        } else {
+            // --- CORRECTION 3 : Remplacement de cellSize par cellHeight ---
+            DrawText("ERR", cx + 5, cy + cellHeight/2 - 5, 10, RED);
+        }
+
+    } else {
+        DrawRectangleLines(cx, cy, cellWidth, cellHeight, (Color){ 60, 60, 60, 255 });
+        int qW = MeasureText("?", 20);
+        
+        // --- CORRECTION 4 : Remplacement de cellSize par cellHeight ---
+        DrawText("?", cx + (cellWidth - qW) / 2, cy + cellHeight / 2 - 10, 20, (Color){ 100, 100, 100, 255 });
+    }
+  }
+  // On met à jour la position Y pour de futurs panneaux si besoin
+  py += panelHeight + PAD;
+
 
   /* ---- Hint capacité ------------------------------------------ */
   if (player.armeEquipee.munitionsMax >= MAX_PROJ)
@@ -324,7 +386,7 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Texture2D viseur, Model tabArmes[], Model skyModel,
                       Model wallModel, Model floorModel, Model botModel,
                       Model tabProjModels[], Entity* boss, bool IsBossAlive,
-                      Model bossModel) {
+                      Model bossModel, Texture2D iconesArmes[]) {
   /* --- Rendu 3D --- */
   BeginMode3D(camera);
 
@@ -382,7 +444,7 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   EndMode3D();
 
   /* --- UI 2D --- */
-  DrawHUD(player);
+  DrawHUD(player,iconesArmes);
 
   if (IsBossAlive && boss->health > 0) {
     DrawBossBar(boss, GetScreenWidth());
