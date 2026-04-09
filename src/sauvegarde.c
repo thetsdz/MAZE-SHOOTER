@@ -33,6 +33,7 @@ typedef struct {
   Entity boss;
   int IsBossAlive;
   Heal heal[10];
+  int armeUnlock[3];
 } SaveData;
 
 // C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
@@ -46,8 +47,11 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
   SaveFile save;
 
   // Remplissage de la structure de données
-  save.gameData.score = player->score;
-  save.gameData.ammo = player->ammo;
+    save.gameData.score = player->score;
+    save.gameData.ammo = player->ammo;
+    save.gameData.armeUnlock[0]=player->armeUnlock[0];
+    save.gameData.armeUnlock[1]=player->armeUnlock[1];
+    save.gameData.armeUnlock[2]=player->armeUnlock[2];
 
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
@@ -124,8 +128,11 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   }
 
   // Application des données (Si tout est bon)
-  player->score = save.gameData.score;
-  player->ammo = save.gameData.ammo;
+    player->score = save.gameData.score;
+    player->armeUnlock[0]=save.gameData.armeUnlock[0];
+    player->armeUnlock[1]=save.gameData.armeUnlock[1];
+    player->armeUnlock[2]=save.gameData.armeUnlock[2];
+    player->ammo = save.gameData.ammo;
 
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;

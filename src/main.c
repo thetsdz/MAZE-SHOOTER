@@ -103,21 +103,25 @@ int main(void) {
   tabArmes[1] = LoadModel("../assets/models/armes/Fusil_assault.glb");
   tabArmes[2] = LoadModel("../assets/models/armes/Sniper.glb");
   tabArmes[3] = LoadModel("../assets/models/armes/Grenade.glb");
+
+  Texture2D iconesArmes[4];
+  iconesArmes[0] = LoadTexture("../assets/images/icone_arme/icone_pistolet.png");
+  iconesArmes[1] = LoadTexture("../assets/images/icone_arme/icone_sniper.png");
+  iconesArmes[2] = LoadTexture("../assets/images/icone_arme/icone_fusil.png");
+  iconesArmes[3] = LoadTexture("../assets/images/icone_arme/icone_grenade.png");
+
   Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
   Model bossModel = LoadModel("../assets/models/boss/boss.glb");
 
   // --- Modèle heal ---
-  Model healModel = LoadModel("../assets/models/heal/heal.glb");
+  Model healModel = LoadModel("../assets/models/coffre/Chest2.glb");
 
   Model tabProjModels[5];
-  tabProjModels[0] =
-      LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
-  tabProjModels[1] =
-      LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
-  tabProjModels[2] =
-      LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
+  tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
+  tabProjModels[1] =LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
+  tabProjModels[2] =LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
   tabProjModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
   tabProjModels[4] = LoadModel("../assets/models/projectiles/Explosion.glb");
 
@@ -263,7 +267,7 @@ int main(void) {
       }
       case OPTIONS: {
         GererOption(&currentScreen);
-        break;
+        break; 
       }
       case EXIT: {
         running = false;
@@ -287,7 +291,7 @@ int main(void) {
         GererVictoire(&currentScreen, player.score);
         if (currentScreen == MENU) {
           jeuInitialise = false;
-          IsBossAlive = false;
+          IsBossAlive = false;  
           chargement = false;
         }
         if (IsKeyPressed(KEY_BACKSPACE)) {
@@ -309,13 +313,13 @@ int main(void) {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
 
                          tabArmes,healModel, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive, bossModel);
+                         tabProjModels, &boss, IsBossAlive, bossModel, iconesArmes);
         break;
       }
       case MULTIJOUEUR: {
         DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs, &camera,
                     viseur, tabArmes, &netState, healModel, skyModel,
-                    wallModel, floorModel, botModel, tabProjModels);
+                    wallModel, floorModel, botModel, tabProjModels,iconesArmes);
         break;
       }
       case CHARGER_PARTIE: {
@@ -326,7 +330,7 @@ int main(void) {
             // Sinon on dessine le jeu normal
             UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
                              tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
-                             tabProjModels, &boss, IsBossAlive, bossModel);
+                             tabProjModels, &boss, IsBossAlive, bossModel,iconesArmes);
         }
         break;
       }
@@ -358,6 +362,7 @@ int main(void) {
   UnloadTexture(floorTex);
   for (int i = 0; i < 4; i++) UnloadModel(tabArmes[i]);
   for (int i = 0; i < 5; i++) UnloadModel(tabProjModels[i]);
+  for (int i=0 ; i<4;i++) UnloadTexture(iconesArmes[i]);
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);

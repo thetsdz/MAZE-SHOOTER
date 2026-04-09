@@ -621,7 +621,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
                          Texture2D viseur, Model tabArmes[4],
                          ReseauState* netState, Model healModel, Model skyModel,
                          Model wallModel, Model floorModel, Model botModel,
-                         Model tabModels[4]) {
+                         Model tabModels[4], Texture2D iconesArmes[]) {
   if (!netState->connected) {
     DessinerLobbyMultijoueur(netState);
   } else {
@@ -630,7 +630,7 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
 
     UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
                      tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
-                     tabModels, NULL, false, botModel);
+                     tabModels, NULL, false, botModel,iconesArmes);
   }
   DrawText(TextFormat("Ping: %.0f ms", ping), 10, GetScreenHeight() - 30, 20,
            YELLOW);

@@ -93,7 +93,9 @@ void DessinerMultijoueur(Entity *player,
                             Model wallModel,
                             Model floorModel,
                             Model botModel,
-                            Model tabModels[4]);
+                            Model tabModels[4],
+                            Texture2D iconesArmes[]);
+                            
 
 
 #endif
