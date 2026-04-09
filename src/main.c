@@ -77,11 +77,13 @@ int main(void) {
   bool jeuInitialise = false;
   bool running = true;
   bool chargement = false;
+  bool IsBossAlive=false;
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
   Entity bot[18];
   Entity remotePlayer;
+  Entity boss;
   Heal heal[10];
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
@@ -102,6 +104,7 @@ int main(void) {
   Texture2D viseur = LoadTexture("../assets/images/crosshair.png");
 
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
+  Model bossModel = LoadModel("../assets/models/boss/boss.glb");
 
   // --- Modèle heal ---
   Model healModel = LoadModel("../assets/models/heal/heal.glb");
@@ -194,10 +197,11 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         StopAllMusic();
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen);
+        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
+          IsBossAlive = false;
         }
         break;
       }
@@ -213,11 +217,12 @@ int main(void) {
           chargement = true;
           DisableCursor();
         }
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen);
+        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
           chargement = false;
+          IsBossAlive = false;
         }
         break;
       }
@@ -234,7 +239,8 @@ int main(void) {
         GererGameOver(&currentScreen, player.score);
         if (currentScreen == MENU) {
           jeuInitialise = false;
-          chargement = false;
+          IsBossAlive = false;
+          chargement = false;  // Important si vous utilisiez une sauvegarde
         }
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
@@ -246,6 +252,7 @@ int main(void) {
         GererVictoire(&currentScreen, player.score);
         if (currentScreen == MENU) {
           jeuInitialise = false;
+          IsBossAlive = false;
           chargement = false;
         }
         if (IsKeyPressed(KEY_BACKSPACE)) {
@@ -265,8 +272,9 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, healModel, skyModel, wallModel, floorModel,
-                         botModel, tabProjModels);
+
+                         tabArmes,healModel, skyModel, wallModel, floorModel, botModel,
+                         tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case MULTIJOUEUR: {
@@ -277,8 +285,8 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, healModel, skyModel, wallModel, floorModel,
-                         botModel, tabProjModels);
+                         tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
+                         tabProjModels, &boss, IsBossAlive, bossModel);
         break;
       }
       case OPTIONS: {
@@ -313,6 +321,7 @@ int main(void) {
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);
   UnloadModel(botModel);
+  UnloadModel(bossModel);
   UnloadModel(healModel);
   UnloadModel(wallModel);
   UnloadModel(floorModel);

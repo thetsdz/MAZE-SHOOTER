@@ -14,7 +14,7 @@
  * multijoueur.
  */
 
- /** \version 1.2
+/** \version 1.2
  * \author Hugues Astier
  * \date 01/04/2026
  * \brief Changement du fonctionnement du score
@@ -32,15 +32,16 @@
  * murs)
  * @param projs Tableau de projectiles actifs (pour mettre à jour leur position,
  * gérer les collisions, etc.)
- 
+
  * @param camera Pointeur vers la caméra 3D (pour l'affichage joueur et les
  * calculs de direction de tir)
  */
 
-void ChangementArme(Entity *joueur);
+void ChangementArme(Entity* joueur);
 
-void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
+void UpdateGame(Entity* player, Entity bot[18], Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                Projectile projs[MAX_PROJ], Camera3D* camera, GameScreen* currentScreen);
+                Projectile projs[MAX_PROJ], Camera3D* camera,
+                GameScreen* currentScreen, Entity* boss, bool* IsBossAlive);
 
 #endif

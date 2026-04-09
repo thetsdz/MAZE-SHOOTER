@@ -7,6 +7,12 @@
  * Ces objets permettent au joueur de récupérer des points de vie lorsqu'il les ramasse.
  */
 
+ /** \version 2.0
+ * \author Hugues Astier
+ * \date 08/04/2026
+ * \brief On rpeut recuperer des armes grace aux caisse de heal (avant changement de nom en coffre)
+ */
+
 #include "types.h"
 
 /**
@@ -24,6 +30,6 @@ void InitHeal(Heal *heal, Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
  * @param player Pointeur vers l'entité du joueur (pour vérifier la distance et soigner).
  * @param blocks Grille de blocs du niveau (pour éviter de réinitialiser le soin dans un mur).
  */
-void UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
+int UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
 
 #endif 

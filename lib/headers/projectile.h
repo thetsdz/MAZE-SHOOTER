@@ -67,7 +67,7 @@ void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction,
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les
  * tirs actifs*/
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Entity** autre, Entity* player, GameScreen* currentScreen);
+                       Entity** autre, Entity* player, GameScreen* currentScreen, bool* IsBossAlive, Entity* boss);
 
 
 

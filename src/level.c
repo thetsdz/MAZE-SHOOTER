@@ -113,8 +113,8 @@ void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel,
 void creer_lab_multi(Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
     creer_lab(blocks); // Génère le labyrinthe classique d'abord
 
-    for (int i = NUM_BLOCKS / 3; i < NUM_BLOCKS * 2 / 3; i++) {
-        for (int j = NUM_BLOCKS / 3; j < NUM_BLOCKS * 2 / 3; j++) {
+    for (int i = NUM_BLOCKS / 3 - 1; i < NUM_BLOCKS * 2 / 3 - 1; i++) {
+        for (int j = NUM_BLOCKS / 3 - 1; j < NUM_BLOCKS * 2 / 3 - 1; j++) {
             // 10% de murs
             if (rand() % 100 < 10) {
                 blocks[i][j].isWall = true;
