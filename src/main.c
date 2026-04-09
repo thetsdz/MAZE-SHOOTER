@@ -116,7 +116,7 @@ int main(void) {
   Model bossModel = LoadModel("../assets/models/boss/boss.glb");
 
   // --- Modèle heal ---
-  Model healModel = LoadModel("../assets/models/heal/heal.glb");
+  Model healModel = LoadModel("../assets/models/coffre/Chest2.glb");
 
   Model tabProjModels[5];
   tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");

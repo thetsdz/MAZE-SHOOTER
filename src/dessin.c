@@ -410,11 +410,15 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
 
   DrawLevel(blocks, wallModel, floorModel);
 
-  for (int i = 0; i < 10; i++) {
+  /*for (int i = 0; i < 10; i++) {
     float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
     Vector3 drawPos = {heal[i].pos.x, heal[i].pos.y + hover, heal[i].pos.z};
     healModel.transform = MatrixRotateY((float)GetTime() * 60.0f * DEG2RAD);
     DrawModel(healModel, drawPos, 0.4f, WHITE);
+  } */
+  
+  for (int i = 0; i < 10; i++) {
+    DrawModel(healModel, heal[i].pos, 1.0f, WHITE);
   }
 
   for (int b = 0; b < 18; b++) {
