@@ -73,7 +73,9 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
     // L'ennemi (Serveur) est en Haut-Gauche
     ennemi->pos = (Vector3){-NUM_BLOCKS + 6.5f, 1.0f, -NUM_BLOCKS + 4.5f};
   }
-
+  joueur->life = 25;  // On donne 25 vies au lieu de 3 pour le multijoueur, pour
+                      // rallonger les parties
+  ennemi->life = 25;
   joueur->type = ENTITY_PLAYER;
   ennemi->type = ENTITY_REMOTE_PLAYER;
 }
@@ -145,10 +147,12 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     joueur->health -= 20;
   }
 */
-  if (IsKeyPressed(KEY_M)) {
-    joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
-  }
-
+  /* Debug : Se téléporter pour tester les collisions et faciliter les tests de
+    tir, de dégats et de mort
+    if (IsKeyPressed(KEY_M)) {
+      joueur->pos =ennemi->pos;
+    }
+  */
   // 2. Je prépare le paquet
   PaquetReseau paquetEnvoi;
   paquetEnvoi.pos = joueur->pos;
@@ -158,8 +162,8 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   paquetEnvoi.estMort = 0;
   paquetEnvoi.arme = joueur->armeEquipee.type;
   paquetEnvoi.life = joueur->life;  // <-- On indique nos vies
-  for(int i=0; i<10; i++) {
-      paquetEnvoi.healRamasses[i] = healUnlockLocal[i];
+  for (int i = 0; i < 10; i++) {
+    paquetEnvoi.healRamasses[i] = healUnlockLocal[i];
   }
 
   // Gestion mort locale
@@ -217,7 +221,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   paquetRecu.estMort = 0;  // Par sécurité
   int statutRecu = 0;
 
-  // NOUVEAU : Variables pour mémoriser si on a reçu un avis de décès ce tick
+  // variables pour mémoriser si on a reçu un avis de décès ce tick
   int infoMortRecue = 0;
   int viesAdversaire = 3;
 
@@ -246,11 +250,11 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     ennemi->yaw = paquetRecu.yaw;
     ennemi->pitch = paquetRecu.pitch;
 
-    for(int i=0; i<10; i++) {
+    for (int i = 0; i < 10; i++) {
       if (paquetRecu.healRamasses[i] == 1) {
-          InitHeal(&heal[i], blocks);
+        InitHeal(&heal[i], blocks);
       }
-  }
+    }
 
     // On équipe l'ennemi distant avec l'arme qu'il a sélectionnée
     ennemi->armeEquipee = ObtenirModeleArme(paquetRecu.arme);
@@ -629,8 +633,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
     dummyBots[0] = *remotePlayer;
 
     UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
-                     tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
-                     tabModels, NULL, false, botModel,iconesArmes);
+                     tabArmes, healModel, skyModel, wallModel, floorModel,
+                     botModel, tabModels, NULL, false, botModel, iconesArmes);
   }
   DrawText(TextFormat("Ping: %.0f ms", ping), 10, GetScreenHeight() - 30, 20,
            YELLOW);

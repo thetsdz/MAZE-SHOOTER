@@ -186,7 +186,7 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     moveTarget.x = nextStep.i * 3.0f - offset;
     moveTarget.z = nextStep.j * 3.0f - offset;
     moveTarget.y = bot->pos.y;  // Rester à la même hauteur
-    if (bot - &bot[0] == 17) { // Petite astuce : on reset le timer quand le dernier bot a réfléchi
+    if (bot - &bot[0] == 17) { // on reset le timer quand le dernier bot a réfléchi
         timerBFS = 0.0f; 
     }
   }
@@ -221,7 +221,7 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   //  decommenter et commenté la partie salto ci dessous pour arreter
 
   // --- Tir ---
-  // CORRECTION : On utilise le chronoTir propre à l'entité
+  // on utilise le chronoTir propre à l'entité
   bot->chronoTir += dt;
 
   // Le bot tire toutes les 1.5 à 2.5 secondes (aléatoire un peu)
@@ -265,7 +265,7 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
       bot->pitch += 720.0f * dt;
     }
   } else {
-    // Dès qu'il touche le sol, paf, il est droit
+    // Dès qu'il touche le sol il est droit
     bot->pitch = 0.0f;
   }
 
@@ -358,7 +358,6 @@ void UpdateBot(Entity* bot, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     }
   }
 
-  // On utilise newBotBottom ici au lieu de botBottom
   if (newBotBottom < closestGround && bot->velocityY <= 0) {
     nextPos.y = closestGround + botHalf;
     bot->velocityY = 0;
