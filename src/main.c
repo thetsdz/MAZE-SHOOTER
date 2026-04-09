@@ -210,7 +210,7 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          chargerSauvegarde(&player, bot);
+          chargerSauvegarde(&player, bot,&boss, &IsBossAlive, blocks, heal);
           chargement = true;
           DisableCursor();
         }
