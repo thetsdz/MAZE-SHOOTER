@@ -24,6 +24,7 @@ typedef struct {
     Sound heart;        /**< Son du battement de cœur (vie faible) */
     Sound reload;       /**< Son du rechargement */
     Sound explosion;    /**< Son de l'explosion de la grenade */
+    Sound heal;         /**< Son du soin */
 
 } GameAudio;
 
@@ -69,6 +70,8 @@ void PlayHeart(void);
 /** \brief Joue le son du rechargement */
 void PlayReload(void);
 void PlayExplosion(void);
+
+void PlayHeal(void);
 
 /* ----------------------------- Sons (Pause) ----------------------------- */
 

@@ -1,17 +1,25 @@
 ifeq ($(OS),Windows_NT)
-    MAKEFILE = Makefile.windows
+MAKEFILE = Makefile.windows
 else
-    MAKEFILE = Makefile.linux
+MAKEFILE = Makefile.linux
 endif
 
 all:
-	make -f $(MAKEFILE) all
-
-run:
-	make -f $(MAKEFILE) run
+	$(MAKE) -f $(MAKEFILE) all
 
 clean:
-	make -f $(MAKEFILE) clean
+	$(MAKE) -f $(MAKEFILE) clean
+
+fclean:
+	$(MAKE) -f $(MAKEFILE) fclean
+
+re:
+	$(MAKE) -f $(MAKEFILE) re
 
 info:
-	make -f $(MAKEFILE) info
+	$(MAKE) -f $(MAKEFILE) info
+
+%:
+	$(MAKE) -f $(MAKEFILE) $@
+
+.PHONY: all run clean fclean re debug release info

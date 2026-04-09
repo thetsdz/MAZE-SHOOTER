@@ -22,18 +22,18 @@
 et ajout du bot dans le fichier de sauvegarde
  */
 
- /**
- *  \version 2.2
- *  \author Hugues Astier
- *  \date 02/03/2026
- *  \brief Changement du fonctionnement de, la sauvegarde du
-  score (passer en champs de entity)
- */
-
+/**
+*  \version 2.2
+*  \author Hugues Astier
+*  \date 02/03/2026
+*  \brief Changement du fonctionnement de, la sauvegarde du
+ score (passer en champs de entity)
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "types.h"
 
@@ -43,13 +43,16 @@ et ajout du bot dans le fichier de sauvegarde
  * \param <Entity* bot> récupère les infos du bot
  * \param <int* score> récupère le score de la partie
  */
-void sauvegarder(Entity* player, Entity bot[18]);
+void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
+                 Block blocks[NUM_BLOCKS][NUM_BLOCKS], Heal heal[10]);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte
  *   \param <Entity* player> charge les infos du joueur
  *   \param <Entity* bot> charge les infos du bot
  *   \param <int* score> charge le score de la partie
  */
-void chargerSauvegarde(Entity* player, Entity bot[18]);
+bool chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
+                       bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
+                       Heal heal[10]);
 
 #endif

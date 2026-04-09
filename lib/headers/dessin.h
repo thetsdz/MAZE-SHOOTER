@@ -62,6 +62,13 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
              bool IsBossAlive);
 
 /**
+ * @brief Dessine une alerte pour indiquer que le joueur a triché
+ * @param screenWidth Largeur de l'écran (pour centrer l'alerte)
+ * @param timerTriche Chronomètre pour l'écran de triche
+ */
+void DrawTricheur(int screenWidth);
+
+/**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
  * @param bot Pointeur vers l'entité du bot (pour dessiner sa position)
  * @param blocks Grille de blocs du niveau (pour dessiner les murs et couloirs)
@@ -75,8 +82,8 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
 void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
-                      Texture2D viseur, Model tabArmes[], Model skyModel,
-                      Model wallModel, Model floorModel, Model botModel,
-                      Model tabProjModels[], Entity* boss, bool IsBossAlive,
-                      Model bossModel, Texture2D iconesArmes[]);
+                      Texture2D viseur, Model tabArmes[], Model healModel,
+                      Model skyModel, Model wallModel, Model floorModel,
+                      Model botModel, Model tabProjModels[], Entity* boss,
+                      bool IsBossAlive, Model bossModel,Texture2D iconesArmes[]);
 #endif

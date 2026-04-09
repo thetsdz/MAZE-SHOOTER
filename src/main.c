@@ -78,6 +78,7 @@ int main(void) {
   bool running = true;
   bool chargement = false;
   bool IsBossAlive=false;
+  bool joueurATriche = false;
 
   // --- Variables du jeu (initialisées plus tard) ---
   Entity player;
@@ -88,6 +89,7 @@ int main(void) {
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
   ReseauState netState = {-1, 0, 0};
+  float timerTriche = 0.0f; // chronomètre pour l'écran de triche
 
   // --- Caméra ---
   Camera3D camera = {0};
@@ -112,6 +114,9 @@ int main(void) {
 
   Model botModel = LoadModel("../assets/models/robots/Robot.glb");
   Model bossModel = LoadModel("../assets/models/boss/boss.glb");
+
+  // --- Modèle heal ---
+  Model healModel = LoadModel("../assets/models/heal/heal.glb");
 
   Model tabProjModels[5];
   tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
@@ -214,16 +219,41 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          chargerSauvegarde(&player, bot);
+          // On vérifie le résultat du chargement
+          bool succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, blocks, heal);
+          if (!succes) {
+             joueurATriche = true;
+             timerTriche = 0.0f; // On initialise le chronomètre à 0
+          }
           chargement = true;
           DisableCursor();
         }
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+        
+        // Si le joueur a triché, on fait tourner le chronomètre
+        if (joueurATriche) {
+            timerTriche += GetFrameTime(); // Ajoute le temps écoulé depuis la dernière frame
+            
+            // Si 5 secondes se sont écoulées
+            if (timerTriche >= 5.0f) {
+                currentScreen = NOUVELLE_PARTIE; // On bascule sur l'écran de jeu
+                jeuInitialise = false;           // Force la réinitialisation des entités pour une partie neuve
+                joueurATriche = false;           // Enlève l'alerte
+                chargement = false;              // Réinitialise l'état de chargement
+                IsBossAlive = false;
+                timerTriche = 0.0f;
+            }
+        } 
+        // On update le jeu que si la sauvegarde est valide
+        else {
+            UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+        }
+        
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
           chargement = false;
           IsBossAlive = false;
+          joueurATriche = false; // Réinitialiser le drapeau
         }
         break;
       }
@@ -235,18 +265,14 @@ int main(void) {
         running = false;
         break;
       }
-        // --- Dans la boucle while de src/main.c ---
 
       case GAME_OVER:
         GererGameOver(&currentScreen, player.score);
-        // Si l'écran a changé (clic sur Retour ou touche Entrée), on
-        // réinitialise
         if (currentScreen == MENU) {
           jeuInitialise = false;
           IsBossAlive = false;
           chargement = false;  // Important si vous utilisiez une sauvegarde
         }
-        // On garde aussi la sécurité du Backspace au cas où
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -255,7 +281,6 @@ int main(void) {
 
       case VICTOIRE:
         GererVictoire(&currentScreen, player.score);
-        // Même logique pour la victoire
         if (currentScreen == MENU) {
           jeuInitialise = false;
           IsBossAlive = false;  
@@ -274,29 +299,34 @@ int main(void) {
 
     switch (currentScreen) {
       case MENU: {
-        // Le dessin est géré dans GererMenu
         break;
       }
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive, bossModel,iconesArmes);
-        break;
-      }
-      case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs,
-                            &camera, viseur, tabArmes, &netState, skyModel,
-                            wallModel, floorModel, botModel, tabProjModels,iconesArmes);
-        break;
-      }
-      case CHARGER_PARTIE: {
-        UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                         tabArmes, skyModel, wallModel, floorModel, botModel,
+
+                         tabArmes,healModel, skyModel, wallModel, floorModel, botModel,
                          tabProjModels, &boss, IsBossAlive, bossModel, iconesArmes);
         break;
       }
+      case MULTIJOUEUR: {
+        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs, &camera,
+                    viseur, tabArmes, &netState, healModel, skyModel,
+                    wallModel, floorModel, botModel, tabProjModels,iconesArmes);
+        break;
+      }
+      case CHARGER_PARTIE: {
+        if (joueurATriche) {
+            // Dessiner uniquement l'écran d'alerte si triche
+            DrawTricheur(GetScreenWidth());
+        } else {
+            // Sinon on dessine le jeu normal
+            UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
+                             tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
+                             tabProjModels, &boss, IsBossAlive, bossModel,iconesArmes);
+        }
+        break;
+      }
       case OPTIONS: {
-        // Le dessin est géré dans GererOption
         break;
       }
       case EXIT: {
@@ -330,6 +360,7 @@ int main(void) {
   UnloadModel(skyModel);
   UnloadModel(botModel);
   UnloadModel(bossModel);
+  UnloadModel(healModel);
   UnloadModel(wallModel);
   UnloadModel(floorModel);
 

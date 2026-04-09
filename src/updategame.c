@@ -79,7 +79,7 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         }
     }
 
-  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot);
+  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, boss, *IsBossAlive, blocks, heal);
 
     if (IsKeyPressed(KEY_R)) {
         player->ammo = player->armeEquipee.munitionsMax;
