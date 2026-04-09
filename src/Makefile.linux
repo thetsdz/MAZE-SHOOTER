@@ -1,52 +1,49 @@
-
 PROJECT_NAME = game
-CC = gcc
-BIN_DIR = ../bin
-LIB_DIR = ../lib/Raylib
-BIN = $(BIN_DIR)/$(PROJECT_NAME)
+CC           = gcc
+BIN_DIR      = ../bin
+LIB_DIR      = ../lib/Raylib
+BIN          = $(BIN_DIR)/$(PROJECT_NAME)
 
-SRCS = main.c \
-       level.c \
-       player.c \
-       bot.c \
-	   boss.c \
-       projectile.c \
-       asset.c \
-       pile.c \
-	   cryptage.c \
-	   sauvegarde.c \
-	   menu.c \
-	   log.c \
-       updategame.c \
-       dessin.c \
-	   endGame.c \
-       option.c \
-	   reseau.c \
-	   multijoueur.c \
-	   arme.c \
-	   audio.c \
-	   heal.c \
+SRCS = main.c        \
+       level.c       \
+       player.c      \
+       bot.c         \
+       boss.c        \
+       projectile.c  \
+       asset.c       \
+       pile.c        \
+       cryptage.c    \
+       sauvegarde.c  \
+       menu.c        \
+       log.c         \
+       updategame.c  \
+       dessin.c      \
+       endGame.c     \
+       option.c      \
+       reseau.c      \
+       multijoueur.c \
+       arme.c        \
+       audio.c       \
+       heal.c
 
 OBJS = $(SRCS:.c=.o)
 
-
+# --- Flags de base ---
 CFLAGS  = -Wall -Wextra -std=c99 -Wno-missing-braces
 CFLAGS += -I$(LIB_DIR)/include
 CFLAGS += -I../lib/headers
 CFLAGS += -O2 -g
-CFLAGS += -DDEBUG
 
 LDFLAGS  = -L$(LIB_DIR)/lib
 LDFLAGS += -Wl,-rpath,'$$ORIGIN/../lib/Raylib/lib'
 LDFLAGS += -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-
+# --- Cibles principales ---
 all: $(BIN)
 
 $(BIN): $(OBJS)
 	mkdir -p $(BIN_DIR)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
-	rm -f $(OBJS)   # supprime les fichiers .o juste après la compilation
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -54,10 +51,29 @@ $(BIN): $(OBJS)
 run: all
 	$(BIN)
 
+# --- Nettoyage ---
 clean:
+	rm -f $(OBJS)
+
+fclean: clean
 	rm -f $(BIN)
 
+re: fclean all
+
+# --- Modes de compilation ---
+debug: CFLAGS += -g3 -O0 -DDEBUG
+debug: re
+
+release: CFLAGS += -O3 -DNDEBUG
+release: fclean all
+
+# --- Infos ---
 info:
-	@echo "Platform : Linux"
-	@echo "Raylib   : local ($(LIB_DIR))"
-	@echo "Binary   : $(BIN)"
+	@echo "Platform  : Linux"
+	@echo "Raylib    : local ($(LIB_DIR))"
+	@echo "Binary    : $(BIN)"
+	@echo "Sources   : $(words $(SRCS)) fichiers"
+	@echo "CFLAGS    : $(CFLAGS)"
+	@echo "LDFLAGS   : $(LDFLAGS)"
+
+.PHONY: all run clean fclean re debug release info

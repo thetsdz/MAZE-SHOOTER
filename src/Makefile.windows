@@ -1,21 +1,78 @@
 PROJECT_NAME = game
-CC = gcc
-BIN_DIR = ..\bin
-SRCS = main.c level.c player.c bot.c projectile.c asset.c pile.c sauvegarde.c cryptage.c menu.c log.c updategame.c dessin.c option.c reseau.c multijoueur.c
+CC           = gcc
+BIN_DIR      = ..\bin
+LIB_DIR      = ..\lib\windows\raylib
+BIN          = $(BIN_DIR)\$(PROJECT_NAME).exe
 
-CFLAGS = -Wall -std=c99 -Wno-missing-braces -I. -I..\lib\windows\raylib\include
+SRCS = main.c        \
+       level.c       \
+       player.c      \
+       bot.c         \
+       boss.c        \
+       projectile.c  \
+       asset.c       \
+       pile.c        \
+       cryptage.c    \
+       sauvegarde.c  \
+       menu.c        \
+       log.c         \
+       updategame.c  \
+       dessin.c      \
+       endGame.c     \
+       option.c      \
+       reseau.c      \
+       multijoueur.c \
+       arme.c        \
+       audio.c       \
+       heal.c
 
-# Options de liaison (Libraries)
-LDFLAGS = -L..\lib\windows\raylib\lib -lraylib -lopengl32 -lgdi32 -lwinmm -lws2_32
+OBJS = $(SRCS:.c=.o)
 
-all: $(BIN_DIR)\$(PROJECT_NAME).exe
+# --- Flags de base ---
+CFLAGS  = -Wall -Wextra -std=c99 -Wno-missing-braces
+CFLAGS += -I$(LIB_DIR)\include
+CFLAGS += -I..\lib\headers
+CFLAGS += -O2 -g
 
-$(BIN_DIR)\$(PROJECT_NAME).exe: $(SRCS)
+LDFLAGS  = -L$(LIB_DIR)\lib
+LDFLAGS += -lraylib -lopengl32 -lgdi32 -lwinmm -lws2_32
+
+# --- Cibles principales ---
+all: $(BIN)
+
+$(BIN): $(OBJS)
 	if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
-	$(CC) $(SRCS) -o $@ $(CFLAGS) $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
-run: $(BIN_DIR)\$(PROJECT_NAME).exe
-	$(BIN_DIR)\$(PROJECT_NAME).exe
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+run: all
+	$(BIN)
+
+# --- Nettoyage ---
 clean:
-	if exist "$(BIN_DIR)\$(PROJECT_NAME).exe" del /Q "$(BIN_DIR)\$(PROJECT_NAME).exe"
+	del /Q *.o 2>nul || true
+
+fclean: clean
+	if exist "$(BIN)" del /Q "$(BIN)"
+
+re: fclean all
+
+# --- Modes de compilation ---
+debug: CFLAGS += -g3 -O0 -DDEBUG
+debug: re
+
+release: CFLAGS += -O3 -DNDEBUG
+release: fclean all
+
+# --- Infos ---
+info:
+	@echo Platform  : Windows
+	@echo Raylib    : local ($(LIB_DIR))
+	@echo Binary    : $(BIN)
+	@echo Sources   : $(words $(SRCS)) fichiers
+	@echo CFLAGS    : $(CFLAGS)
+	@echo LDFLAGS   : $(LDFLAGS)
+
+.PHONY: all run clean fclean re debug release info
