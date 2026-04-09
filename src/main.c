@@ -239,6 +239,7 @@ int main(void) {
         // réinitialise
         if (currentScreen == MENU) {
           jeuInitialise = false;
+          IsBossAlive = false;
           chargement = false;  // Important si vous utilisiez une sauvegarde
         }
         // On garde aussi la sécurité du Backspace au cas où
@@ -253,6 +254,7 @@ int main(void) {
         // Même logique pour la victoire
         if (currentScreen == MENU) {
           jeuInitialise = false;
+          IsBossAlive = false;
           chargement = false;
         }
         if (IsKeyPressed(KEY_BACKSPACE)) {

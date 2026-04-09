@@ -330,7 +330,7 @@ void UpdateBoss(Entity* boss, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   // On utilise newBossBottom ici
   if (newBossBottom < closestGround && boss->velocityY <= 0) {
     nextPos.y = closestGround +
-                bossHalf;  // On a déjà corrigé le + bossHalf tout à l'heure !
+                bossHalf;
     boss->velocityY = 0;
     boss->onGround = true;
   }
