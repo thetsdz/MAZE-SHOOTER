@@ -216,8 +216,8 @@ int main(void) {
       case CHARGER_PARTIE: {
         if (!chargement) {
           // On vérifie le résultat du chargement
-          bool succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, blocks, heal);
-          if (!succes) {
+          int succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, blocks, heal);
+          if (succes == 1) {
              joueurATriche = true;
              timerTriche = 0.0f; // On initialise le chronomètre à 0
           }
