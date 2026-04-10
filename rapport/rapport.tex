@@ -42,7 +42,9 @@
 
 \newpage
 \section{Introduction}
-Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
+Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. C'est un jeu fsp à la première personne en trois dimensions. 
+
+\noindent Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
 
 \section{Conception}
 
@@ -62,23 +64,50 @@ On a utilisé la librairie graphique Raylib, ainsi que GIT avec quatre branche (
 
 
 \subsection{Fonctionnalités du jeu}
-Dans MAZE-SHOOTER il y a deux modes de jeu principaux. Dans un premier temps, un mode solo, dans lequel le joueur doit survivre le plus longtemps 
-possible face à des robots et des boss. Il doit en éliminer autant que possible.
- Et un mode multijoueur, dans lequel les joueurs s'affrontent entre eux dans un labyrinthe revisité pour facilité les combats longue distance.
-Il est aussi possible de changer les textures via le menu "options".
 
+MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, proposant une expérience dynamique s'articulant autour d'un grand nombre de mécaniques implémentées de A à Z :
+
+\begin{itemize}
+    \item \textbf{Modes de jeu variés :} Le jeu propose un mode \emph{Solo} orienté survie (le joueur doit éliminer un maximum de robots et affronter des boss 
+    apparaissant périodiquement) ainsi qu'un mode \emph{Multijoueur} compétitif en LAN ou via IP publique, où le premier à atteindre 25 éliminations l'emporte.
+    \item \textbf{Génération procédurale de niveaux :} Les labyrinthes sont générés aléatoirement à chaque partie. L'algorithme adapte d'ailleurs l'architecture 
+    selon le mode de jeu (espaces plus ouverts en multijoueur pour favoriser les affrontements à distance).
+    \item \textbf{Arsenal diversifié et balistique :} Les joueurs ont accès à quatre armes disposant de leurs propres modèles 3D : un Pistolet, un Fusil d'assaut, 
+    un Sniper et des Grenades. Le jeu gère un système de tirs par projectiles complet, incluant la cadence de tir, la capacité des chargeurs, les temps de 
+    rechargement et des mécaniques d'explosion pour les grenades.
+    \item \textbf{Intelligence Artificielle (IA) :} Les bots et les boss traquent le joueur grâce à une combinaison de "Raycasting" (calcul de ligne de vue) et 
+    d'un algorithme de recherche de chemin (BFS). Ils possèdent également des mécaniques d'esquive (salto).
+    \item \textbf{Éléments interactifs (Loot) :} Le joueur peut interagir avec des coffres répartis sur la carte pour regagner des points de vie lors des combats 
+    critiques.
+    \item \textbf{Personnalisation visuelle et Skybox :} Via le menu "Options", le joueur peut modifier dynamiquement le thème visuel du labyrinthe. Plusieurs 
+    ensembles de textures sont disponibles (neige, herbe, briques, lave) et sont accompagnés d'un ciel rendu dynamiquement (Skybox) via des \emph{shaders} 
+    personnalisés.
+    \item \textbf{Ensemble d'ambiances sonores :} Le jeu intègre un système audio complet gérant à la fois les musiques de fond (menu, jeu) et les bruitages 
+    contextuels (bruits de pas, tirs de différentes armes, rechargement, explosions, soins, et même des battements de cœur lorsque le joueur est critique en santé).
+    \item \textbf{Sauvegarde chiffrée :} Un système de sauvegarde local permet d'enregistrer la progression du joueur. Pour éviter la triche, les fichiers de 
+    sauvegarde (\emph{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
+\end{itemize}
 \section{Organisation du projet}
 \subsection{Reparition des tâches}
 \subsection{Planning prévisionnel}
 \subsection{Outils utilisés}
-Pour ce projet, nous avons utilisé plusieurs outils pour faciliter le développement et la collaboration. Nous avons utilisé Git pour le contrôle de version,
-ce qui nous a permis de travailler simultanément sur différentes parties du code sans conflits majeurs. Pour la gestion des tâches et du planning,  nous avons
-utilisé un diagramme de Gantt, où nous avons assigné des tâches à chaque membre de l'équipe. Pour la gestion du rendu graphique, nous avons utilisé la 
-librairie raylib, qui nous a permis de créer des graphismes 2D et 3D de manière efficace. Pour le rapport, nous avons utilisé overleaf, qui nous a permis de 
-collaborer sur la rédaction du document en temps réel. Pour la documentation, nous avons utilisé Doxygen, qui nous a permis de générer automatiquement la 
-documentation du code à l'aide de nos commentaires. Enfin, pour la communication, nous avons utilisé instagram, qui nous a permis de discuter en temps réel 
-et de partager des idées rapidement.
-\section{Développement}
+
+Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'outils informatiques:
+
+\begin{itemize}
+    \item \textbf{Git} (Contrôle de version) : Indispensable pour notre organisation, Git nous a permis de travailler simultanément sur la même base de code 
+    (répartie sur nos branches respectives) tout en traçant l'historique des modifications et en évitant les conflits majeurs.
+    \item \textbf{Diagramme de Gantt} (Gestion de projet) : Il a été le support principal de notre planification temporelle, nous permettant de visualiser 
+    l'avancement global et d'assigner clairement les tâches à chaque membre de l'équipe.
+    \item \textbf{Raylib} (Moteur graphique) : Cette bibliothèque C a été choisie pour gérer la boucle principale du jeu. Elle a considérablement facilité la 
+    gestion du fenêtrage, des entrées utilisateur (clavier/souris) et le rendu des environnements 2D et 3D.
+    \item \textbf{Overleaf} (Rédaction) : Cet éditeur LaTeX en ligne a été notre outil de prédilection pour rédiger ce rapport de manière collaborative et en 
+    temps réel.
+    \item \textbf{Doxygen} (Documentation) : En standardisant nos commentaires directement dans le code source, Doxygen nous a permis de générer automatiquement 
+    une documentation technique complète et navigable.
+    \item \textbf{Instagram} (Communication) : Notre canal de messagerie instantanée principal pour échanger rapidement des idées, partager des problèmes 
+    techniques et coordonner nos sessions de travail.
+\end{itemize}
 
 
 
@@ -91,7 +120,7 @@ Pour comprendre comment fonctionnent la logique du jeu dans main.c, on a besoin 
 Cet variable peut prendre diverse valeurs comme \verb|NOUVELLE_PARTIE|, 
 \verb|CHARGER_PARTIE| ou encore \verb|MENU|. Par default \verb|CurrentScreen| vaut \verb|MENU|. 
 
-\noindent Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle while tournant tant qu'une variable running n'est pas mise à \verb|FALSE| (ou que le joueur ne supprime pas sa fenetre).
+\noindent Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle \verb|while| tournant tant qu'une variable running n'est pas mise à \verb|FALSE| (ou que le joueur ne supprime pas sa fenetre).
 Dans cette boucle, il faut distinguer la partie logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable \verb|CurrentScreen|. 
 
 \medskip \noindent
@@ -109,49 +138,49 @@ En réalité par souci de simplicité, la partie logique et dessin est géré si
 
 
 
-\subsection{Création de la carte}
-\subsection{Joueur, déplacement et gestion de la vie, coffre}
 
-\subsection{Bots, leurs IA, spawn, boss}
-Concernant les bots, ils sont guidés par une intelligence artificielle simple mais efficace. Ils empruntent le chemin le plus court vers le joueur dans le 
-labyrinthe, mais dès qu'ils détectent le joueur à une certaine distance, ils commencent à le poursuivre en ligne droite ce qui permet d'éviter des calculs inutiles. 
-Sinon si le joueur n'est pas visible ils utilisent un algorithme de recherche de chemin pour trouver le chemin le plus court vers le joueur, en évitant les obstacles 
-du labyrinthe. Les bots ont également une capacité d'attaque, et lorsqu'ils sont suffisamment proches du joueur, ils peuvent lui infliger des dégâts. Les boss, quant 
-à eux, sont des ennemis plus puissants avec des comportements plus complexes. Ils utilisent un sniper plutot que le glock des bots normaux, ce qui fait qu'ils infligent 
-un nombre de dégats beaucoup plus élevé, leur IA est beaucoup plus précise (ils ne ratent pas une cible à moins qu'elle ne soit cachée derrière un mur ou qu'elle bouge 
-très rapidement) et ils ont plus de points de vie que les bots normaux. Ils apparaissent à des moments clés du jeu pour offrir un défi supplémentaire au joueur. 
-Néanmoins, ils se déplacent 2 fois moins vite que les bots normaux ce qui fait qu'ils sont plus facile à fuir que les bots normaux, mais ils sont plus dangereux s'ils 
-arrivent à vous toucher. les bots et les boss ont la même logique de spawn, ils apparaissent à des endroits aléatoires du labyrinthe, bien que les boss apparaissent 
-tout les 50 kills de bots classiques. 
+\subsection{Création de la carte}\label{map}
 
-L'algorithme de recherche de chemin utilise 3 matrices. La première se nomme \emph{visited} et contient des booléens indiquant si une case à dejà été visitée ou pas, 
-la suivant s'appelle \emph{parent} et contient quelle case a été visitée avant d'arriver à la case actuelle, et enfin la troisième matrice \emph{queue} contient la 
-liste des cases à visiter. Ces trois matrices permettent d'éffectuer une recherche en largeur pour trouver le chemin le plus court vers le joueur. Donc comme si on 
-versait de l'eau dans le labyrinthe à partir de la position du bot, et que l'eau se propageait dans toutes les directions en évitant les murs, la troisième matrice 
-contiendrait la liste des cases où l'eau est présente à chaque instant, la première matrice indiquerait quelles cases ont déjà été touchées par l'eau, et la deuxième 
-matrice indiquerait pour chaque case quelle est la case précédente d'où l'eau est venue. Lorsque l'eau atteint la position du joueur, on peut remonter le chemin en 
-utilisant la deuxième matrice pour trouver le chemin le plus court vers le joueur.
+\subsection{Joueur, déplacement et gestion de la vie, soin}
 
-Les bots et les boss sont du même type abstrait, ils sont tous les deux des \emph{Entity}. Les {Entity} sont des tous les objets animés soit par un être humain comme 
-par exemple les \emph{ENTITY\_PLAYER} qui ont été vu dans la partie sur les joueurs ou par une intelligence artificielle comme les \emph{ENTITY\_BOT} et les 
-\emph{ENTITY\_BOSS}. Dans notre cas on va plutot s'intéresser à ceux gérer par des IA. Les bots et les boss ont des caractéristiques communes, comme une position 
-générer aléatoirement parmi les cases du labyrinthe qui ne sont pas des murs, une direction géré à de l'algorithme de recherche dans le labyrinthe. Ils ont également 
-des comportements communs, comme se déplacer vers le joueur, attaquer le joueur lorsqu'ils sont suffisamment proches, et réagir aux dégâts qu'ils subissent. Cependant, 
-les boss ont des caractéristiques plus puissantes que les bots normaux, comme plus de points de vie, une arme plus puissante, et une IA plus précise.
+\subsection{Ennemies du joueur}\label{Ennemies}
 
-Les bots possèdent également une mécanique de salto. Il s'agit d'une mécanique qui est effectuée de manière aléatoire mais qui lui permet d'esquiver certains tirs 
-adversaire. Lorsque le bot décide de faire un salto, il commence à tourner sur lui même à une vitesse de 720 degrés par seconde pendant une durée de 0.5 secondes, ce 
-qui lui peut permet d'esquiver les tirs ennemis pendant cette période. Cependant, le bot ne peut pas faire de salto indéfiniment, il doit attendre un certain temps 
-avant de pouvoir en faire un autre. Le salto est une mécanique qui rend les bots plus difficiles à toucher et ajoute du dynamisme aux combats, mais elle est équilibrée 
-par le fait que les bots ne peuvent pas en faire trop souvent.
-
-En cas de mort d'un bot il réapparait immédiatement à un autre endroit du labyrinthe, ce qui permet de maintenir une pression constante sur le joueur et d'assurer que 
-le jeu reste dynamique. Cependant, les boss ne réapparaissent pas immédiatement après leur mort, ils réapparaissent si le score du joueur atteint un certain seuil, ce 
-qui ajoute une dimension de progression au jeu et encourage le joueur à éliminer les bots pour faire réapparaître les boss.
-
-
-
-
+D'un point de vue architectural, les bots et les boss partagent le même type abstrait : ce sont tous deux des \emph{Entity}. Une entité représente tout objet 
+animé dans le jeu, qu'il soit contrôlé par un joueur (comme \emph{ENTITY\_PLAYER}) ou par une intelligence artificielle (\emph{ENTITY\_BOT} et 
+\emph{ENTITY\_BOSS}). Ils partagent des caractéristiques communes, telles qu'une position générée aléatoirement sur des cases praticables du labyrinthe, et des 
+comportements de base comme se diriger vers le joueur, attaquer à bonne distance et réagir aux dégâts.
+\\\\
+Concernant leurs déplacements, les bots sont guidés par une intelligence artificielle simple mais efficace. Le jeu vérifie d'abord si le joueur est visible grâce 
+à une fonction de ligne de vue (\emph{Line of Sight}). Cette fonction utilise une technique de \textbf{lancer de rayon (Raycasting) simplifié} : elle trace une 
+ligne virtuelle entre le bot et le joueur, l'échantillonne en plusieurs points (trois par unité de distance), et vérifie si l'un de ces points se superpose à un 
+mur. Si la voie est libre, le bot poursuit sa cible en ligne droite, ce qui allège considérablement les calculs.
+\\\\
+Dans le cas contraire, si la vision est bloquée, l'IA utilise un algorithme de recherche de chemin (pathfinding) pour trouver la route la plus courte en 
+contournant les obstacles. Cet algorithme s'appuie sur trois structures de données. La première, \emph{visited}, est une matrice de booléens indiquant si une 
+case a déjà été explorée. La deuxième, \emph{parent}, mémorise la case de provenance pour chaque case visitée. Enfin, la troisième est une file (\emph{queue}) 
+contenant la liste des cases restant à traiter. Cela permet d'effectuer une recherche en largeur (BFS). Pour vulgariser, c'est comme si l'on versait de l'eau 
+depuis la position du bot : l'eau se propage uniformément dans toutes les directions en évitant les murs. La file suit l'avancée de l'eau, la matrice 
+\emph{visited} retient les zones inondées, et la matrice \emph{parent} trace d'où l'eau est venue. Lorsque l'eau atteint le joueur, il suffit de remonter le 
+courant grâce à la matrice \emph{parent} pour obtenir le chemin le plus court.
+\\\\
+Pour se déplacé sans traversé les murs ou se retrouver à l'intérieurs, les entités s'appuient sur un système de \textbf{collisions AABB} (Axis-Aligned Bounding 
+Box) développé sur mesure. Lorsqu'un bot entre en contact avec un mur, l'algorithme calcule la profondeur de pénétration sur les axes X et Z, et le repousse en 
+douceur sur l'axe où l'intersection est la plus faible, permettant au bot de glisser le long des murs au lieu de s'y retrouver coincé. À cela s'ajoute une 
+gravité simulée permettant de gérer dynamiquement leur hauteur sur l'axe Y.
+\\\\
+Les bots possèdent également une mécanique d'esquive singulière : le salto. Effectuée de manière aléatoire, cette action fait tourner le bot sur lui-même à une 
+vitesse de 720 degrés par seconde pendant une demi-seconde, lui permettant d'esquiver les tirs. Pour maintenir l'équilibre du jeu, cette capacité est soumise à 
+un temps de recharge. Elle rend les bots imprévisibles et ajoute un peu de dynamisme aux affrontements.
+\\\\
+Les boss, quant à eux, sont des ennemis redoutables dotés de comportements plus avancés. Contrairement aux bots équipés de pistolets classiques, les boss manient 
+un fusil de précision (sniper) infligeant des dégâts massifs. Leur IA est extrêmement précise : ils ne ratent presque jamais leur cible, à moins que le joueur ne 
+soit à couvert ou en déplacement très rapide. En contrepartie de leur grande réserve de points de vie et de leur létalité, ils se déplacent deux fois moins vite 
+que les bots standards, laissant au joueur l'opportunité d'adopter une stratégie de fuite.
+\\\\
+Enfin, la logique d'apparition (spawn) varie selon le type d'ennemi. À la mort d'un bot classique, celui-ci réapparaît immédiatement à un autre endroit aléatoire 
+du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss obéissent à une logique de progression : ils n'apparaissent que tous les 50 
+éliminations de bots classiques. Cela rythme la partie en récompensant la survie du joueur par l'apparition d'un défi majeur.
+\\\\
 \subsection{Armes, munitions, dégâts}
 Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile, munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. 
 
@@ -175,51 +204,84 @@ Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sni
 	donne au joueur.
 \end{exemple}
 
+\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemies}, il faut compendre que les trois dimensions du jeu se represente bien grace à RAYLIB avec des vecteurs en trois dimension X,Y et Z. \`A chaque projectile on associe  : un vecteur \verb|pos|, un vecteur \verb|vel|,une valeur bouléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
+
+\medskip
+\noindent Ensuite, il a été choisi de representer tout les projectiles présent sur le jeu par un tableau. Une iteration sur ce tableau permets alors de tester les colisions avec les murs,bot et sol (ie une cible). Cette grande boucle est d'une complexité $O(n^3)$, en effet elle contient deux sous boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 bots. 
+
+\medskip
+\noindent Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de test grace à un break pour la triple boucle. Et au final le nombre maximum de projectile actif et de murs est respectivement de 50 et 51x51 (cf \secref{map}). Donc dans l'ambition du jeu qui a été la notre il n'y a aucun impact. 
+
+\medskip
+\noindent Pour revenir au colisions, la logique appliqué aux projectiles , excepté la grenade, est la suivante : on teste si le bord du projectile touche une cible, si oui, on change alors la valeur du booléen.
+
+\noindent Dans le cas de la grenade, pour les murs, il y a juste un changement de signe sur les coordonnées du vecteur vélocité selon où elle touche un mur. Ce changement est pour obtenir un effet de rebond sur murs, une application de la gravité est donc aussi présente en vu d'un gain de réalisme. Sinon, le lecteur est invité à consulter le fichier projectile.c pour plus de détails sur le code, cf \cite{Github}. Finalement, cette grenade, elle rebondit sur les murs et elle explose avec un changement de texture cf \secref{Interface}.
 
 
+\subsection{Système de sauvegarde crypté}
+Le système de sauvegarde est assez simple. On sauvegarde les données importantes de la partie telles que les différentes informations des entités. Toutes les 
+données sont sauvegardées dans un fichier \emph{save.dat}. 
+\\\\
+Le système de cryptage utilise un algorithme de chiffrement connu nommé RC4. Il s'agit d'un algorithme symétrique, ce qui signifie que la clé de chiffrement est 
+la même que la clé de déchiffrement. L'algorithme est certes vulnérable face aux standards de sécurité modernes, mais pour l'envergure de ce projet, il est 
+amplement suffisant. RC4 fonctionne en générant un flux de données pseudo-aléatoires (le \emph{keystream}) à partir de la clé secrète. Ce flux est ensuite 
+combiné octet par octet avec les données de la sauvegarde via une opération logique XOR (OU exclusif). Sa grande simplicité le rend extrêmement rapide à exécuter, 
+ce qui évite tout ralentissement en jeu lors de l'écriture du fichier.
+\\\\
+En complément du chiffrement, le système intègre un \emph{checksum} (somme de contrôle). Il s'agit d'une empreinte numérique mathématique calculée à partir des 
+données de sauvegarde en clair, juste avant leur chiffrement. Lors du chargement d'une partie, le jeu déchiffre le fichier, recalcule le checksum sur les données 
+obtenues, et le compare à celui qui avait été stocké.
+\\\\
+L'utilisation conjointe de ces deux méthodes est primordiale pour la fiabilité du jeu. D'une part, le chiffrement RC4 assure la \textbf{confidentialité} : il 
+empêche un joueur de lire le fichier en clair pour modifier facilement ses statistiques (comme se donner des points de vie infinis ou un score artificiel). 
+D'autre part, le checksum garantit l'\textbf{intégrité} des données. En effet, si un joueur tente de tricher en modifiant aveuglément les octets du fichier 
+chiffré, ou si le fichier est corrompu à la suite d'une fermeture inattendue du programme, les données déchiffrées seront altérées. Le checksum recalculé ne 
+correspondra plus à l'original, ce qui permet au jeu de détecter la corruption et de bloquer le chargement de cette sauvegarde, évitant ainsi des plantages 
+(crashs) ou des comportements imprévisibles dans le jeu.
+\\\\
+\subsection{Multijoueur, réseau}
 
-
-
-\subsection{Multijoueur, réseaux}
-Dans le mode multijoueur, les joueurs s'affrontent dans un labyrinthe revisité pour faciliter les combats longue distance. Les joueurs peuvent se déplacer librement dans 
-le labyrinthe et utiliser différentes armes pour éliminer leurs adversaires. Les armes disponibles ont été vu dans la section précédente sur les armes. L'objectif des 
-joueurs dans ce mode est d'éliminer 25 fois son adversaire pour gagner la partie. Les joueurs peuvent également utiliser des power-ups qui apparaissent aléatoirement 
-dans le labyrinthe pour obtenir des avantages temporaires, comme les caisses de heal réparties aléatoirement sur la map. 
-
-Le mode multijoueur utilise une architecture client-serveur, où un joueur agit en tant que serveur et l'autre joueur se connecte en tant que client. Le serveur est 
-responsable de la gestion de l'état du jeu, de la synchronisation des actions des joueurs, et de la communication avec le client. Le client envoie ses actions au serveur, 
-qui les traite et met à jour l'état du jeu en conséquence. La communication entre le serveur et les clients se fait via des sockets, ce qui permet une transmission 
-efficace des données en temps réel.
-
-Le réseau est géré de manière à assurer une synchronisation efficace entre les joueurs. Le serveur envoie régulièrement des mises à jour de l'état du jeu au client. La 
-gestion du transfert des données, s'effectue via le protocole TCP dans la majorité des cas, qui garantit que les données sont transmises de manière fiable et dans le bon ordre. 
-Le serveur écoute les connexions entrantes et gère les sessions de jeu pour le client. Ce protocole est couplé à une fonction qui permet de rendre les sockets non bloquants. 
-Ce qui est d'une importance cruciale pour maintenir une expérience multijoueur fluide et réactive. En utilisant des sockets non bloquants, le serveur peut continuer à traiter 
-les actions du jeu et à envoyer des mises à jour au client sans être interrompu par des opérations de réseau, ce qui améliore considérablement la réactivité du jeu et 
-l'expérience globale pour les joueurs.
-
-Les joueurs ont deux méthodes pour se connecter à un serveur. La première méthode consiste à entrer l'adresse IP du serveur dans le menu de connexion du jeu, ce qui permet au 
-client de se connecter directement au serveur néanmoins cette méthode requiert que le serveur ait au préalable ouvert le port 30000 et ait fait en sorte que lorsque l'on entre 
-son adresse IP publique la demande de connexion a ce port redirige directement la requête vers sa machine. Dans ce cas c'est le protocole TCP qui est utilisé. La deuxième méthode 
-consiste à jouer la partie en local, c'est à dire que les deux joueurs soient connectés à un même réseau. Dans ce cas le client peut se connecter automatiquement grâce à un 
-broadcast local. Cette méthode est plus simple à mettre en place pour les joueurs, mais elle nécessite que les deux joueurs soient sur le même réseau, ce qui peut limiter les 
-possibilités de jeu en ligne mais est néanmoins plus sure pour le joueur qui héberge le serveur, car il n'a pas besoin d'ouvrir de port ou de gérer les redirections de port, 
-ce qui peut être complexe et potentiellement risqué en termes de sécurité pour sa machine. Dans le cas du broadcast local, le protocole utilisé est UDP, qui permet une découverte 
-rapide des serveurs disponibles sur le réseau local sans nécessiter de configuration préalable.
-
-Pour la gestion du multijoueur, chacun gère ses données c'est à dire que si le client se fait tuer, il envoie un message au serveur pour lui indiquer qu'il a été tué, et le serveur 
-met à jour son score. De même, lorsque le serveur est vaincu par son adversaire, il envoie un message au client pour lui indiquer qu'il a été tué, et le client met à jour son score. 
-Cette approche est certes plus simple à mettre en place, mais elle peut être sujette à des problèmes de triches, car un joueur malveillant pourrait envoyer de faux messages pour 
-manipuler le score. Cependant, pour un projet de cette envergure, cette méthode est suffisante pour assurer une expérience multijoueur fonctionnelle et agréable, tout en minimisant 
-la complexité du développement.
-
+Dans le mode multijoueur, les joueurs s'affrontent dans un labyrinthe revisité pour faciliter les combats à longue distance. L'objectif est d'atteindre 25 
+éliminations pour remporter la partie (les joueurs apparaissant avec 25 vies aux coins opposés de la carte). Ils se déplacent librement et utilisent l'ensemble 
+des armes présenté précédemment, tout en pouvant récupérer des objets octroyant des avantages cruciaux (comme des caisses de soins) qui apparaissent aléatoirement 
+et se synchronisent entre les joueurs.
+\\\\
+L'architecture réseau repose sur un modèle client-serveur : un joueur héberge la partie (le serveur) et l'autre s'y connecte (le client). Un effort particulier a 
+été apporté à la portabilité du code. Grâce à l'utilisation de directives de préprocesseur, notre système réseau est entièrement \textbf{multiplateforme}, 
+s'appuyant sur l'API \emph{Winsock2} sous Windows et sur les \emph{sockets POSIX} standard sous systèmes Unix (Linux/macOS).
+\\\\
+Afin d'optimiser la bande passante, la communication s'effectue via l'échange bidirectionnel d'une structure de données légère (\emph{PaquetReseau}). 
+Ce paquet ne contient que les variables d'état strictement nécessaires : la position dans l'espace (X, Y, Z), les angles de rotation de la caméra (\emph{yaw}, 
+\emph{pitch}), l'état des tirs, l'arme équipée et les points de vie. 
+\\\\
+Un aspect technique crucial de notre implémentation est l'utilisation de sockets \textbf{non bloquants}. En effet, le serveur doit gérer à la fois la logique du 
+jeu locale et la synchronisation avec le client. Grâce aux sockets non bloquants, le programme peut traiter toutes ces actions sans que le jeu ne se fige dans 
+l'attente d'une réponse réseau. Cependant, comme les paquets ne sont pas reçus à chaque image générée par le jeu (\emph{frame}), les mouvements de l'adversaire 
+pourraient paraître saccadés. Pour pallier ce problème, nous avons implémenté une \textbf{interpolation linéaire} (Lerp) sur la position de l'entité distante, 
+garantissant ainsi un rendu visuel fluide et évitant l'effet de téléportation. Le jeu intègre d'ailleurs son propre système de calcul de latence (\emph{Ping}), 
+en envoyant un paquet horodaté toutes les 100 millisecondes.
+\\\\
+Pour se connecter à une partie, deux méthodes exploitant des protocoles différents sont proposées :
+\begin{itemize}
+    \item \textbf{Connexion en ligne via IP (TCP) :} Le client entre l'adresse IP publique du serveur. Cette méthode utilise le protocole TCP, garantissant que 
+    les données sont transmises de manière fiable et ordonnée. Toutefois, elle requiert que l'hôte ait préalablement configuré son routeur (redirection de port 
+    ou \emph{Port Forwarding}) pour ouvrir le port 30000.
+    \item \textbf{Connexion en réseau local (UDP) :} Si les joueurs sont sur le même réseau (LAN), le client peut trouver le serveur automatiquement grâce à un 
+    \emph{broadcast} local. Dans ce cas, c'est le protocole UDP qui est utilisé : le client écoute sur le port 30001 un message d'identification ("MAZE\_HOST") 
+    diffusé par le serveur. Cette méthode est beaucoup plus simple et sécurisée pour l'hôte.
+    \\\\
+\end{itemize}
+Enfin, concernant la gestion de l'état du jeu, chaque instance gère de manière autonome ses propres données vitales. Concrètement, si le joueur local perd 
+l'intégralité de sa santé, c'est lui-même qui décrémente son compteur de vies et envoie un paquet l'annonçant au réseau. Bien que cette méthode soit sujette 
+à la triche (un client malveillant pourrait manipuler ses paquets pour ne jamais signaler sa mort), elle s'avère beaucoup plus simple et réactive à mettre en 
+place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pour offrir une expérience agréable malgré les difficultés rencontrés.
+\\\\
 \section{Interface}\label{Interface}
 
 \section{Résultats et conclusion}
 \subsection{Bilan temporel}
 \subsection{Bilan de la conformité aux cahiers des charges}
 \subsection{Améliorations possibles}
-
 \subsection{Bibliographie}
 
 \begin{thebibliography}{9} %nb source
