@@ -103,7 +103,7 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
-    return 1;  // Échec
+    return 2;  // Échec
   }
 
   SaveFile save;

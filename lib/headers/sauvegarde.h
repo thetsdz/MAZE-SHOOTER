@@ -52,11 +52,6 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
  *   \param <int* score> charge le score de la partie
  */
 int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
-<<<<<<< HEAD
-                       bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Heal heal[10]);
-=======
                       bool* IsBossAlive, Heal heal[10]);
->>>>>>> master
 
 #endif
