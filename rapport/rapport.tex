@@ -5,9 +5,15 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{hyperref}
+\usepackage{nameref}
 \usepackage{amsthm}
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
 
+\theoremstyle{definition}
 \newtheorem{exemple}{Exemple}
+
+\newcommand{\secref}[1]{\autoref{#1} \og \nameref{#1} \fg{}}
 
 \begin{document}
 
@@ -36,6 +42,8 @@
 
 \newpage
 \section{Introduction}
+Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
+
 \section{Conception}
 
 \subsection{Cahier des charges}
@@ -74,24 +82,28 @@ et de partager des idées rapidement.
 
 
 
-\subsection{Logique d'execution du  jeu et fonctionnement du menu}\label{Logique du jeu}
+\subsection{Logique d'execution du  jeu}\label{Logique du jeu}
 \indent Dans cette section on explique la logique de fonctionnement du fichier main.c, et par la même ocasion, la naviguation du joueur dans le menu du jeu.
-Ce menu permet d'afficher différents boutons utilent à la navigation du joueur CF photo ANNEXE ...
-\\
-\\
+Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
+
+\medskip \noindent
 Pour comprendre comment fonctionnent la logique du jeu dans main.c, on a besoin d'une variable importante : CurrentScreen, c'est un pointeur sur un Gamescreen, qui decris l'etat de jeu actuel. 
-Cet variable peut prendre diverse valeurs comme NOUVELLE PARTIE, CHARGER PARTIE ou encore MENU. Par default currentScreen vaut MENU. \\
-Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle while tournant tant qu'une variable running n'est pas mise à FALSE (ou que le joueur ne supprime pas sa fenetre).
-Dans cette boucle, il faut distinguer la partie logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable CurrentScreen. \\ 
-Ensuite, dans la partie logique on mets à jours les variables globales, on appel des fonctions \og generique \fg  qui initialisent ou mettent à jours nos variables globales(Player,Bot, etc).
+Cet variable peut prendre diverse valeurs comme \verb|NOUVELLE_PARTIE|, 
+\verb|CHARGER_PARTIE| ou encore \verb|MENU|. Par default \verb|CurrentScreen| vaut \verb|MENU|. 
+
+\noindent Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle while tournant tant qu'une variable running n'est pas mise à \verb|FALSE| (ou que le joueur ne supprime pas sa fenetre).
+Dans cette boucle, il faut distinguer la partie logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable \verb|CurrentScreen|. 
+
+\medskip \noindent
+Ensuite, dans la partie logique on mets à jours les variables globales, on appel des fonctions \og generique \fg{} qui initialisent ou mettent à jours nos variables globales(Player,Bot, etc).
 Un bon exemple est le suivant :
 \begin{exemple}\label{Exemple}
-UpdateGame(...) , cf \hyperref[Lien github]{Lien github}, cette fonction mets à jours toute la partie logique du jeu en mode solo. 
+UpdateGame(...) , cf \cite{Github}, cette fonction mets à jours toute la partie logique du jeu en mode solo. 
 \end{exemple}
-Une fois la logique à jours un peut dessiner. C'est le second switch qui entre en jeu et permet de lancer les bonnes fonctions de dessin toujours en fonction de la valeurs de CurrentScreen.
-Desormais, pour comprendre  menu.c, il suffirait lorsque CurrentScreen vaut MENU dans le premier switch qu'on appel les fonctions gerant la souris et le clavier, puis dans le second on dessinent les boutons voulus. 
+\noindent Une fois la logique à jours un peut dessiner. C'est le second switch qui entre en jeu et permet de lancer les bonnes fonctions de dessin toujours en fonction de la valeurs de \verb|CurrentScreen|.
+Desormais, pour comprendre  menu.c, il suffirait lorsque \verb|CurrentScreen| vaut \verb|MENU| dans le premier switch qu'on appel les fonctions gerant la souris et le clavier, puis dans le second on dessinent les boutons voulus. 
 \\ \\
-En réalité par soucie de simplicité, la partie logique et dessin est géré simultanément, cependant pour la plus part des fichier de ce projet les deux logique sont bien distinctes.
+En réalité par souci de simplicité, la partie logique et dessin est géré simultanément, cependant pour la plus part des fichier de ce projet les deux logique sont bien distinctes.
 
 
 
@@ -141,18 +153,27 @@ qui ajoute une dimension de progression au jeu et encourage le joueur à élimin
 
 
 \subsection{Armes, munitions, dégâts}
-Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile, munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. \\
-Faisons un rapide tour d'horizon des fonctionnalités disponible sur ce sujet, il existe quatre armes différentes: 
+Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile, munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. 
+
+\noindent Faisons un rapide tour d'horizon des fonctionnalités disponible sur ce sujet, il existe quatre armes différentes: 
 \begin{enumerate}
     \item un pistolet,
     \item un sniper,
     \item un fusil d'assault,
     \item une grenade.
 \end{enumerate}
-Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre il doit augmenter son score en tuant d'autres bots. 
-Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \hyperref[Interface]{Interface} pour plus de détail. 
-\\ \\
-Dans la partie logique du jeu (cf \hyperref[Logique du jeu]{Logique du jeu}), deux grandes fonctions interviennent : ObtenirModeleArme(...) et ChangementArme(...).
+Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres bots, ou, recuperer des coffres. 
+Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \secref{Interface}, pour plus de détail. 
+
+\medskip
+\noindent Dans la partie logique du jeu (cf \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
+
+\noindent La première récupere les caractéristiques de l'arme nécéssaire pour tous les changement qu'operera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
+\begin{exemple}
+	Le joueur tape sur la touche \verb|F4|, la fonction \verb|ChangementArme(...)| verfie que
+	les conditions sont remplies, alors on recupere les caractéristiques de la grenade et les
+	donne au joueur.
+\end{exemple}
 
 
 
@@ -201,9 +222,20 @@ la complexité du développement.
 
 \subsection{Bibliographie}
 
-\href{https://github.com/thetsdz/MAZE-SHOOTER}{https://github.com/thetsdz/MAZE-SHOOTER}\label{Lien github}, Lien vers le projet github.
+\begin{thebibliography}{9} %nb source
 
+\bibitem[Github]{Github} % C'est la "clé" de ta citation
+Lien vers le projet GitHub : \href{https://github.com/thetsdz/MAZE-SHOOTER}{https://github.com/thetsdz/MAZE-SHOOTER}
+\end{thebibliography}
+
+\appendix
 \section{Annexes}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.4\textwidth]{./images/image_menu/photo_menu.png}
+    \caption{Capture d'écran du menu principal}
+    \label{image menu}
+\end{figure}
 
 
 \end{document}

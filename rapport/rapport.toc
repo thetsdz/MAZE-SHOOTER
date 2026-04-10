@@ -8,16 +8,16 @@
 \contentsline {subsection}{\numberline {3.2}Planning prévisionnel}{2}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Outils utilisés}{2}{subsection.3.3}%
 \contentsline {section}{\numberline {4}Développement}{3}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Logique d'execution du jeu et fonctionnement du menu}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.1}Logique d'execution du jeu}{3}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Création de la carte}{4}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Joueur, déplacement et gestion de la vie, coffre}{4}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}Bots, leurs IA, spawn, boss}{4}{subsection.4.4}%
 \contentsline {subsection}{\numberline {4.5}Armes, munitions, dégâts}{5}{subsection.4.5}%
 \contentsline {subsection}{\numberline {4.6}Multijoueur, réseaux}{6}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Interface}{7}{section.5}%
-\contentsline {section}{\numberline {6}Résultats et conclusion}{7}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Bilan temporel}{7}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Bilan de la conformité aux cahiers des charges}{7}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Améliorations possibles}{7}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Bibliographie}{7}{subsection.6.4}%
-\contentsline {section}{\numberline {7}Annexes}{7}{section.7}%
+\contentsline {section}{\numberline {5}Interface}{8}{section.5}%
+\contentsline {section}{\numberline {6}Résultats et conclusion}{8}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Bilan temporel}{8}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Bilan de la conformité aux cahiers des charges}{8}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Améliorations possibles}{8}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Bibliographie}{8}{subsection.6.4}%
+\contentsline {section}{\numberline {A}Annexes}{8}{appendix.A}%
