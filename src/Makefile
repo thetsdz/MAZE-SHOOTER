@@ -21,7 +21,6 @@ info:
 
 run:
 	$(MAKE) -f $(MAKEFILE) run
-
 %:
 	$(MAKE) -f $(MAKEFILE) $@
 

@@ -89,27 +89,79 @@ Desormais, pour le menu, il suffit de voir que lorsque CurrentScreen vaut MENU o
 
 \subsection{Création de la carte}
 \subsection{Joueur, déplacement et gestion de la vie, soin}
-\subsection{Bots, leurs IA, spawn, boss}
-Concernant les bots, ils sont guidés par une intelligence artificielle simple mais efficace. Ils empreintent le chemin le plus court vers le joueur dans le 
-labyrinthe, mais dès qu'ils détectent le joueur à une certaine distance, ils commencent à le poursuivre. Ils utilisent un algorithme de recherche de chemin pour 
-trouver le chemin le plus court vers le joueur, en évitant les obstacles du labyrinthe. Les bots ont également une capacité d'attaque, et lorsqu'ils sont 
-suffisamment proches du joueur, ils peuvent lui infliger des dégâts. Les boss, quant à eux, sont des ennemis plus puissants avec des comportements plus complexes. 
-Ils utilisent un sniper plutot que le glock des bots normaux, ce qui fait qu'ils infligent un nombre de dégats beaucoup plus élevé, leur IA est beaucoup plus 
-précise (ils ne ratent pas une cible à moins qu'elle ne soit cachée derrière un mur ou qu'elle bouge très rapidement) et ils ont plus de points de vie que les 
-bots normaux. Ils apparaissent à des moments clés du jeu pour offrir un défi supplémentaire au joueur. Néanmoins, ils se déplacent 2 fois moins vite que les bots 
-normaux ce qui fait qu'ils sont plus facile à fuir que les bots normaux, mais ils sont plus dangereux s'ils arrivent à vous toucher. les bots et les boss ont la 
-même logique de spawn, ils apparaissent à des endroits aléatoires du labyrinthe, bien que les boss apparaissent tout les 50 kills de bots classiques. 
 
-L'algorithme de recherche de chemin utilise 3 matrices. La première se nomme \emph{visited} et contient des booléens indiquant si une case à dejà été visitée ou pas, la deuxième contient 
-quelle case a été visitée avant d'arriver à la case actuelle, et la troisième contient la liste des cases à visiter. Ces trois matrices permettent d'éffectuer une 
-recherche en largeur pour trouver le chemin le plus court vers le joueur. Donc comme si on versait de l'eau dans le labyrinthe à partir de la position du bot, et 
-que l'eau se propageait dans toutes les directions en évitant les murs, la troisième matrice contiendrait la liste des cases où l'eau est présente à chaque instant, 
-la première matrice indiquerait quelles cases ont déjà été touchées par l'eau, et la deuxième matrice indiquerait pour chaque case quelle est la case précédente 
-d'où l'eau est venue. Lorsque l'eau atteint la position du joueur, on peut remonter le chemin en utilisant la deuxième matrice pour trouver le chemin le plus court 
-vers le joueur.
-\subsection{Tir et armes}
+\subsection{Bots, leurs IA, spawn, boss}
+Concernant les bots, ils sont guidés par une intelligence artificielle simple mais efficace. Ils empruntent le chemin le plus court vers le joueur dans le 
+labyrinthe, mais dès qu'ils détectent le joueur à une certaine distance, ils commencent à le poursuivre en ligne droite ce qui permet d'éviter des calculs inutiles. 
+Sinon si le joueur n'est pas visible ils utilisent un algorithme de recherche de chemin pour trouver le chemin le plus court vers le joueur, en évitant les obstacles 
+du labyrinthe. Les bots ont également une capacité d'attaque, et lorsqu'ils sont suffisamment proches du joueur, ils peuvent lui infliger des dégâts. Les boss, quant 
+à eux, sont des ennemis plus puissants avec des comportements plus complexes. Ils utilisent un sniper plutot que le glock des bots normaux, ce qui fait qu'ils infligent 
+un nombre de dégats beaucoup plus élevé, leur IA est beaucoup plus précise (ils ne ratent pas une cible à moins qu'elle ne soit cachée derrière un mur ou qu'elle bouge 
+très rapidement) et ils ont plus de points de vie que les bots normaux. Ils apparaissent à des moments clés du jeu pour offrir un défi supplémentaire au joueur. 
+Néanmoins, ils se déplacent 2 fois moins vite que les bots normaux ce qui fait qu'ils sont plus facile à fuir que les bots normaux, mais ils sont plus dangereux s'ils 
+arrivent à vous toucher. les bots et les boss ont la même logique de spawn, ils apparaissent à des endroits aléatoires du labyrinthe, bien que les boss apparaissent 
+tout les 50 kills de bots classiques. 
+\\\\
+L'algorithme de recherche de chemin utilise 3 matrices. La première se nomme \emph{visited} et contient des booléens indiquant si une case à dejà été visitée ou pas, 
+la suivant s'appelle \emph{parent} et contient quelle case a été visitée avant d'arriver à la case actuelle, et enfin la troisième matrice \emph{queue} contient la 
+liste des cases à visiter. Ces trois matrices permettent d'éffectuer une recherche en largeur pour trouver le chemin le plus court vers le joueur. Donc comme si on 
+versait de l'eau dans le labyrinthe à partir de la position du bot, et que l'eau se propageait dans toutes les directions en évitant les murs, la troisième matrice 
+contiendrait la liste des cases où l'eau est présente à chaque instant, la première matrice indiquerait quelles cases ont déjà été touchées par l'eau, et la deuxième 
+matrice indiquerait pour chaque case quelle est la case précédente d'où l'eau est venue. Lorsque l'eau atteint la position du joueur, on peut remonter le chemin en 
+utilisant la deuxième matrice pour trouver le chemin le plus court vers le joueur.
+\\\\
+Les bots et les boss sont du même type abstrait, ils sont tous les deux des \emph{Entity}. Les {Entity} sont des tous les objets animés soit par un être humain comme 
+par exemple les \emph{ENTITY\_PLAYER} qui ont été vu dans la partie sur les joueurs ou par une intelligence artificielle comme les \emph{ENTITY\_BOT} et les 
+\emph{ENTITY\_BOSS}. Dans notre cas on va plutot s'intéresser à ceux gérer par des IA. Les bots et les boss ont des caractéristiques communes, comme une position 
+générer aléatoirement parmi les cases du labyrinthe qui ne sont pas des murs, une direction géré à de l'algorithme de recherche dans le labyrinthe. Ils ont également 
+des comportements communs, comme se déplacer vers le joueur, attaquer le joueur lorsqu'ils sont suffisamment proches, et réagir aux dégâts qu'ils subissent. Cependant, 
+les boss ont des caractéristiques plus puissantes que les bots normaux, comme plus de points de vie, une arme plus puissante, et une IA plus précise.
+\\\\
+Les bots possèdent également une mécanique de salto. Il s'agit d'une mécanique qui est effectuée de manière aléatoire mais qui lui permet d'esquiver certains tirs 
+adverses. Lorsque le bot décide de faire un salto, il commence à tourner sur lui même à une vitesse de 720 degrés par seconde pendant une durée de 0.5 secondes, ce 
+qui lui peut permet d'esquiver les tirs ennemis pendant cette période. Cependant, le bot ne peut pas faire de salto indéfiniment, il doit attendre un certain temps 
+avant de pouvoir en faire un autre. Le salto est une mécanique qui rend les bots plus difficiles à toucher et ajoute du dynamisme aux combats, mais elle est équilibrée 
+par le fait que les bots ne peuvent pas en faire trop souvent.
+\\\\
+En cas de mort d'un bot il réapparait immédiatement à un autre endroit du labyrinthe, ce qui permet de maintenir une pression constante sur le joueur et d'assurer que 
+le jeu reste dynamique. Cependant, les boss ne réapparaissent pas immédiatement après leur mort, ils réapparaissent si le score du joueur atteint un certain seuil, ce 
+qui ajoute une dimension de progression au jeu et encourage le joueur à éliminer les bots pour faire réapparaître les boss.
+\\\\
+\subsection{Armes, munitions, dégâts}
 \subsection{Multijoueur, réseaux}
-\subsection{Interface graphique, sons}
+Dans le mode multijoueur, les joueurs s'affrontent dans un labyrinthe revisité pour faciliter les combats longue distance. Les joueurs peuvent se déplacer librement dans 
+le labyrinthe et utiliser différentes armes pour éliminer leurs adversaires. Les armes disponibles ont été vu dans la section précédente sur les armes. L'objectif des 
+joueurs dans ce mode est d'éliminer 25 fois son adversaire pour gagner la partie. Les joueurs peuvent également trouver des objets qui apparaissent aléatoirement 
+dans le labyrinthe pour obtenir des avantages temporaires, comme des caisses de soins. 
+\\\\
+Le mode multijoueur utilise une architecture client-serveur, où un joueur agit en tant que serveur et l'autre joueur se connecte en tant que client. Le serveur est 
+responsable de la gestion de l'état du jeu, de la synchronisation des actions des joueurs, et de la communication avec le client. Le client envoie ses actions au serveur, 
+qui les traite et met à jour l'état du jeu en conséquence. La communication entre le serveur et les clients se fait via des sockets, ce qui permet une transmission 
+efficace des données en temps réel.
+\\\\
+Le réseau est géré de manière à assurer une synchronisation efficace entre les joueurs. Le serveur envoie régulièrement des mises à jour de l'état du jeu au client. La 
+gestion du transfert des données, s'effectue via le protocole TCP dans la majorité des cas, qui garantit que les données sont transmises de manière fiable et dans le bon ordre. 
+Le serveur écoute les connexions entrantes et gère les sessions de jeu pour le client. Ce protocole est couplé à une fonction qui permet de rendre les sockets non bloquants. 
+Ce qui est d'une importance cruciale pour maintenir une expérience multijoueur fluide et réactive. En utilisant des sockets non bloquants, le serveur peut continuer à traiter 
+les actions du jeu et à envoyer des mises à jour au client sans être interrompu par des opérations de réseau, ce qui améliore considérablement la réactivité du jeu et 
+l'expérience globale pour les joueurs.
+\\\\
+Les joueurs ont deux méthodes pour se connecter à un serveur. La première méthode consiste à entrer l'adresse IP du serveur dans le menu de connexion du jeu, ce qui permet au 
+client de se connecter directement au serveur néanmoins cette méthode requiert que le serveur ait au préalable ouvert le port 30000 et ait fait en sorte que lorsque l'on entre 
+son adresse IP publique la demande de connexion a ce port redirige directement la requête vers sa machine. Dans ce cas c'est le protocole TCP qui est utilisé. La deuxième méthode 
+consiste à jouer la partie en local, c'est à dire que les deux joueurs soient connectés à un même réseau. Dans ce cas le client peut se connecter automatiquement grâce à un 
+broadcast local. Cette méthode est plus simple à mettre en place pour les joueurs, mais elle nécessite que les deux joueurs soient sur le même réseau, ce qui peut limiter les 
+possibilités de jeu en ligne mais est néanmoins plus sure pour le joueur qui héberge le serveur, car il n'a pas besoin d'ouvrir de port ou de gérer les redirections de port, 
+ce qui peut être complexe et potentiellement risqué en termes de sécurité pour sa machine. Dans le cas du broadcast local, le protocole utilisé est UDP, qui permet une découverte 
+rapide des serveurs disponibles sur le réseau local sans nécessiter de configuration préalable.
+\\\\
+Pour la gestion du multijoueur, chacun gère ses données c'est à dire que si le client se fait tuer, il envoie un message au serveur pour lui indiquer qu'il a été tué, et le serveur 
+met à jour son score. De même, lorsque le serveur est vaincu par son adversaire, il envoie un message au client pour lui indiquer qu'il a été tué, et le client met à jour son score. 
+Cette approche est certes plus simple à mettre en place, mais elle peut être sujette à des problèmes de triches, car un joueur malveillant pourrait envoyer de faux messages pour 
+manipuler le score. Cependant, pour un projet de cette envergure, cette méthode est suffisante pour assurer une expérience multijoueur fonctionnelle et agréable, tout en minimisant 
+la complexité du développement.
+
+
 \section{Résultats et conclusion}
 \subsection{Bilan temporel}
 \subsection{Bilan de la conformité aux cahiers des charges}

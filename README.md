@@ -10,13 +10,7 @@
 - [Fonctionnalités](#fonctionnalités)
 - [Prérequis](#prérequis)
 - [Installation](#installation)
-- [Compilation & Lancement](#compilation--lancement)
-- [Contrôles](#contrôles)
-- [Multijoueur](#multijoueur)
-- [Sauvegarde](#sauvegarde)
-- [Documentation](#documentation)
-- [Branches & Workflow Git](#branches--workflow-git)
-- [Auteurs](#auteurs)
+- [Developpeurs](#developpeurs)
 
 ---
 
@@ -70,3 +64,9 @@ make
 
 
 ---
+
+## Developpeurs
+
+* DEQUIREZ Thomas (chef de projet) — audio, conception structurel, design global
+* JAMMES Corentin — réseau, multijoueur, gameplay, bots
+* ASTIER Hugues — menu, changement d'armes, interface

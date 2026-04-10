@@ -67,7 +67,7 @@ void InitHeal(Heal *heal,
 
     heal->pos.x = i * 3.0f - offset;
     heal->pos.z = j * 3.0f - offset;
-    heal->pos.y = 0.5f;
+    heal->pos.y = 0.0f;
 }
 
 int UpdateHeal(Heal *heal, Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {

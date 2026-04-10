@@ -4,15 +4,15 @@
 
 #include "../lib/headers/sauvegarde.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h> 
 
 #include "../lib/headers/cryptage.h"
-#include "../lib/headers/types.h"
 #include "../lib/headers/dessin.h"
+#include "../lib/headers/types.h"
 
 // CLÉ DE CRYPTAGE (À ne pas partager ou modifié !)
 // générer avec : openssl rand -hex 32
@@ -32,8 +32,8 @@ typedef struct {
   Entity bot[18];
   Entity boss;
   int IsBossAlive;
-  Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Heal heal[10];
+  int armeUnlock[3];
 } SaveData;
 
 // C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
@@ -43,12 +43,15 @@ typedef struct {
 } SaveFile;
 
 void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
-                 Block blocks[NUM_BLOCKS][NUM_BLOCKS], Heal heal[10]) {
+                 Heal heal[10]) {
   SaveFile save;
 
   // Remplissage de la structure de données
-  save.gameData.score = player->score;
-  save.gameData.ammo = player->ammo;
+    save.gameData.score = player->score;
+    save.gameData.ammo = player->ammo;
+    save.gameData.armeUnlock[0]=player->armeUnlock[0];
+    save.gameData.armeUnlock[1]=player->armeUnlock[1];
+    save.gameData.armeUnlock[2]=player->armeUnlock[2];
 
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
@@ -69,12 +72,6 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
 
   save.gameData.boss = *boss;
   save.gameData.IsBossAlive = IsBossAlive;
-
-  for (int i = 0; i < NUM_BLOCKS; i++) {
-    for (int j = 0; j < NUM_BLOCKS; j++) {
-      save.gameData.blocks[i][j] = blocks[i][j];
-    }
-  }
 
   for (int i = 0; i < 10; i++) {
     save.gameData.heal[i] = heal[i];
@@ -102,12 +99,11 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
 }
 
 int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
-                       bool* IsBossAlive, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
-                       Heal heal[10]) {
+                      bool* IsBossAlive, Heal heal[10]) {
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
-    return 2; // Échec
+    return 1;  // Échec
   }
 
   SaveFile save;
@@ -119,8 +115,10 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
     return 2; // Échec
   }
 
-  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY, strlen(GAME_KEY));
-  uint32_t verif = calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
+  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY,
+            strlen(GAME_KEY));
+  uint32_t verif =
+      calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
 
   if (verif != save.checksum) {
     printf("ALERTE TRICHE : Le fichier de sauvegarde a été modifié manuellement !\n");
@@ -128,8 +126,11 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   }
 
   // Application des données (Si tout est bon)
-  player->score = save.gameData.score;
-  player->ammo = save.gameData.ammo;
+    player->score = save.gameData.score;
+    player->armeUnlock[0]=save.gameData.armeUnlock[0];
+    player->armeUnlock[1]=save.gameData.armeUnlock[1];
+    player->armeUnlock[2]=save.gameData.armeUnlock[2];
+    player->ammo = save.gameData.ammo;
 
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;
@@ -150,15 +151,9 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   *boss = save.gameData.boss;
   *IsBossAlive = save.gameData.IsBossAlive;
 
-  for (int i = 0; i < NUM_BLOCKS; i++) {
-    for (int j = 0; j < NUM_BLOCKS; j++) {
-      blocks[i][j] = save.gameData.blocks[i][j];
-    }
+  for (int i = 0; i < 10; i++) {
+    heal[i] = save.gameData.heal[i];
   }
-
-    for (int i = 0; i < 10; i++) {
-        heal[i] = save.gameData.heal[i];
-    }
 
   printf("[Chargement] Partie chargée avec succès !\n");
   return 0; // Succès
