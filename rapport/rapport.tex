@@ -4,9 +4,10 @@
 \usepackage[french]{babel}
 \usepackage{graphicx}
 \usepackage{color}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
 
 \begin{document}
-
 \begin{titlepage}
     \noindent
     %\includegraphics[height=3cm]{TP2/univ.png}
@@ -57,7 +58,17 @@ Il est aussi possible de changer les textures via le menu "options".
 
 \section{Organisation du projet}
 \subsection{Reparition des tâches}
+Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
+
+Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux bots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
+
+Hugues s’est majoritairement occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des bots ainsi que du coffre(soin et armes) et du joueur. Il a développé le système d’armes, permettant d’en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
+
+
 \subsection{Planning prévisionnel}
+
+
+
 \subsection{Outils utilisés}
 Pour ce projet, nous avons utilisé plusieurs outils pour faciliter le développement et la collaboration. Nous avons utilisé Git pour le contrôle de version,
 ce qui nous a permis de travailler simultanément sur différentes parties du code sans conflits majeurs. Pour la gestion des tâches et du planning,  nous avons
