@@ -62,7 +62,7 @@ int main(void) {
   // --- Initialisation Fenêtre & Raylib ---
   int screenWidth = GetMonitorWidth(0);
   int screenHeight = GetMonitorHeight(0);
-  InitWindow(screenWidth, screenHeight, "JEU");
+  InitWindow(screenWidth, screenHeight, "MAZE-SHOOTER");
   InitAudioDevice();
   InitGameAudio();
 
