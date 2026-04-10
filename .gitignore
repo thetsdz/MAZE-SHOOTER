@@ -4,6 +4,14 @@
 *.dat
 *.bin
 
+rapport/*.pdf
+rapport/*.dvi
+rapport/*.aux
+rapport/*.log
+rapport/*.out
+rapport/*.toc
+
+
 
 bin/
 doc/html/
