@@ -77,7 +77,7 @@ int main(void) {
   bool jeuInitialise = false;
   bool running = true;
   bool chargement = false;
-  bool IsBossAlive=false;
+  bool IsBossAlive = false;
   bool joueurATriche = false;
 
   // --- Variables du jeu (initialisées plus tard) ---
@@ -89,7 +89,7 @@ int main(void) {
   Block blocks[NUM_BLOCKS][NUM_BLOCKS];
   Projectile projs[MAX_PROJ];
   ReseauState netState = {-1, 0, 0};
-  float timerTriche = 0.0f; // chronomètre pour l'écran de triche
+  float timerTriche = 0.0f;  // chronomètre pour l'écran de triche
 
   // --- Caméra ---
   Camera3D camera = {0};
@@ -105,7 +105,8 @@ int main(void) {
   tabArmes[3] = LoadModel("../assets/models/armes/Grenade.glb");
 
   Texture2D iconesArmes[4];
-  iconesArmes[0] = LoadTexture("../assets/images/icone_arme/icone_pistolet.png");
+  iconesArmes[0] =
+      LoadTexture("../assets/images/icone_arme/icone_pistolet.png");
   iconesArmes[1] = LoadTexture("../assets/images/icone_arme/icone_sniper.png");
   iconesArmes[2] = LoadTexture("../assets/images/icone_arme/icone_fusil.png");
   iconesArmes[3] = LoadTexture("../assets/images/icone_arme/icone_grenade.png");
@@ -119,9 +120,12 @@ int main(void) {
   Model healModel = LoadModel("../assets/models/coffre/Chest2.glb");
 
   Model tabProjModels[5];
-  tabProjModels[0] =LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
-  tabProjModels[1] =LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
-  tabProjModels[2] =LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
+  tabProjModels[0] =
+      LoadModel("../assets/models/projectiles/Bullet_pistolet.glb");
+  tabProjModels[1] =
+      LoadModel("../assets/models/projectiles/Bullet_fusil_assault.glb");
+  tabProjModels[2] =
+      LoadModel("../assets/models/projectiles/Bullet_sniper3.glb");
   tabProjModels[3] = LoadModel("../assets/models/projectiles/Grenade.glb");
   tabProjModels[4] = LoadModel("../assets/models/projectiles/Explosion.glb");
 
@@ -203,7 +207,8 @@ int main(void) {
       }
       case NOUVELLE_PARTIE: {
         StopAllMusic();
-        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+        UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen,
+                   &boss, &IsBossAlive);
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
@@ -219,55 +224,65 @@ int main(void) {
       }
       case CHARGER_PARTIE: {
         if (!chargement) {
-          int succes = chargerSauvegarde(&player, bot, &boss, &IsBossAlive, heal);
-          
-          if (succes == 1) {
-             // Fichier introuvable ou corrompu ! On retourne au menu direct.
-             currentScreen = MENU;
-             jeuInitialise = false;
-             break; // On coupe court à l'exécution
+          int succes =
+              chargerSauvegarde(&player, bot, &boss, &IsBossAlive, heal);
+
+          if (succes == 2) {
+            // Fichier introuvable ou corrompu ! On retourne au menu direct.
+            StopAllMusic();
+            UpdateGame(&player, bot, heal, blocks, projs, &camera,
+                       &currentScreen, &boss, &IsBossAlive);
+            if(IsKeyPressed(KEY_BACKSPACE)) {
+              currentScreen = MENU;
+              jeuInitialise = false;
+              IsBossAlive = false;
+              chargement = false;
+            }
+
+          } else if (succes == 1) {
+            // Triche détectée (modification propre du fichier)
+            joueurATriche = true;
+            timerTriche = 0.0f;
           }
-          else if (succes == 2) {
-             // Triche détectée (modification propre du fichier)
-             joueurATriche = true;
-             timerTriche = 0.0f;
-          }
-          
+
           chargement = true;
           DisableCursor();
         }
-        
+
         // Si le joueur a triché, on fait tourner le chronomètre
         if (joueurATriche) {
-            timerTriche += GetFrameTime(); // Ajoute le temps écoulé depuis la dernière frame
-            
-            // Si 5 secondes se sont écoulées
-            if (timerTriche >= 5.0f) {
-                currentScreen = NOUVELLE_PARTIE; // On bascule sur l'écran de jeu
-                jeuInitialise = false;           // Force la réinitialisation des entités pour une partie neuve
-                joueurATriche = false;           // Enlève l'alerte
-                chargement = false;              // Réinitialise l'état de chargement
-                IsBossAlive = false;
-                timerTriche = 0.0f;
-            }
-        } 
+          timerTriche += GetFrameTime();  // Ajoute le temps écoulé depuis la
+                                          // dernière frame
+
+          // Si 5 secondes se sont écoulées
+          if (timerTriche >= 5.0f) {
+            currentScreen = NOUVELLE_PARTIE;  // On bascule sur l'écran de jeu
+            jeuInitialise = false;  // Force la réinitialisation des entités
+                                    // pour une partie neuve
+            joueurATriche = false;  // Enlève l'alerte
+            chargement = false;     // Réinitialise l'état de chargement
+            IsBossAlive = false;
+            timerTriche = 0.0f;
+          }
+        }
         // On update le jeu que si la sauvegarde est valide
         else {
-            UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen, &boss, &IsBossAlive);
+          UpdateGame(&player, bot, heal, blocks, projs, &camera, &currentScreen,
+                     &boss, &IsBossAlive);
         }
-        
+
         if (IsKeyPressed(KEY_BACKSPACE)) {
           currentScreen = MENU;
           jeuInitialise = false;
           chargement = false;
           IsBossAlive = false;
-          joueurATriche = false; // Réinitialiser le drapeau
+          joueurATriche = false;  // Réinitialiser le drapeau
         }
         break;
       }
       case OPTIONS: {
         GererOption(&currentScreen);
-        break; 
+        break;
       }
       case EXIT: {
         running = false;
@@ -291,7 +306,7 @@ int main(void) {
         GererVictoire(&currentScreen, player.score);
         if (currentScreen == MENU) {
           jeuInitialise = false;
-          IsBossAlive = false;  
+          IsBossAlive = false;
           chargement = false;
         }
         if (IsKeyPressed(KEY_BACKSPACE)) {
@@ -312,25 +327,28 @@ int main(void) {
       case NOUVELLE_PARTIE: {
         UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
 
-                         tabArmes,healModel, skyModel, wallModel, floorModel, botModel,
-                         tabProjModels, &boss, IsBossAlive, bossModel, iconesArmes);
+                         tabArmes, healModel, skyModel, wallModel, floorModel,
+                         botModel, tabProjModels, &boss, IsBossAlive, bossModel,
+                         iconesArmes);
         break;
       }
       case MULTIJOUEUR: {
-        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs, &camera,
-                    viseur, tabArmes, &netState, healModel, skyModel,
-                    wallModel, floorModel, botModel, tabProjModels,iconesArmes);
+        DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs,
+                            &camera, viseur, tabArmes, &netState, healModel,
+                            skyModel, wallModel, floorModel, botModel,
+                            tabProjModels, iconesArmes);
         break;
       }
       case CHARGER_PARTIE: {
         if (joueurATriche) {
-            // Dessiner uniquement l'écran d'alerte si triche
-            DrawTricheur(GetScreenWidth());
+          // Dessiner uniquement l'écran d'alerte si triche
+          DrawTricheur(GetScreenWidth());
         } else {
-            // Sinon on dessine le jeu normal
-            UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
-                             tabArmes, healModel, skyModel, wallModel, floorModel, botModel,
-                             tabProjModels, &boss, IsBossAlive, bossModel,iconesArmes);
+          // Sinon on dessine le jeu normal
+          UpdateDessinGame(bot, heal, blocks, camera, projs, player, viseur,
+                           tabArmes, healModel, skyModel, wallModel, floorModel,
+                           botModel, tabProjModels, &boss, IsBossAlive,
+                           bossModel, iconesArmes);
         }
         break;
       }
@@ -362,7 +380,7 @@ int main(void) {
   UnloadTexture(floorTex);
   for (int i = 0; i < 4; i++) UnloadModel(tabArmes[i]);
   for (int i = 0; i < 5; i++) UnloadModel(tabProjModels[i]);
-  for (int i=0 ; i<4;i++) UnloadTexture(iconesArmes[i]);
+  for (int i = 0; i < 4; i++) UnloadTexture(iconesArmes[i]);
   UnloadShader(skyModel.materials[0].shader);
   UnloadTexture(skyModel.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
   UnloadModel(skyModel);

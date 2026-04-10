@@ -103,7 +103,7 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
-    return 1;  // Échec
+    return 2;  // Échec
   }
 
   SaveFile save;
@@ -112,7 +112,7 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
 
   if (lu != 1) {
     printf("[Chargement] Erreur : Fichier de sauvegarde corrompu.\n");
-    return 1;  // Échec
+    return 2; // Échec
   }
 
   rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY,
@@ -121,10 +121,8 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
       calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
 
   if (verif != save.checksum) {
-    printf(
-        "ALERTE TRICHE : Le fichier de sauvegarde a été modifié manuellement "
-        "!\n");
-    return 2;  // Indique qu'il y a eu triche
+    printf("ALERTE TRICHE : Le fichier de sauvegarde a été modifié manuellement !\n");
+    return 1; // Indique qu'il y a eu triche
   }
 
   // Application des données (Si tout est bon)
@@ -158,5 +156,5 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
   }
 
   printf("[Chargement] Partie chargée avec succès !\n");
-  return 0;  // Succès
+  return 0; // Succès
 }
