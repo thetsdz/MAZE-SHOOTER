@@ -4,6 +4,7 @@
 \usepackage[french]{babel}
 \usepackage{graphicx}
 \usepackage{color}
+<<<<<<< HEAD
 \usepackage{hyperref}
 \usepackage{nameref}
 \usepackage{amsthm}
@@ -14,9 +15,12 @@
 \newtheorem{exemple}{Exemple}
 
 \newcommand{\secref}[1]{\autoref{#1} \og \nameref{#1} \fg{}}
+=======
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+>>>>>>> master
 
 \begin{document}
-
 \begin{titlepage}
     \noindent
     %\includegraphics[height=3cm]{TP2/univ.png}
@@ -42,10 +46,28 @@
 
 \newpage
 \section{Introduction}
+<<<<<<< HEAD
 Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. C'est un jeu fsp à la première personne en trois dimensions. 
 
 \noindent Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
 
+=======
+Dans le cadre de notre deuxième année de Licence Informatique, nous avons été chargés de concevoir et développer un projet informatique en groupe. Notre projet, 
+intitulée \textbf{MAZE-SHOOTER}, est un jeu de tir à la première personne (FPS) en 3D complet.
+\\\\
+Ce projet ambitieux plonge le joueur au cœur de labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes : un mode \emph{Solo} 
+orienté sur la survie face à des vagues de robots et de boss, et un mode \emph{Multijoueur} compétitif jouable en réseau. 
+\\\\
+Conformément aux exigences de notre cahier des charges, l'intégralité du développement a été réalisée en langage C, en nous appuyant sur la bibliothèque 
+graphique Raylib pour le rendu visuel. La réalisation de ce jeu a représenté un véritable défi technique qui nous a permis de mettre en pratique des concepts 
+informatiques complexes : algorithmes de génération et de recherche de chemin (pathfinding), gestion physique des collisions, communication réseau via des 
+sockets, ou encore sécurisation des données par chiffrement.
+\\\\
+Ce document retrace l'ensemble du cycle de vie de notre projet. Dans un premier temps, nous présenterons la conception générale du jeu et détaillerons ses 
+nombreuses fonctionnalités. Nous aborderons ensuite la répartition des tâches au sein de notre équipe ainsi que les outils méthodologiques déployés pour assurer 
+un travail collaboratif efficace. Enfin, nous plongerons au cœur de la logique de développement technique de nos mécaniques clés, avant de terminer par un bilan 
+global de cette expérience.
+>>>>>>> master
 \section{Conception}
 
 \subsection{Cahier des charges}
@@ -89,7 +111,24 @@ MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, pro
 \end{itemize}
 \section{Organisation du projet}
 \subsection{Reparition des tâches}
+Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
+
+Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux bots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
+
+Hugues s’est majoritairement occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des bots ainsi que du coffre(soin et armes) et du joueur. Il a développé le système d’armes, permettant d’en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
+
+
 \subsection{Planning prévisionnel}
+
+Le diagramme de Gantt ci-dessous présente la répartition temporelle des tâches
+sur la durée du projet, du 30 janvier au 17 avril 2026.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{gantt_final.png}
+    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
+    \label{fig:gantt}
+\end{figure}
 \subsection{Outils utilisés}
 
 Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'outils informatiques:
@@ -110,8 +149,13 @@ Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'o
 \end{itemize}
 
 
+<<<<<<< HEAD
 
 \subsection{Logique d'execution du  jeu}\label{Logique du jeu}
+=======
+\section{Developpement}
+\subsection{Logique d'execution du  jeu et fonctionnement du menu}
+>>>>>>> master
 \indent Dans cette section on explique la logique de fonctionnement du fichier main.c, et par la même ocasion, la naviguation du joueur dans le menu du jeu.
 Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
 
@@ -138,10 +182,108 @@ En réalité par souci de simplicité, la partie logique et dessin est géré si
 
 
 
+<<<<<<< HEAD
 
 \subsection{Création de la carte}\label{map}
 
 \subsection{Joueur, déplacement et gestion de la vie, soin}
+=======
+\subsection{Création de la carte}
+
+La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
+de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs. Chaque bloc possède une
+position dans l'espace, des dimensions fixes $(3 \times 6 \times 3)$ et un état binaire :
+\textbf{mur} (\texttt{isWall = 1}) ou \textbf{passage} (\texttt{isWall = 0}).
+
+La génération commence par l'initialisation de tous les blocs en murs, disposés en grille
+avec un espacement de 3 unités. L'algorithme utilisé pour creuser les passages est un
+parcours en profondeur d'abord (DFS) itératif, implémenté à l'aide d'une pile maison
+(\texttt{pile.h}) afin d'éviter tout débordement de pile récursive. En partant de la
+case $(1, 1)$, l'algorithme recherche à chaque étape les voisins situés à une
+\textbf{distance de 2 cases} qui sont encore des murs. Ce saut de deux cases est
+essentiel : il garantit qu'un bloc mur sépare toujours deux cellules adjacentes, ce qui
+est la condition nécessaire pour obtenir un labyrinthe valide. Un voisin est alors
+choisi aléatoirement, la cellule cible est ouverte, ainsi que le bloc intermédiaire qui
+la sépare de la case courante. Si aucun voisin valide n'est disponible, l'algorithme
+\textbf{dépile} (\textit{backtrack}) pour revenir à une case précédente disposant encore
+de voisins non visités. Ce processus se répète jusqu'à ce que la pile soit vide, garantissant
+que chaque cellule de la grille est visitée exactement une fois et que le labyrinthe
+généré est parfait, c'est-à-dire sans cycle et avec un chemin unique entre deux cases.
+
+En mode multijoueur, une variante \texttt{creer\_lab\_multi} est utilisée. Elle génère
+d'abord un labyrinthe classique, puis modifie le tiers central de la grille pour créer
+une grande arène ouverte. Dans cette zone, 90\% des blocs sont vidés pour laisser un
+espace dégagé, tandis que les 10\% restants sont conservés comme obstacles aléatoires
+afin d'animer l'espace et d'offrir des possibilités tactiques aux joueurs.
+
+L'affichage de la carte est assuré par \texttt{DrawLevel}, qui parcourt l'intégralité de
+la grille à chaque frame et dessine chaque bloc selon son état. Les blocs murs sont
+rendus avec un modèle 3D haut (\textit{scale} $3 \times 6 \times 3$), tandis que les
+passages sont affichés comme une dalle de sol ultra-plate (\textit{scale}
+$3 \times 0{,}001 \times 3$). Pour éviter les artefacts visuels, les blocs ouverts lors
+de la génération ont leur coordonnée $y$ fixée à $-20$, les dissimulant ainsi sous le sol,
+seule la dalle étant rendue à $y = 0$.
+
+
+
+
+\subsection{Joueur, déplacement et gestion de la vie}
+
+Le joueur est représenté par une structure \texttt{Entity} initialisée par \texttt{InitPlayer},
+qui définit l'ensemble de ses attributs de base : une position de départ en hauteur
+(\texttt{y = 10}), 100 points de vie sur un maximum de 100, 3 vies, une taille de 1 unité
+utilisée pour les calculs de collision, ainsi qu'une arme de départ (le pistolet) avec ses
+munitions chargées au maximum. Un chronomètre de tir \texttt{chronoTir} est également initialisé
+à 0 pour permettre de tirer immédiatement dès le début de la partie. Par défaut, aucune arme
+supplémentaire n'est débloquée (\texttt{armeUnlock} initialisé à $-1$).
+
+Le déplacement et la mise à jour de l'état du joueur sont entièrement gérés à chaque frame par
+\texttt{UpdatePlayer}. L'orientation de la caméra est contrôlée à la souris via deux angles :
+le \texttt{yaw}, qui correspond à la rotation horizontale gauche/droite, et le \texttt{pitch},
+qui correspond à l'inclinaison verticale haut/bas. Ce dernier est borné à $\pm 1{,}5$ radians
+(environ $\pm 85°$) afin d'éviter un retournement complet de la caméra. À partir du \texttt{yaw},
+un vecteur \textbf{forward} est calculé \textit{uniquement} sur le plan horizontal $(XZ)$, ce qui
+garantit que le joueur se déplace toujours à plat, sans s'envoler, même lorsqu'il regarde vers
+le ciel ou vers le sol.
+
+Les touches directionnelles (\texttt{W/A/S/D} ou les flèches) construisent un vecteur de
+mouvement en combinant le vecteur \textbf{forward} et son vecteur orthogonal pour les
+déplacements latéraux. Ce vecteur est ensuite \textbf{normalisé} avant d'être multiplié par la
+vitesse, ce qui empêche le joueur de se déplacer plus vite en diagonale qu'en ligne droite —
+sans cette normalisation, la longueur du vecteur diagonal serait $\sqrt{2} \approx 1{,}41$ fois
+supérieure. Les sons de pas sont également déclenchés ou mis en pause selon que le joueur est
+au sol ou en l'air. La gravité est simulée en décrémentant \texttt{velocityY} d'une valeur fixe
+à chaque frame, ce qui produit une accélération progressive vers le bas. Le joueur peut sauter
+en appuyant sur \texttt{ESPACE} uniquement lorsqu'il est détecté comme étant au sol
+(\texttt{onGround = true}), ce qui empêche les sauts successifs en l'air.
+
+La gestion des collisions consiste à calculer une position future \texttt{nextPos} avant de
+l'appliquer, puis à vérifier si cette position entre en conflit avec les blocs de la scène ou
+les ennemis. En cas de collision, trois situations sont distinguées : une chute sur le dessus
+d'un bloc, qui pose le joueur à sa surface et réinitialise \texttt{velocityY} à 0 en activant
+\texttt{onGround} ; un choc par le dessous lors d'un saut, qui stoppe immédiatement la montée ;
+ou une collision latérale contre un mur. Dans ce dernier cas, l'axe de \textbf{moindre
+pénétration} est identifié en comparant les chevauchements sur $X$ et $Z$, et le joueur est
+repoussé uniquement sur cet axe en laissant l'autre intact, produisant un effet de
+\textbf{glissement fluide} le long des murs. Ce même système est appliqué aux interactions
+avec les ennemis, avec en plus la possibilité d'atterrir sur la tête d'un adversaire et d'y
+effectuer un nouveau saut. Enfin, la caméra Raylib est recalculée à chaque frame en positionnant
+son origine légèrement au-dessus du centre du joueur (\texttt{+0.5f} sur $Y$ pour simuler le
+niveau des yeux), et son point cible est obtenu en additionnant la position et le vecteur
+directionnel 3D complet, calculé en coordonnées sphériques à partir du \texttt{yaw} et du
+\texttt{pitch}.
+
+Le joueur a également la possibilité de soigner, en passant sur des caisses dissiminés partout dans le labyrinthe.
+Elles sont au nombres de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50\% de chances de se soigner
+de 20 points de vie, 35\% pour 40, 14\% pour 60 et 1\% pour 100. Le joueur peut aussi récupérer des armes
+dans les caisse. IL a ainsi 70\% de chance de ne rien récupérer, 18 \% pour un sniper,
+9\% pour le fusil d'assault et 1\% pour la grenade. Une fois une caisse récupéré, elles disparaissent
+pour se remettre à autre endroit aléatoire du labyrinthe. Cette mécanique de caisse de soin et d'armes
+est developpé en mode solo mais également en mode multijoueur.
+
+
+
+>>>>>>> master
 
 \subsection{Ennemies du joueur}\label{Ennemies}
 
