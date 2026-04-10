@@ -9,26 +9,27 @@
 #include "../lib/headers/arme.h"
 #include "../lib/headers/audio.h"
 
-void InitPlayer(Entity* player) {
-  player->pos = (Vector3){0, 10.0f, 0};
-  player->yaw = 0.0f;            //
-  player->pitch = 0.0f;          //
-  player->velocityY = 0.0f;      // vitesse du joeur
-  player->onGround = true;       // est-ce que le joueur est au sol
-  player->size = 1.0f;           // taille
-  player->health = 100;          // Points de vie de base
-  player->maxHealth = 100;       // Points de vie maximum
-  player->life = 3;              // Nombre de vies de base
-  player->type = ENTITY_PLAYER;  // type de l'entité
-  player->armeEquipee = ObtenirModeleArme(
-      PISTOLET);  //  On charge la "fiche technique" du pistolet
-  player->ammo =
-      player->armeEquipee
-          .munitionsMax;  // On remplit les munitions au maximum défini par le
-                          // modèle (ici 12 ou 10 selon ton choix)
-  player->chronoTir =
-      0.0f;  // On initialise le chrono à 0 pour pouvoir tirer immédiatement
-  player->score=0;
+void InitPlayer(Entity *player) {
+    player->pos = (Vector3){0, 10.0f, 0};
+    player->yaw = 0.0f;           //
+    player->pitch = 0.0f;         //
+    player->velocityY = 0.0f;     // vitesse du joeur
+    player->onGround = true;      // est-ce que le joueur est au sol
+    player->size = 1.0f;          // taille
+    player->health = 100;         // Points de vie de base
+    player->maxHealth = 100;      // Points de vie maximum
+    player->life = 3;             // Nombre de vies de base
+    player->type = ENTITY_PLAYER; // type de l'entité
+    player->armeEquipee = ObtenirModeleArme(
+        PISTOLET); //  On charge la "fiche technique" du pistolet
+    player->ammo =
+        player->armeEquipee
+            .munitionsMax; // On remplit les munitions au maximum défini par le
+                           // modèle (ici 12 ou 10 selon ton choix)
+    player->chronoTir =
+        0.0f; // On initialise le chrono à 0 pour pouvoir tirer immédiatement
+    player->score = 0;
+    player->armeUnlock[0] = -1; player->armeUnlock[1] = -1; player->armeUnlock[2] = -1; //On a le droit a aucune arme par default 
 }
 
 void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
@@ -80,7 +81,8 @@ void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         else {
             PauseWalk();
         }
-    } else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+    }
+    if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
         move.x -= forward.x;
         move.z -= forward.z;
         if (player->onGround == true)
@@ -91,7 +93,7 @@ void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     }
     // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
     // (Mathématiquement : vecteur orthogonal)
-    else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
         move.x += forward.z;
         move.z -= forward.x;
         if (player->onGround == true)
@@ -99,7 +101,8 @@ void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         else {
             PauseWalk();
         }
-    } else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+    }
+    if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
         move.x -= forward.z;
         move.z += forward.x;
         if (player->onGround == true)

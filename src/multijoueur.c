@@ -73,7 +73,9 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
     // L'ennemi (Serveur) est en Haut-Gauche
     ennemi->pos = (Vector3){-NUM_BLOCKS + 6.5f, 1.0f, -NUM_BLOCKS + 4.5f};
   }
-
+  joueur->life = 25;  // On donne 25 vies au lieu de 3 pour le multijoueur, pour
+                      // rallonger les parties
+  ennemi->life = 25;
   joueur->type = ENTITY_PLAYER;
   ennemi->type = ENTITY_REMOTE_PLAYER;
 }
@@ -84,9 +86,28 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
                        ReseauState* reseau, GameScreen* currentScreen) {
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
   UpdatePlayer(joueur, blocks, camera, &ennemi);
+  int healUnlockLocal[10] = {0};
   for (int i = 0; i < 10; i++) {
-    UpdateHeal(&heal[i], joueur, blocks);
-    UpdateHeal(&heal[i], ennemi, blocks);
+    int armeUnlock = UpdateHeal(&heal[i], joueur, blocks);
+    if (armeUnlock != -1 &&
+        armeUnlock != 0) {  // Si un soin a été ramassé par mon joueur
+      healUnlockLocal[i] = 1;
+
+      // Logique pour débloquer l'arme (comme dans updategame.c)
+      switch (armeUnlock) {
+        case 1:
+          joueur->armeUnlock[1] = 0;
+          break;
+        case 2:
+          joueur->armeUnlock[0] = 0;
+          break;
+        case 3:
+          joueur->armeUnlock[2] = 0;
+          break;
+        default:
+          break;
+      }
+    }
   }
   if (joueur->chronoTir > 0) {
     joueur->chronoTir -= GetFrameTime();
@@ -126,10 +147,12 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     joueur->health -= 20;
   }
 */
-  if (IsKeyPressed(KEY_M)) {
-    joueur->pos = ennemi->pos;  // Téléportation pour tester les collisions
-  }
-
+  /* Debug : Se téléporter pour tester les collisions et faciliter les tests de
+    tir, de dégats et de mort
+    if (IsKeyPressed(KEY_M)) {
+      joueur->pos =ennemi->pos;
+    }
+  */
   // 2. Je prépare le paquet
   PaquetReseau paquetEnvoi;
   paquetEnvoi.pos = joueur->pos;
@@ -139,6 +162,9 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   paquetEnvoi.estMort = 0;
   paquetEnvoi.arme = joueur->armeEquipee.type;
   paquetEnvoi.life = joueur->life;  // <-- On indique nos vies
+  for (int i = 0; i < 10; i++) {
+    paquetEnvoi.healRamasses[i] = healUnlockLocal[i];
+  }
 
   // Gestion mort locale
   if (joueur->health <= 0) {
@@ -195,7 +221,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   paquetRecu.estMort = 0;  // Par sécurité
   int statutRecu = 0;
 
-  // NOUVEAU : Variables pour mémoriser si on a reçu un avis de décès ce tick
+  // variables pour mémoriser si on a reçu un avis de décès ce tick
   int infoMortRecue = 0;
   int viesAdversaire = 3;
 
@@ -224,6 +250,12 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     ennemi->yaw = paquetRecu.yaw;
     ennemi->pitch = paquetRecu.pitch;
 
+    for (int i = 0; i < 10; i++) {
+      if (paquetRecu.healRamasses[i] == 1) {
+        InitHeal(&heal[i], blocks);
+      }
+    }
+
     // On équipe l'ennemi distant avec l'arme qu'il a sélectionnée
     ennemi->armeEquipee = ObtenirModeleArme(paquetRecu.arme);
 
@@ -240,34 +272,34 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   }
 
   // --- GESTION DES POINTS ET DE LA VICTOIRE ---
-    
-    // 1. On donne toujours le point si l'adversaire est mort ce tour-ci
-    if (infoMortRecue == 1) {
-        joueur->score++;
-        
-        if (viesAdversaire > 0) {
-            TraceLog(LOG_INFO, "Kill ! Il reste %d vies à l'adversaire.", viesAdversaire);
-        } else {
-            TraceLog(LOG_INFO, "Dernier kill ! L'adversaire n'a plus de vies.");
-        }
+
+  // 1. On donne toujours le point si l'adversaire est mort ce tour-ci
+  if (infoMortRecue == 1) {
+    joueur->score++;
+
+    if (viesAdversaire > 0) {
+      TraceLog(LOG_INFO, "Kill ! Il reste %d vies à l'adversaire.",
+               viesAdversaire);
+    } else {
+      TraceLog(LOG_INFO, "Dernier kill ! L'adversaire n'a plus de vies.");
     }
+  }
 
-    // 2. On vérifie si la partie doit s'arrêter (Déconnexion ou 0 vie restante)
-    if (statutRecu == -1 || (infoMortRecue == 1 && viesAdversaire <= 0)) {
-        TraceLog(LOG_INFO, "Victoire ! L'adversaire est éliminé ou a quitté.");
+  // 2. On vérifie si la partie doit s'arrêter (Déconnexion ou 0 vie restante)
+  if (statutRecu == -1 || (infoMortRecue == 1 && viesAdversaire <= 0)) {
+    TraceLog(LOG_INFO, "Victoire ! L'adversaire est éliminé ou a quitté.");
 
-        // Déconnexion propre
-        if (reseau->socket != -1)
-            FermerReseau(reseau->socket);
-        reseau->connected = 0;
-        reseau->socket = -1;
+    // Déconnexion propre
+    if (reseau->socket != -1) FermerReseau(reseau->socket);
+    reseau->connected = 0;
+    reseau->socket = -1;
 
-        *currentScreen = VICTOIRE;
-        return; // On arrête
-    }
+    *currentScreen = VICTOIRE;
+    return;  // On arrête
+  }
   // 5. Physique des balles et Collisions
 
-  UpdateProjectiles(projs, blocks, &ennemi, joueur, currentScreen);
+  UpdateProjectiles(projs, blocks, &ennemi, joueur, currentScreen, false, NULL);
 }
 
 void DessinerLobbyMultijoueur(ReseauState* netState) {
@@ -483,6 +515,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
           srand(42);
           init_lab(blocks);
           creer_lab_multi(blocks);
+          for (int i = 0; i < 10; i++) InitHeal(&heal[i], blocks);
           srand(time(NULL));
           InitProjectiles(projs);
           player->score = 0;
@@ -518,6 +551,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
           srand(42);
           init_lab(blocks);
           creer_lab_multi(blocks);
+          for (int i = 0; i < 10; i++) InitHeal(&heal[i], blocks);
           srand(time(NULL));
           InitProjectiles(projs);
           player->score = 0;
@@ -546,6 +580,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
             srand(42);
             init_lab(blocks);
             creer_lab_multi(blocks);
+            for (int i = 0; i < 10; i++) InitHeal(&heal[i], blocks);
             srand(time(NULL));
             InitProjectiles(projs);
             player->score = 0;
@@ -588,8 +623,9 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Model tabArmes[4],
-                         ReseauState* netState, Model skyModel, Model wallModel,
-                         Model floorModel, Model botModel, Model tabModels[4]) {
+                         ReseauState* netState, Model healModel, Model skyModel,
+                         Model wallModel, Model floorModel, Model botModel,
+                         Model tabModels[4], Texture2D iconesArmes[]) {
   if (!netState->connected) {
     DessinerLobbyMultijoueur(netState);
   } else {
@@ -597,8 +633,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal heal[10],
     dummyBots[0] = *remotePlayer;
 
     UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
-                     tabArmes, skyModel, wallModel, floorModel, botModel,
-                     tabModels);
+                     tabArmes, healModel, skyModel, wallModel, floorModel,
+                     botModel, tabModels, NULL, false, botModel, iconesArmes);
   }
   DrawText(TextFormat("Ping: %.0f ms", ping), 10, GetScreenHeight() - 30, 20,
            YELLOW);
