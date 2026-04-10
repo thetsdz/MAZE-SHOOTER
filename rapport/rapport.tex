@@ -4,21 +4,19 @@
 \usepackage[french]{babel}
 \usepackage{graphicx}
 \usepackage{color}
-<<<<<<< HEAD
 \usepackage{hyperref}
 \usepackage{nameref}
 \usepackage{amsthm}
 \usepackage{chngcntr}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+
 \counterwithin{figure}{section}
 
 \theoremstyle{definition}
 \newtheorem{exemple}{Exemple}
 
 \newcommand{\secref}[1]{\autoref{#1} \og \nameref{#1} \fg{}}
-=======
-\usepackage{pdfpages}
-\usepackage{pdflscape}
->>>>>>> master
 
 \begin{document}
 \begin{titlepage}
@@ -46,12 +44,10 @@
 
 \newpage
 \section{Introduction}
-<<<<<<< HEAD
 Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. C'est un jeu fsp à la première personne en trois dimensions. 
 
 \noindent Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
 
-=======
 Dans le cadre de notre deuxième année de Licence Informatique, nous avons été chargés de concevoir et développer un projet informatique en groupe. Notre projet, 
 intitulée \textbf{MAZE-SHOOTER}, est un jeu de tir à la première personne (FPS) en 3D complet.
 \\\\
@@ -67,7 +63,6 @@ Ce document retrace l'ensemble du cycle de vie de notre projet. Dans un premier 
 nombreuses fonctionnalités. Nous aborderons ensuite la répartition des tâches au sein de notre équipe ainsi que les outils méthodologiques déployés pour assurer 
 un travail collaboratif efficace. Enfin, nous plongerons au cœur de la logique de développement technique de nos mécaniques clés, avant de terminer par un bilan 
 global de cette expérience.
->>>>>>> master
 \section{Conception}
 
 \subsection{Cahier des charges}
@@ -149,13 +144,8 @@ Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'o
 \end{itemize}
 
 
-<<<<<<< HEAD
-
-\subsection{Logique d'execution du  jeu}\label{Logique du jeu}
-=======
 \section{Developpement}
-\subsection{Logique d'execution du  jeu et fonctionnement du menu}
->>>>>>> master
+\subsection{Logique d'execution du  jeu}\label{Logique du jeu}
 \indent Dans cette section on explique la logique de fonctionnement du fichier main.c, et par la même ocasion, la naviguation du joueur dans le menu du jeu.
 Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
 
@@ -182,12 +172,6 @@ En réalité par souci de simplicité, la partie logique et dessin est géré si
 
 
 
-<<<<<<< HEAD
-
-\subsection{Création de la carte}\label{map}
-
-\subsection{Joueur, déplacement et gestion de la vie, soin}
-=======
 \subsection{Création de la carte}
 
 La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
@@ -283,7 +267,6 @@ est developpé en mode solo mais également en mode multijoueur.
 
 
 
->>>>>>> master
 
 \subsection{Ennemies du joueur}\label{Ennemies}
 

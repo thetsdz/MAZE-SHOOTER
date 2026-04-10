@@ -7,17 +7,14 @@
 \contentsline {subsection}{\numberline {3.1}Reparition des tâches}{4}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Planning prévisionnel}{4}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Outils utilisés}{4}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Logique d'execution du jeu}{6}{subsection.3.4}%
 \contentsline {section}{\numberline {4}Developpement}{6}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Logique d'execution du jeu et fonctionnement du menu}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.1}Logique d'execution du jeu}{6}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Création de la carte}{7}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Joueur, déplacement et gestion de la vie, soin}{7}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Création de la carte}{7}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Joueur, déplacement et gestion de la vie}{8}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Ennemies du joueur}{9}{subsection.4.6}%
-\contentsline {subsection}{\numberline {4.7}Armes, munitions, dégâts}{11}{subsection.4.7}%
-\contentsline {subsection}{\numberline {4.8}Système de sauvegarde crypté}{12}{subsection.4.8}%
-\contentsline {subsection}{\numberline {4.9}Multijoueur, réseau}{13}{subsection.4.9}%
+\contentsline {subsection}{\numberline {4.3}Joueur, déplacement et gestion de la vie}{8}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Ennemies du joueur}{9}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Armes, munitions, dégâts}{11}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Système de sauvegarde crypté}{12}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Multijoueur, réseau}{13}{subsection.4.7}%
 \contentsline {section}{\numberline {5}Interface}{15}{section.5}%
 \contentsline {section}{\numberline {6}Résultats et conclusion}{15}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Bilan temporel}{15}{subsection.6.1}%
