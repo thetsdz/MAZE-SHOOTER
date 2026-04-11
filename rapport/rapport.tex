@@ -10,10 +10,12 @@
 \usepackage{chngcntr}
 \usepackage{pdfpages}
 \usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 \counterwithin{figure}{section}
 
-\theoremstyle{definition}
+%\theoremstyle{definition}
 \newtheorem{exemple}{Exemple}
 
 \newcommand{\secref}[1]{\autoref{#1} \og \nameref{#1} \fg{}}
@@ -174,7 +176,7 @@ En réalité par souci de simplicité,pour cette valeur de \verb|CurrentScreen|,
 
 
 
-\subsection{Création de la carte}
+\subsection{Création de la carte}\label{map}
 
 La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
 de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs. Chaque bloc possède une
@@ -321,8 +323,13 @@ Cette section vise à expliquer comment les armes et leurs munitions sont géré
     \item un fusil d'assault,
     \item une grenade.
 \end{enumerate}
-Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres bots, ou, recuperer des coffres. 
+Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir,munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres bots, ou, recuperer des coffres.
+
+\bigskip \noindent
 Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \secref{Interface}, pour plus de détail. 
+
+\bigskip \noindent
+Pour recharger les munitions, le choix qui es proposé dans ce jeu est d'utiliser la touche R.  Une limite de rechargement pourrais être implémenté, mais il faudrait alors d'autre fonctionnalité pour que le joueur puissent avancer jusqu'au boss, s'il est à cours de munitions trop tôt.
 
 \bigskip
 \noindent Dans la partie logique du jeu (cf \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
@@ -334,7 +341,7 @@ Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sni
 	donne au joueur.
 \end{exemple}
 
-\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemies}, il faut compendre que les trois dimensions du jeu se represente bien grace à RAYLIB avec des vecteurs en trois dimension X,Y et Z. \`A chaque projectile on associe  : un vecteur \verb|pos|, un vecteur \verb|vel|,une valeur bouléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
+\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemies}, il faut compendre que les trois dimensions du jeu se represente bien grace à RAYLIB avec des vecteurs en trois dimension, l'analogie avec les axes X,Y et Z est pertinentes. \`A chaque projectile on associe  : un vecteur \verb|pos|, un vecteur \verb|vel|,une valeur bouléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
 
 \bigskip
 \noindent Ensuite, il a été choisi de representer tout les projectiles présent sur le jeu par un tableau. Une iteration sur ce tableau permets alors de tester les colisions avec les murs,bot et sol (ie une cible). Cette grande boucle est d'une complexité $O(n^3)$, en effet elle contient deux sous boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 bots. 
@@ -411,9 +418,47 @@ l'intégralité de sa santé, c'est lui-même qui décrémente son compteur de v
 place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pour offrir une expérience agréable malgré les difficultés rencontrés.
 \\\\
 \subsection{Interface}\label{Interface}
-Dans cette section il sera question de maths, matrice de rotations, 
+Cette partie regroupe les différent aspects graphique et audio que le joueur rencontrent. Cela va du menu principal jusqu'a la page de fin de jeu.
+
+\bigskip \noindent
+Commençons par le menu et les options du jeu, comme vu dans la \secref{Logique du jeu}, il devrait y avoir deux deux parties, une logique et une de dessin, or, ce n'est pas le cas (cf code \cite{Github}). C'est volontaire, ceci évite d'alourdir le fichier main.c de variables qui serait inutile la majorité du temps lorsque le joueur joue en mode solo ou multijoueur.
+
+\bigskip \noindent
+Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même il existe une palette varié d'effet sonore ou de musique qui vise à rendre agréable un moment de jeu.
+
+\bigskip \noindent
+Un autre aspect graphique important est la gestion des assets. Il en existe deux types : les textures 2D, qui sont des images au format .png, et les modèles 3D qui sont au format .glb. La création d'un modèle .glb n'a pas été envisagées pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
+
+\bigskip \noindent
+Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier on s'interessera à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
+\begin{equation*}
+    R_x(\alpha) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\alpha & -\sin\alpha \\ 0 & \sin\alpha & \cos\alpha \end{pmatrix} 
+    \qquad \text{et} \qquad
+    R_y(\beta) = \begin{pmatrix} \cos\beta & 0 & \sin\beta \\ 0 & 1 & 0 \\ -\sin\beta & 0 & \cos\beta \end{pmatrix}
+\end{equation*}
+ 
+\noindent
+L'idée est d'appliquer à l'attribut \verb|transform| du modèle une opération grace aux matrice précédentes qui se repercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette opération sont utilisés les \verb|pitch| et \verb|yaw| de la camera du joueur.
+
+\begin{exemple}
+Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\theta=pitch$ et $\theta '=yaw$ . Sa position finale $\vec{V}'=(x',y',z')$ est donnée par la relation :
+\[
+\vec{V}' = \vec{V} \cdot R_{\theta} \cdot R_{\theta'}    
+\]
+\end{exemple}
+\noindent
+La matrice $ R_{\theta} \cdot R_{\theta'}$ est la composition de deux rotations élémentaires.
+
+\bigskip \noindent
+Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tout les modèles de projectile (sauf la grenade) sont \og debout \fg. Ne pas l'introduire necéssiterait d'utiliser un logiciel de modélisation.
+
+
+
+
+
 
 \section{Résultats et conclusion}
+
 \subsection{Bilan temporel}
 \subsection{Bilan de la conformité aux cahiers des charges}
 \subsection{Améliorations possibles}
@@ -423,6 +468,10 @@ Dans cette section il sera question de maths, matrice de rotations,
 
 \bibitem[Github]{Github} % C'est la "clé" de ta citation
 Lien vers le projet GitHub : \href{https://github.com/thetsdz/MAZE-SHOOTER}{https://github.com/thetsdz/MAZE-SHOOTER}
+
+\bibitem[Poly Pizza]{polypizza}
+Lien vers la page du stite Poly Pizza : \href{https://poly.pizza/}{https://poly.pizza/}
+
 \end{thebibliography}
 
 \appendix
