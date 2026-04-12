@@ -46,9 +46,8 @@
 
 \newpage
 \section{Introduction}
-Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. C'est un jeu fsp à la première personne en trois dimensions. 
-
-\noindent Il a plusieurs objectifs, en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
+Ce rapport est une présentation du projet MAZE-SHOOTER réaliser par le groupe composé de Thomas,Corentin et Hugues. 
+\noindent Les objectifs de ce compte rendu sont en premier lieu,  d'expliquer comment le projet s'est organisé, dans un second temps de rendre la lecture du code sur la page github (cf \cite{Github}) accessible, et enfin, de présenter ses failles mais aussi ses forces.
 
 Dans le cadre de notre deuxième année de Licence Informatique, nous avons été chargés de concevoir et développer un projet informatique en groupe. Notre projet, 
 intitulée \textbf{MAZE-SHOOTER}, est un jeu de tir à la première personne (FPS) en 3D complet.
@@ -312,7 +311,7 @@ du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss o
 \\\\
 
 
-\subsection{Armes, munitions, dégâts}
+\subsection{Système d'arme}\label{sys_arme}
 Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile ou munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. 
 
 \bigskip
@@ -417,6 +416,8 @@ l'intégralité de sa santé, c'est lui-même qui décrémente son compteur de v
 à la triche (un client malveillant pourrait manipuler ses paquets pour ne jamais signaler sa mort), elle s'avère beaucoup plus simple et réactive à mettre en 
 place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pour offrir une expérience agréable malgré les difficultés rencontrés.
 \\\\
+
+
 \subsection{Interface}\label{Interface}
 Cette partie regroupe les différent aspects graphique et audio que le joueur rencontrent. Cela va du menu principal jusqu'a la page de fin de jeu.
 
@@ -427,7 +428,12 @@ Commençons par le menu et les options du jeu, comme vu dans la \secref{Logique 
 Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même il existe une palette varié d'effet sonore ou de musique qui vise à rendre agréable un moment de jeu.
 
 \bigskip \noindent
-Un autre aspect graphique important est la gestion des assets. Il en existe deux types : les textures 2D, qui sont des images au format .png, et les modèles 3D qui sont au format .glb. La création d'un modèle .glb n'a pas été envisagées pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
+Ensuite, parmi les assets un aspect graphique important nous interesse, il s'agit :
+\begin{itemize}
+	\item des textures 2D, qui sont des images au format .png
+	\item des modèles 3D, qui sont au format .glb, en realité un fichier .glb contient sa propre texture
+\end{itemize}
+La création d'un modèle .glb n'a pas été envisagées pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
 
 \bigskip \noindent
 Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier on s'interessera à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
@@ -458,10 +464,34 @@ Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à
 
 
 \section{Résultats et conclusion}
+L'idée qui se cache derrière ce projet était d'avoir un jeu fps dans un labyrinthe. Comme on a essayé de le présenter tout aux long de se rapport, les objectifs initiaux fixés sur le gant previsionnel des tâches ont été atteints. 
+
+\noindent En effet, il existe bien les deux modes de jeu prévu : multijoueur et solo, dans lequel un joueur evolue à la première personne et peux tirer sur des ennemies; et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et visuels sont proposés. De même que des tests on été apporté sur le cryptage et le reseau. Donc les objectifs initaux  sont atteints. En cela c'est une force car quasiment aucune impasse de fonctionnalité prévue inialement n'a été faite.
+
+\bigskip \noindent
+Cependant, ce projet peut être améliorable, en effet, en premier lieu on pourrait lister une longue liste de contenu à rajouter pour en faire un jeu plus attractif :
+\begin{itemize}
+	\item ajout d'un mode histoire plus complet, avec un systeme de niveau
+	\item ajout de davantage d'arme dans le systeme d'arme
+	\item interface d'inventaire pousser
+	\item creation et loot d'item aidant le joueur
+	\item ...
+\end{itemize}
+Cette liste n'a de fin que celle de notre imagination. Ce projet a été fait par des étudiants en second cyle universitaire donc, ici, la limite de ce projet a été sonné par les dates de rendue imposé.
+ 
+\noindent
+De plus,  des choix d'implementation autre, peut etre plus performant, pourrait être fait. Pour cela il y a les colisions des projectiles qui ont l'a vu  dans la \secref{sys_arme}, meme si ce systeme fonctionne parfaitement bien pour l'ambition du projet, la compléxité est élevé,  donc un meuilleur algorithme pourrait être à trouver.
+
+\noindent
+Pour la recherche du joueur par les bots, il existe des méthode de recherche plsu performant à l'aide d'une fonction heuristique.
+
+
 
 \subsection{Bilan temporel}
+Concernant cette partie, Thomas et Corentin ont été a jours dans leurs taches. Pour Hugues un retard a été ocasionné pour l'implementation du syteme d'arme. 
+
 \subsection{Bilan de la conformité aux cahiers des charges}
-\subsection{Améliorations possibles}
+OK fait 
 \subsection{Bibliographie}
 
 \begin{thebibliography}{9} %nb source
