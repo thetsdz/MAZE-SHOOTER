@@ -11,7 +11,7 @@
 
 // initialisation du labyrinthe composé de bloc géant
 void init_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
-    float offset = NUM_BLOCKS - 1; // on gardera le centre plus tard
+    float offset = (NUM_BLOCKS - 1); // on gardera le centre plus tard
     for (int i = 0; i < NUM_BLOCKS; i++) {
         for (int j = 0; j < NUM_BLOCKS; j++) {
             blocks[i][j].pos =
@@ -92,19 +92,26 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]) {
 // Affichage
 // --------------------------------------------------
 void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel,
-               Model floorModel) {
+               Model floorModel, Camera camera, float drawDistance) {
+    
+    static const Vector3 wallScale  = {3.0f, 6.0f, 3.0f};
+    static const Vector3 floorScale = {3.0f, 0.001f, 3.0f};
+    static const Vector3 axis       = {0.0f, 1.0f, 0.0f};
+    float distSq = drawDistance * drawDistance;
+
     for (int i = 0; i < NUM_BLOCKS; i++) {
         for (int j = 0; j < NUM_BLOCKS; j++) {
             Vector3 pos = blocks[i][j].pos;
+
+            float dx = pos.x - camera.position.x;
+            float dz = pos.z - camera.position.z;
+            if (dx*dx + dz*dz > distSq) continue;
+
             if (blocks[i][j].isWall) {
-                DrawModelEx(wallModel, pos, (Vector3){0, 1, 0}, 0.0f,
-                            (Vector3){blocks[i][j].width, blocks[i][j].height,
-                                      blocks[i][j].depth},
-                            WHITE);
+                DrawModelEx(wallModel, pos, axis, 0.0f, wallScale, WHITE);
             } else {
                 DrawModelEx(floorModel, (Vector3){pos.x, 0.0f, pos.z},
-                            (Vector3){0, 1, 0}, 0.0f,
-                            (Vector3){3.0f, 0.001f, 3.0f}, WHITE);
+                            axis, 0.0f, floorScale, WHITE);
             }
         }
     }
