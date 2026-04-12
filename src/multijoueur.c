@@ -87,6 +87,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   // 1. Mise à jour de MON joueur (Clavier/Souris + Collisions locales)
   UpdatePlayer(joueur, blocks, camera, &ennemi);
   int healUnlockLocal[10] = {0};
+  int CurrentArme=joueur->armeEquipee.type;
   for (int i = 0; i < 10; i++) {
     int armeUnlock = UpdateHeal(&heal[i], joueur, blocks);
     if (armeUnlock != -1 &&
@@ -121,8 +122,8 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
     jeTire = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);  // Coup par coup
   }
   if (jeTire) {
-    if (joueur->ammo > 0 && joueur->chronoTir <= 0) {
-      joueur->ammo--;
+    if (joueur->tabammo[CurrentArme] > 0 && joueur->chronoTir <= 0) {
+      joueur->tabammo[CurrentArme]--;
       joueur->chronoTir =
           joueur->armeEquipee.cadenceTir;  // On réinitialise le délai
 
@@ -138,7 +139,7 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   }
   ChangementArme(joueur);
   if (IsKeyPressed(KEY_R)) {
-    joueur->ammo = joueur->armeEquipee.munitionsMax;
+    joueur->tabammo[CurrentArme] = joueur->armeEquipee.munitionsMax;
     PlayReload();
   }
 
@@ -148,11 +149,11 @@ void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal heal[10],
   }
 */
   /* Debug : Se téléporter pour tester les collisions et faciliter les tests de
-    tir, de dégats et de mort
+    tir, de dégats et de mort */
     if (IsKeyPressed(KEY_M)) {
       joueur->pos =ennemi->pos;
     }
-  */
+  
   // 2. Je prépare le paquet
   PaquetReseau paquetEnvoi;
   paquetEnvoi.pos = joueur->pos;
