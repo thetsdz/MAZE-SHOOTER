@@ -98,6 +98,7 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
       projs[i].owner = owner;  // <-- On définit le propriétaire
       projs[i].yaw = camYaw * RAD2DEG;
       projs[i].pitch = camPitch * RAD2DEG;
+      projs[i].touche =false;
       switch (arme.type) {
         case PISTOLET:
           projs[i].type = PROJ_PISTOLET;
@@ -128,7 +129,6 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
   float dt = GetFrameTime();
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) continue;
-
     // On gere les calculs de pos "à la main" pour la grenade
     // Gestion du rebond avec le sol pour la grenade
     if (projs[i].type == PROJ_GRENADE) {
@@ -163,9 +163,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         explosion(&projs[i]);  // pas deja explosé alors boom
     } else {
       projs[i].pos =
-          Vector3Add(projs[i].pos,
-                     Vector3Scale(projs[i].vel,
-                                  dt));  // sinon on calcul la nouvelle position
+          Vector3Add(projs[i].pos,Vector3Scale(projs[i].vel,dt));  // sinon on calcul la nouvelle position
                                          // pour tout les autres projectiles
       projs[i].life -= dt;
     }
@@ -214,9 +212,19 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         if (fabsf(projs[i].pos.x - boss->pos.x) < (r + h) &&
             fabsf(projs[i].pos.y - (boss->pos.y + h)) < (r + h) &&
             fabsf(projs[i].pos.z - boss->pos.z) < (r + h)) {
-          boss->health -= projs[i].degats;
-          if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
+          if (projs[i].type == PROJ_GRENADE) {
+            if (projs[i].touche == false && projs[i].degats!=0) { 
+                boss->health -= projs[i].degats;
+                projs[i].touche = true; // Verrouille pour cette grenade précise
+            }
+            // Si touche est true on fait rien
+          } 
+          else {
+            // Pour les balles/autres : dégâts + destruction immédiate
+            boss->health -= projs[i].degats;
+            projs[i].active = false; 
+          }
           if (boss->health <= 0) {
             player->score += 25;
             boss->health = boss->maxHealth;
