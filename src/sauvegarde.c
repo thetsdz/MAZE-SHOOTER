@@ -14,87 +14,74 @@
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/types.h"
 
-// CLÉ DE CRYPTAGE (À ne pas partager ou modifié !)
-// générer avec : openssl rand -hex 32
+// --- CONSTANTES DE SAUVEGARDE ---
+#define MAX_ARMES 4
+#define MAX_BOTS 18
+#define MAX_HEALS 10
+
+// CLÉ DE CRYPTAGE (À ne pas partager ou modifier !)
 static const char* GAME_KEY =
     "a998cd54ac641b3bf1a48369f52fb4ec9e3efffd835525e0578130c1068de2bd";
 
-// On crée une structure qui contient toutes les données qu'on veut sauvegarder
+// Structure qui contient toutes les données d'état du jeu
 typedef struct {
   int score;
   float x, y, z;
   float yaw, pitch;
   int onGround;
-  int tabammo[4];
+  int tabammo[MAX_ARMES];
+  int armeUnlock[MAX_ARMES];
   int health;
   int maxHealth;
   int life;
-  Entity bot[18];
+  
+  // ATTENTION : Si Entity ou Heal contiennent des Texture2D ou Model, 
+  // il faudra un jour créer des "SaveEntity" qui ne gardent que la pos et la vie.
+  Entity bot[MAX_BOTS];
   Entity boss;
   int IsBossAlive;
-  Heal heal[10];
-  int armeUnlock[4];
+  Heal heal[MAX_HEALS];
 } SaveData;
 
-// C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
+// Bloc écrit sur le disque : Données + Sécurité
 typedef struct {
-  SaveData gameData;  // Tes données de jeu
+  SaveData gameData;  // Les données de jeu
   uint32_t checksum;  // L'empreinte de sécurité
 } SaveFile;
 
-void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
-                 Heal heal[10]) {
+
+void sauvegarder(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool IsBossAlive, Heal heal[MAX_HEALS]) {
   SaveFile save;
 
-  // Remplissage de la structure de données
-    save.gameData.score = player->score;
-    save.gameData.tabammo[0] = player->tabammo[0];
-    save.gameData.tabammo[1] = player->tabammo[1]; 
-    save.gameData.tabammo[2] = player->tabammo[2]; 
-    save.gameData.tabammo[3] = player->tabammo[3];
-
-
-    save.gameData.armeUnlock[0]=player->armeUnlock[0];
-    save.gameData.armeUnlock[1]=player->armeUnlock[1];
-    save.gameData.armeUnlock[2]=player->armeUnlock[2];
-    save.gameData.armeUnlock[3]=player->armeUnlock[3];
-
-
+  // 1. Remplissage des variables simples du joueur
+  save.gameData.score = player->score;
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
   save.gameData.z = player->pos.z;
-
   save.gameData.yaw = player->yaw;
   save.gameData.pitch = player->pitch;
-
   save.gameData.onGround = player->onGround;
-
   save.gameData.health = player->health;
   save.gameData.maxHealth = player->maxHealth;
   save.gameData.life = player->life;
 
-  for (int i = 0; i < 18; i++) {
-    save.gameData.bot[i] = bot[i];
-  }
+  // 2. Copies ultra-rapides des tableaux avec memcpy (remplace les boucles et affectations manuelles)
+  memcpy(save.gameData.tabammo, player->tabammo, sizeof(int) * MAX_ARMES);
+  memcpy(save.gameData.armeUnlock, player->armeUnlock, sizeof(int) * MAX_ARMES);
+  memcpy(save.gameData.bot, bot, sizeof(Entity) * MAX_BOTS);
+  memcpy(save.gameData.heal, heal, sizeof(Heal) * MAX_HEALS);
 
+  // 3. Sauvegarde du boss
   save.gameData.boss = *boss;
   save.gameData.IsBossAlive = IsBossAlive;
 
-  for (int i = 0; i < 10; i++) {
-    save.gameData.heal[i] = heal[i];
-  }
+  // 4. Calcul du Checksum sur les données en clair
+  save.checksum = calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
 
-  // Calcul du Checksum (Sur les données EN CLAIR)
-  save.checksum =
-      calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
+  // 5. Cryptage RC4 de TOUT le fichier (Données + Checksum)
+  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY, strlen(GAME_KEY));
 
-  // Cryptage de TOUT le fichier (Données + Checksum)
-  // On crypte l'ensemble de la structure 'SaveFile'
-  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY,
-            strlen(GAME_KEY));
-
-  // Écriture Binaire
-  // Note le "wb" (Write Binary) au lieu de "w"
+  // 6. Écriture Binaire
   FILE* fw = fopen("save.dat", "wb");
   if (fw) {
     fwrite(&save, sizeof(SaveFile), 1, fw);
@@ -105,8 +92,7 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
   }
 }
 
-int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
-                      bool* IsBossAlive, Heal heal[10]) {
+int chargerSauvegarde(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool* IsBossAlive, Heal heal[MAX_HEALS]) {
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
@@ -122,49 +108,38 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
     return 2; // Échec
   }
 
-  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY,
-            strlen(GAME_KEY));
-  uint32_t verif =
-      calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
+  // 1. Décryptage
+  rc4_crypt((unsigned char*)&save, sizeof(SaveFile), GAME_KEY, strlen(GAME_KEY));
+  
+  // 2. Vérification de l'intégrité
+  uint32_t verif = calculate_checksum((unsigned char*)&save.gameData, sizeof(SaveData));
 
   if (verif != save.checksum) {
     printf("ALERTE TRICHE : Le fichier de sauvegarde a été modifié manuellement !\n");
-    return 1; // Indique qu'il y a eu triche
+    return 1; // Triche détectée
   }
 
-  // Application des données (Si tout est bon)
-    player->score = save.gameData.score;
-    player->armeUnlock[0]=save.gameData.armeUnlock[0];
-    player->armeUnlock[1]=save.gameData.armeUnlock[1];
-    player->armeUnlock[2]=save.gameData.armeUnlock[2];
-    player->tabammo[0] = save.gameData.tabammo[0];
-    player->tabammo[1] = save.gameData.tabammo[1];
-    player->tabammo[2] = save.gameData.tabammo[2];
-    player->tabammo[3] = save.gameData.tabammo[3];
-
-
+  // 3. Application des données simples
+  player->score = save.gameData.score;
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;
   player->pos.z = save.gameData.z;
-
   player->yaw = save.gameData.yaw;
   player->pitch = save.gameData.pitch;
-
   player->onGround = save.gameData.onGround;
-
   player->health = save.gameData.health;
   player->maxHealth = save.gameData.maxHealth;
   player->life = save.gameData.life;
 
-  for (int i = 0; i < 18; i++) {
-    bot[i] = save.gameData.bot[i];
-  }
+  // 4. Restauration ultra-rapide des tableaux avec memcpy
+  memcpy(player->tabammo, save.gameData.tabammo, sizeof(int) * MAX_ARMES);
+  memcpy(player->armeUnlock, save.gameData.armeUnlock, sizeof(int) * MAX_ARMES);
+  memcpy(bot, save.gameData.bot, sizeof(Entity) * MAX_BOTS);
+  memcpy(heal, save.gameData.heal, sizeof(Heal) * MAX_HEALS);
+
+  // 5. Restauration du boss
   *boss = save.gameData.boss;
   *IsBossAlive = save.gameData.IsBossAlive;
-
-  for (int i = 0; i < 10; i++) {
-    heal[i] = save.gameData.heal[i];
-  }
 
   printf("[Chargement] Partie chargée avec succès !\n");
   return 0; // Succès

@@ -335,7 +335,7 @@ int main(void) {
       }
       case MULTIJOUEUR: {
         DessinerMultijoueur(&player, &remotePlayer, heal, blocks, projs,
-                            &camera, viseur, tabArmes, &netState, healModel,
+                            &camera, viseur, tabArmes, healModel,
                             skyModel, wallModel, floorModel, botModel,
                             tabProjModels, iconesArmes);
         break;

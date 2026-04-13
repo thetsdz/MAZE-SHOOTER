@@ -43,7 +43,7 @@ void InitMultijoueur(Entity *joueur, Entity *ennemi, int estServeur);
  * \param <Camera3D* camera> la caméra
  * \param <ReseauState* reseau> l'état du réseau
  */
-void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal heal[10],
+void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal* heal,
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D *camera,
                        ReseauState *reseau, GameScreen *currentScreen);
@@ -61,7 +61,7 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal heal[10],
 
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
-void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
+void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal* heal,
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                         Projectile projs[MAX_PROJ], Camera3D* camera,
                         ReseauState* netState, bool* jeuInitialise,
@@ -69,25 +69,35 @@ void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal heal[10],
 
 /**
  * \brief Dessine le lobby d'attente multijoueur
- * \param <ReseauState* netState> etat du reseau
  */
-void DessinerLobbyMultijoueur(ReseauState *netState);
+void DessinerLobbyMultijoueur();
 
 /**
  * \brief Dessine le mode multijoueur
  * \param <Entity* player> le joueur local
+ * \param <Entity* remotePlayer> le joueur distant
+ * \param <Block blocks[NUM_BLOCKS][NUM_BLOCKS]> le tableau des blocs
+ * \param <Projectile projs[MAX_PROJ]> le tableau des projectiles
+ * \param <Camera3D* camera> la caméra
+ * \param <Texture2D viseur> la texture du viseur
+ * \param <Model tabArmes[4]> les modèles 3D des armes
+ * \param <Model healModel> le modèle 3D de l'objet de soin
+ * \param <Model skyModel> le modèle 3D du ciel
+ * \param <Model wallModel> le modèle 3D des murs
+ * \param <Model floorModel> le modèle 3D du sol
+ * \param <Model botModel> le modèle 3D des bots (joueurs)
+ * \param <Model tabModels[4]> les modèles 3D des armes pour les icones
+ * \param <Texture2D iconesArmes[]> les textures des icones des armes
  */
-// multijoueur.h
 
 void DessinerMultijoueur(Entity *player,
                             Entity *remotePlayer,
-                            Heal heal[10],
+                            Heal* heal,
                             Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                             Projectile projs[MAX_PROJ],
                             Camera3D *camera,
                             Texture2D viseur,
                             Model tabArmes[4],
-                            ReseauState *netState,
                             Model healModel,
                             Model skyModel,
                             Model wallModel,
