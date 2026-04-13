@@ -31,42 +31,13 @@ redirection de port ou le Port Forwarding NAT).
 Si l'hôte n'ouvre pas ce port sur sa box, sa box bloquera ta tentative de
 connexion par sécurité, et la fonction InitClient échouera en retournant -1.*/
 
-#define PORT_BROADCAST 30001
+#define PORT_BROADCAST 30001    // Port pour le broadcast
 #define MAX_HEALS_MULTI 10      // Nombre maximum de soins sur la carte en multi
 #define VIES_MULTIJOUEUR 25     // Nombre de vies de chaque joueur
 
 // ======================================================================
 // CONTEXTE ET ÉTATS DU MULTIJOUEUR
 // ======================================================================
-
-typedef enum {
-    ETAT_LOBBY_MENU,       // Menu principal du lobby (Héberger, Rejoindre...)
-    ETAT_LOBBY_SAISIE_IP,  // Le client tape une adresse IP manuellement
-    ETAT_LOBBY_ATTENTE,    // Le serveur attend qu'un client se connecte
-    ETAT_LOBBY_RECHERCHE,  // Le client écoute les broadcasts UDP
-    ETAT_EN_JEU            // La partie est connectée et en cours
-} EtatMultijoueur;
-
-typedef struct {
-    EtatMultijoueur etat;
-    
-    // UI Lobby
-    int selectedButton;
-    const char* texteBoutons[4];
-    bool erreurConnexion;
-    
-    // Broadcast / UDP
-    int udpSocket;
-    float dernierBroadcast;
-    
-    // Saisie IP
-    char ipSaisie[20];
-    int ipSaisieLen;
-    
-    // Infos réseau en jeu
-    float ping;
-    double lastPingSent;
-} ContexteMultijoueur;
 
 // Instance unique (Singleton) contenant tout l'état du module multijoueur
 static ContexteMultijoueur ctx = {

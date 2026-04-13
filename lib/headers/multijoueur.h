@@ -26,6 +26,35 @@
  *  \brief Prise en compte du score dans l'entité
  */
 
+typedef enum {
+    ETAT_LOBBY_MENU,       // Menu principal du lobby (Héberger, Rejoindre...)
+    ETAT_LOBBY_SAISIE_IP,  // Le client tape une adresse IP manuellement
+    ETAT_LOBBY_ATTENTE,    // Le serveur attend qu'un client se connecte
+    ETAT_LOBBY_RECHERCHE,  // Le client écoute les broadcasts UDP
+    ETAT_EN_JEU            // La partie est connectée et en cours
+} EtatMultijoueur;
+
+typedef struct {
+    EtatMultijoueur etat;
+    
+    // UI Lobby
+    int selectedButton;
+    const char* texteBoutons[4];
+    bool erreurConnexion;
+    
+    // Broadcast / UDP
+    int udpSocket;
+    float dernierBroadcast;
+    
+    // Saisie IP
+    char ipSaisie[20];
+    int ipSaisieLen;
+    
+    // Infos réseau en jeu
+    float ping;
+    double lastPingSent;
+} ContexteMultijoueur;
+
 /**
  * \brief Initialise les positions de départ opposées
  * \param <Entity* joueur> le joueur local(serveur)
