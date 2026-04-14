@@ -21,12 +21,7 @@
  */
 #include "types.h"
 
-/** \brief Change l'arme du joueur.
- * Le joueur peut changer d'arme en appuyant sur les touches F1 à F4, à
- * condition d'avoir débloqué l'arme correspondante avec son score.
- * \param joueur Le joueur dont on veut changer l'arme
- */
-void ChangementArme(Entity* joueur);
+
 
 /** \brief Met à jour l'état du jeu à chaque frame.
  * Cette fonction gère la logique du jeu : mouvements, tirs, collisions, etc.

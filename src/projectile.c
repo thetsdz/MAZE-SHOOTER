@@ -71,21 +71,6 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
 
-/*  switch (arme.type) {
-    case PISTOLET:
-      PlayPistolet();
-      break;
-    case FUSIL:
-      PlayMitraillette();
-      break;
-    case SNIPER:
-      PlayPompe();
-      break;
-    case GRENADE:
-      break;
-  }
-  */
-
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) {
       projs[i].active = true;
@@ -126,6 +111,13 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
       break;
     }
   }
+}
+
+
+static bool colision(Vector3 projsPos, Vector3 pos, float r, float h){
+  return (fabsf(projsPos.x - pos.x) < (r + h) &&
+            fabsf(projsPos.y - (pos.y + h)) < (r + h) &&
+            fabsf(projsPos.z - pos.z) < (r + h));
 }
 
 // ... (Début du fichier identique)
@@ -188,9 +180,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         float h = ((*autre)->size / 2.0f);
         float r = projs[i].radius;
         // Condition pour que le projectile touche un Bot RP
-        if (fabsf(projs[i].pos.x - (*autre)->pos.x) < (r + h) &&
-            fabsf(projs[i].pos.y - ((*autre)->pos.y + h)) < (r + h) &&
-            fabsf(projs[i].pos.z - (*autre)->pos.z) < (r + h)) {
+        if (colision(projs[i].pos, (*autre)->pos, r, h)){
           if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
           continue;
         }
@@ -199,9 +189,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           float h = ((*autre)[j].size / 2.0f);
           float r = projs[i].radius;
 
-          if (fabsf(projs[i].pos.x - (*autre)[j].pos.x) < (r + h) &&
-              fabsf(projs[i].pos.y - ((*autre)[j].pos.y + h)) < (r + h) &&
-              fabsf(projs[i].pos.z - (*autre)[j].pos.z) < (r + h)) {
+          if (colision(projs[i].pos,(*autre)[j].pos,r,h)) {
             (*autre)[j].health -= projs[i].degats;
             if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
@@ -217,10 +205,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
         float h = (boss->size / 2.0f);
         float r = projs[i].radius;
 
-        if (fabsf(projs[i].pos.x - boss->pos.x) < (r + h) &&
-            fabsf(projs[i].pos.y - (boss->pos.y + h)) < (r + h) &&
-            fabsf(projs[i].pos.z - boss->pos.z) < (r + h)) {
-
+        if (colision(projs[i].pos,boss->pos,r,h)) {
           if (projs[i].type == PROJ_GRENADE) {
             if (projs[i].touche == false && projs[i].degats!=0) { 
                 boss->health -= projs[i].degats;
@@ -250,9 +235,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           float h = player->size / 2.0f;
           float r = projs[i].radius;
 
-          if (fabsf(projs[i].pos.x - player->pos.x) < (r + h) &&
-              fabsf(projs[i].pos.y - (player->pos.y + h)) < (r + h) &&
-              fabsf(projs[i].pos.z - player->pos.z) < (r + h)) {
+          if (colision(projs[i].pos,player->pos,r,h)) {
             player->health -= projs[i].degats;
             // if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 
@@ -347,9 +330,7 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
           float h = ((*autre)[j].size / 2.0f);
           float r = projs[i].radius;
 
-          if (fabsf(projs[i].pos.x - (*autre)[j].pos.x) < (r + h) &&
-              fabsf(projs[i].pos.y - ((*autre)[j].pos.y + h)) < (r + h) &&
-              fabsf(projs[i].pos.z - (*autre)[j].pos.z) < (r + h)) {
+          if (colision(projs[i].pos,(*autre)[j].pos,r,h)) {
             (*autre)[j].health -= projs[i].degats;
             if (projs[i].type != PROJ_GRENADE) projs[i].active = false;
 

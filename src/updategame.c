@@ -18,31 +18,6 @@
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 
-void ChangementArme(Entity* joueur) {
-  if (joueur->score>=0) joueur->armeUnlock[0]=0;
-  if (joueur->score>=5) joueur->armeUnlock[1]=0;
-  if (joueur->score>=10) joueur->armeUnlock[2]=0;
-  if (joueur->score>=20) joueur->armeUnlock[3]=0;
-  // F1 : Pistolet
-  if (IsKeyPressed(KEY_F1) && joueur->armeUnlock[0]==0 && joueur->armeEquipee.type!=PISTOLET) {
-    joueur->armeEquipee = ObtenirModeleArme(PISTOLET);
-    joueur->ammo =joueur->tabammo[0];  
-  }
-  // F2 : Fusil
-  if (IsKeyPressed(KEY_F3) &&  joueur->armeUnlock[2]==0 && joueur->armeEquipee.type!=FUSIL) {
-    joueur->armeEquipee = ObtenirModeleArme(FUSIL);
-    joueur->ammo = joueur->tabammo[2];
-  }
-  // F3 : Sniper
-  if (IsKeyPressed(KEY_F2) && joueur->armeUnlock[1]==0 && joueur->armeEquipee.type!=SNIPER ) {
-    joueur->armeEquipee = ObtenirModeleArme(SNIPER);
-    joueur->ammo = joueur->tabammo[1];
-  }
-  if (IsKeyPressed(KEY_F4) &&  joueur->armeUnlock[2]==0 && joueur->armeEquipee.type!=GRENADE ) { 
-    joueur->armeEquipee = ObtenirModeleArme(GRENADE);
-    joueur->ammo = joueur->tabammo[3];
-  }
-}
 
 void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
