@@ -71,7 +71,7 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
   // Point d'apparition un peu devant pour ne pas se tirer dessus
   Vector3 spawn = Vector3Add(startPos, Vector3Scale(dir, 0.8f));
 
-  switch (arme.type) {
+/*  switch (arme.type) {
     case PISTOLET:
       PlayPistolet();
       break;
@@ -84,6 +84,7 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
     case GRENADE:
       break;
   }
+  */
 
   for (int i = 0; i < MAX_PROJ; i++) {
     if (!projs[i].active) {
@@ -102,16 +103,23 @@ void ShootProjectile(Projectile* projs, Vector3 startPos, Vector3 direction,
       switch (arme.type) {
         case PISTOLET:
           projs[i].type = PROJ_PISTOLET;
+          PlayPistolet();
           break;
+
         case FUSIL:
           projs[i].type = PROJ_FUSIL;
+          PlayMitraillette();
           break;
+
         case SNIPER:
           projs[i].type = PROJ_SNIPER;
+          PlayPompe();
           break;
+
         case GRENADE:
           projs[i].type = PROJ_GRENADE;
           break;
+
         default:
           break;
       }
@@ -261,8 +269,8 @@ void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                     (Vector3){1.5f, 10.0f, 1.5f};  // Position de respawn solo
                 player->velocityY = 0;             // IMPORTANT : stop la chute
                 TraceLog(LOG_INFO, "Mort en solo ! Respawn...");
-                for (int p = 0; p < MAX_PROJ; p++) {
-                  projs[p].active = false;
+                for (int p=0;p<MAX_PROJ;p++){
+                  projs[i].active=false;
                 }
               }
             }

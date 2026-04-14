@@ -181,6 +181,7 @@ typedef struct {
   int degats;           /**<degat du projectile */
   bool touche;             /**< vaut faux par default et vrai lorsque le boss sera touche la grenade */
   type_projectile type; /**< en fonction balles classiques ou grenade */
+  
   OwnerType owner;      /**< Propriétaire du projectile. */
 } Projectile;
 

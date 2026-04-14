@@ -27,24 +27,20 @@ void ChangementArme(Entity* joueur) {
   if (IsKeyPressed(KEY_F1) && joueur->armeUnlock[0]==0 && joueur->armeEquipee.type!=PISTOLET) {
     joueur->armeEquipee = ObtenirModeleArme(PISTOLET);
     joueur->ammo =joueur->tabammo[0];  
-    joueur->chronoTir = 0;
   }
   // F2 : Fusil
   if (IsKeyPressed(KEY_F3) &&  joueur->armeUnlock[2]==0 && joueur->armeEquipee.type!=FUSIL) {
     joueur->armeEquipee = ObtenirModeleArme(FUSIL);
     joueur->ammo = joueur->tabammo[2];
-    joueur->chronoTir = 0;
   }
   // F3 : Sniper
   if (IsKeyPressed(KEY_F2) && joueur->armeUnlock[1]==0 && joueur->armeEquipee.type!=SNIPER ) {
     joueur->armeEquipee = ObtenirModeleArme(SNIPER);
     joueur->ammo = joueur->tabammo[1];
-    joueur->chronoTir = 0;
   }
   if (IsKeyPressed(KEY_F4) &&  joueur->armeUnlock[2]==0 && joueur->armeEquipee.type!=GRENADE ) { 
     joueur->armeEquipee = ObtenirModeleArme(GRENADE);
     joueur->ammo = joueur->tabammo[3];
-    joueur->chronoTir = 0;
   }
 }
 
