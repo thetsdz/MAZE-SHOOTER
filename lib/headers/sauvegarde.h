@@ -39,17 +39,21 @@ et ajout du bot dans le fichier de sauvegarde
 
 /** @brief Sauvegarde les données du joueur dans un fichier texte et l'encrypte
  * directement
- * \param <Entity* player> récupère les infos du joueur
- * \param <Entity* bot> récupère les infos du bot
- * \param <int* score> récupère le score de la partie
+ * \param player récupère les infos du joueur
+ * \param bot récupère les infos du bot
+ * \param boss récupère les infos du boss
+ * \param IsBossAlive récupère l'état de vie du boss
+ * \param heal récupère les infos des objets de soin et d'armes
  */
 void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
                  Heal heal[10]);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte
- *   \param <Entity* player> charge les infos du joueur
- *   \param <Entity* bot> charge les infos du bot
- *   \param <int* score> charge le score de la partie
+    * \param player récupère les infos du joueur
+    * \param bot récupère les infos du bot
+    * \param boss récupère les infos du boss
+    * \param IsBossAlive récupère l'état de vie du boss
+    * \param heal récupère les infos des objets de soin et d'armes
  */
 int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
                       bool* IsBossAlive, Heal heal[10]);

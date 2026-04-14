@@ -13,7 +13,10 @@ void initpile(void);
 /** @brief Verifie si la pile est vide ou non*/
 int pilevide(void);
 
-/** @brief Empile les 2 chiffres passés en paramètres*/
+/** @brief Empile les 2 chiffres passés en paramètres
+ * @param i Indice de ligne à empiler
+ * @param j Indice de colonne à empiler
+*/
 void empiler(int i, int j);
 
 /** @brief Depile en renvoyant une coordonnées*/

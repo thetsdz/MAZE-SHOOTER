@@ -55,7 +55,10 @@ void DrawProjectiles(Projectile* projs, Model tabProjModels[]);
  * @brief Gere l'affichage de la map en haut à droite
  * @param Player Entité Joueur
  * @param Bot Entite Bot
+ * @param heal Tableau des objets de soin et d'armes
  * @param blocks Labyrinthe
+ * @param boss Pointeur vers l'entité du boss (pour dessiner sa position)
+ * @param IsBossAlive Indique si le boss est vivant ou non (pour ne pas le dessiner s'il est mort)
  */
 void minimap(Entity player, Entity bot[18], Heal heal[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss,
@@ -71,14 +74,24 @@ void DrawTricheur(int screenWidth);
 /**
  * @brief permet de faire le dessin du jeu (3D + UI) à chaque frame
  * @param bot Pointeur vers l'entité du bot (pour dessiner sa position)
+ * @param heal Pointeur vers le tableau des objets de soin et d'armes (pour les dessiner)
  * @param blocks Grille de blocs du niveau (pour dessiner les murs et couloirs)
  * @param camera Caméra 3D (pour dessiner la scène en perspective)
  * @param projs Tableau de projectiles actifs (pour les dessiner)
  * @param player Entité du joueur (pour afficher les munitions)
  * @param viseur Texture du viseur à dessiner au centre de l'écran
- * @param armeTex Texture de l'arme à dessiner en bas de l'écran
+ * @param tabArmes Tableau des modèles 3D des armes (pour les dessiner dans l'inventaire)
+ * @param healModel Modèle 3D de l'objet de soin (pour les dessiner les objets de soin)
+ * @param skyModel Modèle 3D du ciel (pour dessiner le ciel)
+ * @param wallModel Modèle 3D des murs (pour dessiner les murs)
+ * @param floorModel Modèle 3D du sol (pour dessiner le sol)
+ * @param botModel Modèle 3D des bots (pour dessiner les bots)
+ * @param tabProjModels Tableau des modèles 3D des projectiles (pour les dessiner)
+ * @param boss Pointeur vers l'entité du boss (pour dessiner sa position)
+ * @param IsBossAlive Indique si le boss est vivant ou non (pour ne pas le dessiner s'il est mort)
+ * @param bossModel Modèle 3D du boss (pour dessiner le boss)
+ * @param iconesArmes Tableau des textures des icones des armes (pour dessiner les icones dans l'inventaire)
  */
-
 void UpdateDessinGame(Entity bot[18], Heal heal[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,

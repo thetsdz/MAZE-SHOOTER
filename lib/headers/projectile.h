@@ -55,20 +55,46 @@ pour le bot
 #include "raymath.h"
 #include "types.h"
 
-/** @brief Initialise le tableau de projectiles (tous inactifs au début)*/
+/** @brief Initialise le tableau de projectiles (tous inactifs au début)
+ * @param projs Le tableau de projectiles à initialiser
+ */
 void InitProjectiles(Projectile *projs);
 
 /** @brief Trouve un slot libre et tire un projectile dans la direction où
- * regarde le joueur ou le bot*/
+ * regarde le joueur ou le bot
+ * @param projs Le tableau de projectiles actifs dans le jeu
+ * @param startPos La position de départ du projectile (généralement la position
+ * du joueur ou du bot)
+ * @param direction La direction dans laquelle tirer le projectile (généralement
+ * la direction de la caméra)
+ * @param owner Le propriétaire du projectile (joueur, bot, etc.)
+ * @param arme La fiche technique de l'arme utilisée pour tirer (vitesse, dégâts
+ *  taille du projectile, etc.)
+ * @param camYaw L'angle de rotation horizontale de la caméra (pour orienter
+ *  le projectile)
+ * @param camPitch L'angle de rotation verticale de la caméra (pour orienter le
+ * projectile)
+ */
 void ShootProjectile(Projectile *projs, Vector3 startPos, Vector3 direction,
                      OwnerType owner, ModeleArme arme, float camYaw,
                      float camPitch);
 
 /** @brief Met à jour la position, la durée de vie et les collisions de tous les
- * tirs actifs*/
+ * tirs actifs
+ * @param projs Le tableau de projectiles à mettre à jour
+ * @param blocks Le labyrinthe représenté par une matrice de blocs (pour les
+ * collisions)
+ * @param autre Pointeur vers l'autre joueur (pour gérer les collisions en
+ * multijoueur)
+ * @param player Pointeur vers le joueur principal (pour gérer les collisions en
+ * solo)
+ * @param currentScreen Pointeur vers l'écran de jeu actuel (pour gérer les
+ * transitions en cas de mort du joueur)
+ * @param IsBossAlive Pointeur vers un booléen indiquant si le boss est vivant
+ * (pour gérer les collisions avec le boss)
+ * @param boss Pointeur vers le boss (pour gérer les collisions avec le boss)
+ */
 void UpdateProjectiles(Projectile* projs, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Entity** autre, Entity* player, GameScreen* currentScreen, bool* IsBossAlive, Entity* boss);
-
-
 
 #endif

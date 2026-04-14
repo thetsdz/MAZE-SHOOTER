@@ -87,7 +87,6 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal* heal,
  * \param <ReseauState* netState> l'état du réseau
  * \param <bool* jeuInitialise> un pointeur vers une variable indiquant si le
  * jeu est initialisé
-
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
 void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal* heal,

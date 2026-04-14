@@ -51,11 +51,21 @@
 #include "raymath.h"
 
 /** @brief Réinitialise les variables du joueur (position spawn, vitesse
- * nulle)*/
+ * nulle)
+ *  @param player Le joueur à initialiser
+ */
 void InitPlayer(Entity *player);
 
 /** @brief C'est le cerveau du joueur : gère clavier, souris, physique et
- collisions Modifie l'état du 'player' et met à jour la 'camera'*/
+ * collisions Modifie l'état du 'player' et met à jour la 'camera'
+ * @param player Le joueur à mettre à jour
+ * @param blocks Le labyrinthe représenté par une matrice de blocs (pour les
+ * collisions)
+ * @param camera La caméra 3D pour le rendu (position et target seront mis à
+ * jour pour suivre le joueur)
+ * @param ennemi Pointeur vers l'ennemi (pour gérer les collisions avec
+ *  les bots et les interactions de combat)
+ */
 void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                   Camera3D *camera, Entity **ennemi);
 

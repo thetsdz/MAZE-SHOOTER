@@ -256,8 +256,11 @@ typedef struct {
   int healRamasses[10]; // 1 si l'objet i a été ramassé par moi ce tour-ci, 0 sinon
 } PaquetReseau;
 
+/**
+ * @struct ThemeInfo
+ * @brief Contient les chemins des textures pour un thème donné
+ */
 typedef enum {
-
   THEME_HERBE = 0,
   THEME_BETON,
   THEME_NEIGE,
@@ -265,6 +268,10 @@ typedef enum {
   NB_THEMES
 } ThemeId;
 
+/**
+ * @struct ThemeInfo
+ * @brief Contient les chemins des textures pour un thème donné
+ */
 typedef struct {
   const char* nom;
   const char* wallTexPath;

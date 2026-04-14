@@ -15,7 +15,7 @@
  * sont utilisées
  *   \param <Game screen **currentScreen> etat de l'ecran à modifier en question
  */
-void GestionClavier(GameScreen **currentScreen);
+void GestionClavier(GameScreen** currentScreen);
 
 /**
 *   \brief  Gère en fonction de si les boutons lancer partie, OPTION, QUITTER
@@ -26,7 +26,7 @@ question du clique
 zone)
     \param <int indice bouton>
 */
-void GestionSouris(GameScreen **currentScreen, Rectangle rect,
+void GestionSouris(GameScreen** currentScreen, Rectangle rect,
                    int indice_bouton);
 
 /**
@@ -34,9 +34,11 @@ void GestionSouris(GameScreen **currentScreen, Rectangle rect,
  * à GestionSouris(..) et GestionClavier(..) puis dessins des boutons
  *   \param <Game screen *currentScreen> Etat de l'ecran actuel
  */
-void GererMenu(GameScreen *currentScreen);
+void GererMenu(GameScreen* currentScreen);
 
-const ThemeInfo *GetSelectedTheme(void);
-void GererOptions(GameScreen *currentScreen);
+/**
+ * \brief Retourne les informations du thème actuellement sélectionné
+ */
+const ThemeInfo* GetSelectedTheme(void);
 
 #endif

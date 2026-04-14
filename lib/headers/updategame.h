@@ -21,24 +21,26 @@
  */
 #include "types.h"
 
-/**
- * @brief permet de faire la logique du jeu à chaque frame (mouvements, tirs,
- * collisions, etc.)
- * @param player Pointeur vers l'entité du joueur (pour mettre à jour sa
- * position, munitions, etc.)
- * @param bot Pointeur vers l'entité du bot (pour mettre à jour sa position, IA,
- * etc.)
- * @param blocks Grille de blocs du niveau (pour gérer les collisions avec les
- * murs)
- * @param projs Tableau de projectiles actifs (pour mettre à jour leur position,
- * gérer les collisions, etc.)
-
- * @param camera Pointeur vers la caméra 3D (pour l'affichage joueur et les
- * calculs de direction de tir)
+/** \brief Change l'arme du joueur.
+ * Le joueur peut changer d'arme en appuyant sur les touches F1 à F4, à
+ * condition d'avoir débloqué l'arme correspondante avec son score.
+ * \param joueur Le joueur dont on veut changer l'arme
  */
-
 void ChangementArme(Entity* joueur);
 
+/** \brief Met à jour l'état du jeu à chaque frame.
+ * Cette fonction gère la logique du jeu : mouvements, tirs, collisions, etc.
+ * Elle est appelée à chaque frame dans la boucle principale du jeu.
+ * \param player Le joueur principal
+ * \param bot Tableau des bots ennemis
+ * \param heal Tableau des objets de soin et d'armes
+ * \param blocks Le labyrinthe représenté par une matrice de blocs
+ * \param projs Tableau des projectiles actifs dans le jeu
+ * \param camera La caméra 3D pour le rendu
+ * \param currentScreen L'écran de jeu actuel (pour gérer les transitions)
+ * \param boss Le boss actuel (si présent)
+ * \param IsBossAlive Indique si le boss est vivant ou non
+ */
 void UpdateGame(Entity* player, Entity bot[18], Heal heal[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], Camera3D* camera,
