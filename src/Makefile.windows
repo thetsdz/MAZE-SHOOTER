@@ -4,11 +4,13 @@ BIN_DIR      = ..\bin
 LIB_DIR      = ..\lib\windows\raylib
 BIN          = $(BIN_DIR)\$(PROJECT_NAME).exe
 
+
 SRCS = main.c        \
        level.c       \
        player.c      \
        bot.c         \
        boss.c        \
+       recherche.c   \
        projectile.c  \
        asset.c       \
        pile.c        \
