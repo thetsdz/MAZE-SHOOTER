@@ -42,19 +42,19 @@ void InitHeal(Heal *heal,
 
     if (randomWeapon < 70) {
         // 70% de chance : Pas d'arme en plus
-        heal->arme = PISTOLET;
+        heal->arme = PISTOLET; // PISTOLET vaut 0
     }
     else if (randomWeapon < 88) {
         // 18% de chance (88 - 70) : Sniper
-        heal->arme= SNIPER; //SNIPER vaut 2
+        heal->arme= SNIPER; //SNIPER vaut 1
     }
     else if (randomWeapon < 97) {
         // 9% de chance (97 - 88) : Fusil d'Assaut
-        heal->arme = FUSIL; // FUSIL vaut 1
+        heal->arme = FUSIL; // FUSIL vaut 2
     }
     else {
         // 3% de chance (100 - 97) : Grenade
-        heal->arme = GRENADE; // GRENADE vaut 3 (je sais mal fais faut réorganiser mais plus tard)
+        heal->arme = GRENADE; // GRENADE vaut 3 
     }
 
 

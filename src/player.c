@@ -20,16 +20,14 @@ void InitPlayer(Entity *player) {
     player->maxHealth = 100;      // Points de vie maximum
     player->life = 3;             // Nombre de vies de base
     player->type = ENTITY_PLAYER; // type de l'entité
-    player->armeEquipee = ObtenirModeleArme(
-        PISTOLET); //  On charge la "fiche technique" du pistolet
-    player->ammo =
-        player->armeEquipee
-            .munitionsMax; // On remplit les munitions au maximum défini par le
-                           // modèle (ici 12 ou 10 selon ton choix)
-    player->chronoTir =
-        0.0f; // On initialise le chrono à 0 pour pouvoir tirer immédiatement
+    player->armeEquipee = ObtenirModeleArme(PISTOLET); //  On charge la "fiche technique" du pistolet
+    player->tabammo[0] =ObtenirModeleArme(PISTOLET).munitionsMax; // On remplit les munitions au maximum défini par le  modèle PISTOLET(ici 12 ou 10 selon ton choix)
+    player->tabammo[1]=ObtenirModeleArme(SNIPER).munitionsMax; 
+    player->tabammo[2]=ObtenirModeleArme(FUSIL).munitionsMax; 
+    player->tabammo[3]=ObtenirModeleArme(GRENADE).munitionsMax; 
+    player->chronoTir =0.0f; // On initialise le chrono à 0 pour pouvoir tirer immédiatement
     player->score = 0;
-    player->armeUnlock[0] = -1; player->armeUnlock[1] = -1; player->armeUnlock[2] = -1; //On a le droit a aucune arme par default 
+    player->armeUnlock[0] = 0; player->armeUnlock[1] = -1; player->armeUnlock[2] = -1; player->armeUnlock[3] = -1; //On a le droit a aucune arme par default sauf le pistolet 
 }
 
 void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],

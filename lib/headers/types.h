@@ -179,6 +179,7 @@ typedef struct {
   float life;           /**< Temps de vie restant (en secondes). */
   Color color;          /**<couleur du projectile */
   int degats;           /**<degat du projectile */
+  bool touche;             /**< vaut faux par default et vrai lorsque le boss sera touche la grenade */
   type_projectile type; /**< en fonction balles classiques ou grenade */
   OwnerType owner;      /**< Propriétaire du projectile. */
 } Projectile;
@@ -187,7 +188,7 @@ typedef struct {
  * @struct TypeArme
  * @brief Represente PISTOLET,FUSIL ou SNIPER
  */
-typedef enum { PISTOLET, FUSIL, SNIPER, GRENADE } TypeArme;
+typedef enum { PISTOLET, SNIPER, FUSIL, GRENADE } TypeArme;
 
 /**
  * @struct ModeleArme
@@ -217,14 +218,14 @@ typedef struct {
   bool onGround;          /**< true si l'entité est au sol. */
   float size;             /**< Taille de l'entité. */
   int ammo;               /**< Munitions actuelles. */
+  int tabammo[4];             /**< tableau pour stocker le nombre de munition par arme */
   int health;             /**< Points de vie actuels. */
   int maxHealth;          /**< Points de vie maximum. */
   int life;               /**< Nombre de vies restantes. */
   int score;               /**<Son score */
   ModeleArme armeEquipee; /**< La fiche technique de l'arme tenue */
-  int armeUnlock[3];       /**< permet de voir si une arme est debloqué (sniper,fusil,grenade) toutes les cases valent -1 par default (0 sinon)  */
-  float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir
-                      suivant */
+  int armeUnlock[4];       /**< permet de voir si une arme est debloqué (sniper,fusil,grenade) toutes les cases valent -1 par default (0 sinon)  */
+  float chronoTir; /**< Le compteur qui descend vers 0 pour autoriser le tir suivant */
   EntityType type; /**< Type de l'entité. */
 } Entity;
 

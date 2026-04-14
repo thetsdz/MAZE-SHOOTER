@@ -50,8 +50,8 @@ void DrawProjectiles(Projectile* projs, Model tabProjModels[]) {
     switch (projs[i].type) {
       case PROJ_PISTOLET: {
         float s = 0.25f;
-        // On combine le fait de le coucher (90°) AVEC ton inclinaison
-        // (Pitch) sur l'axe X (Mets un "+" ou un "-" devant le pitch selon
+        // On combine le fait de le coucher (90°) AVEC une inclinaison
+        // (Pitch) sur l'axe X (rajouter "+" ou un "-" devant le pitch selon
         // si la balle monte ou descend)
         Matrix rot = MatrixRotateX((90.0f - projs[i].pitch) * DEG2RAD);
         rot = MatrixMultiply(rot, MatrixRotateY(projs[i].yaw * DEG2RAD));
@@ -207,6 +207,7 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
   const int PW = 220;
   const int PAD = 8;
   int py = 10;
+  int CurrentArme=player.armeEquipee.type;
 
   /* ---- Panneau VIE -------------------------------------------- */
   DrawPanel(PX, py, PW, 58);
@@ -230,9 +231,9 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
   DrawText(player.armeEquipee.nom, PX + PAD, py + 6, 14, COL_AMMO);
 
   /* Badge munitions (cadre à droite) */
-  Color ammoCol = (player.ammo == 0) ? COL_AMMO_EMPTY : COL_AMMO;
+  Color ammoCol = (player.tabammo[CurrentArme] == 0) ? COL_AMMO_EMPTY : COL_AMMO;
   const char* ammoBadge =
-      TextFormat("%d / %d", player.ammo, player.armeEquipee.munitionsMax);
+      TextFormat("%d / %d", player.tabammo[CurrentArme], player.armeEquipee.munitionsMax);
   int badgeW = MeasureText(ammoBadge, 12);
   int bx = PX + PW - PAD - badgeW - 10;
   DrawRectangle(bx, py + 7, badgeW + 10, 18, (Color){42, 42, 42, 255});
@@ -240,11 +241,11 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
   DrawText(ammoBadge, bx + 5, py + 10, 12, ammoCol);
 
   /* Barre munitions */
-  float ammoRatio = (float)player.ammo / (float)player.armeEquipee.munitionsMax;
+  float ammoRatio = (float)player.tabammo[CurrentArme] / (float)player.armeEquipee.munitionsMax;
   DrawBar(PX + PAD, py + 32, PW - PAD * 2, 8, ammoRatio, ammoCol);
 
   /* Hints inline */
-  if (player.ammo < player.armeEquipee.munitionsMax)
+  if (player.tabammo[CurrentArme] < player.armeEquipee.munitionsMax)
     DrawText("[R] Recharger", PX + PAD, py + 48, 10, COL_HINT);
 
   py += 76;
@@ -286,9 +287,9 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
 
     bool isUnlocked = false;
     if (i == 0) isUnlocked = true;
-    else if (i == 1 && player.armeUnlock[0] == 0) isUnlocked = true;
-    else if (i == 2 && player.armeUnlock[1] == 0) isUnlocked = true;
-    else if (i == 3 && player.armeUnlock[2] == 0) isUnlocked = true;
+    else if (i == 1 && player.armeUnlock[1] == 0) isUnlocked = true;
+    else if (i == 2 && player.armeUnlock[2] == 0) isUnlocked = true;
+    else if (i == 3 && player.armeUnlock[3] == 0) isUnlocked = true;
 
     DrawRectangle(cx, cy, cellWidth, cellHeight, (Color){ 30, 30, 30, 255 });
 
@@ -300,7 +301,6 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
         }
 
         if (iconesArmes[i].id != 0) {
-            // --- CORRECTION 2 : Le scale se base sur cellHeight ! ---
             float scale = (float)(cellHeight - 4) / iconesArmes[i].height;
             
             // --- BONUS : Centrage parfait en largeur ---
@@ -310,7 +310,6 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
             
             DrawTextureEx(iconesArmes[i], (Vector2){ cx + offsetX, cy + 2 }, 0.0f, scale, WHITE);
         } else {
-            // --- CORRECTION 3 : Remplacement de cellSize par cellHeight ---
             DrawText("ERR", cx + 5, cy + cellHeight/2 - 5, 10, RED);
         }
 
@@ -318,7 +317,6 @@ static void DrawHUD(Entity player,Texture2D iconesArmes[]) {
         DrawRectangleLines(cx, cy, cellWidth, cellHeight, (Color){ 60, 60, 60, 255 });
         int qW = MeasureText("?", 20);
         
-        // --- CORRECTION 4 : Remplacement de cellSize par cellHeight ---
         DrawText("?", cx + (cellWidth - qW) / 2, cy + cellHeight / 2 - 10, 20, (Color){ 100, 100, 100, 255 });
     }
   }

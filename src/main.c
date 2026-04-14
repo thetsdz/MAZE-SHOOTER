@@ -322,6 +322,7 @@ int main(void) {
 
     switch (currentScreen) {
       case MENU: {
+        //gerer uniquement dans la logique d'etat
         break;
       }
       case NOUVELLE_PARTIE: {
@@ -353,6 +354,7 @@ int main(void) {
         break;
       }
       case OPTIONS: {
+        //gerer dans dans la logique d'etat
         break;
       }
       case EXIT: {

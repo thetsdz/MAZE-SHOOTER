@@ -25,7 +25,7 @@ typedef struct {
   float x, y, z;
   float yaw, pitch;
   int onGround;
-  int ammo;
+  int tabammo[4];
   int health;
   int maxHealth;
   int life;
@@ -33,7 +33,7 @@ typedef struct {
   Entity boss;
   int IsBossAlive;
   Heal heal[10];
-  int armeUnlock[3];
+  int armeUnlock[4];
 } SaveData;
 
 // C'est ce bloc qui sera écrit sur le disque : Données + Sécurité
@@ -48,10 +48,17 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
 
   // Remplissage de la structure de données
     save.gameData.score = player->score;
-    save.gameData.ammo = player->ammo;
+    save.gameData.tabammo[0] = player->tabammo[0];
+    save.gameData.tabammo[1] = player->tabammo[1]; 
+    save.gameData.tabammo[2] = player->tabammo[2]; 
+    save.gameData.tabammo[3] = player->tabammo[3];
+
+
     save.gameData.armeUnlock[0]=player->armeUnlock[0];
     save.gameData.armeUnlock[1]=player->armeUnlock[1];
     save.gameData.armeUnlock[2]=player->armeUnlock[2];
+    save.gameData.armeUnlock[3]=player->armeUnlock[3];
+
 
   save.gameData.x = player->pos.x;
   save.gameData.y = player->pos.y;
@@ -130,7 +137,11 @@ int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
     player->armeUnlock[0]=save.gameData.armeUnlock[0];
     player->armeUnlock[1]=save.gameData.armeUnlock[1];
     player->armeUnlock[2]=save.gameData.armeUnlock[2];
-    player->ammo = save.gameData.ammo;
+    player->tabammo[0] = save.gameData.tabammo[0];
+    player->tabammo[1] = save.gameData.tabammo[1];
+    player->tabammo[2] = save.gameData.tabammo[2];
+    player->tabammo[3] = save.gameData.tabammo[3];
+
 
   player->pos.x = save.gameData.x;
   player->pos.y = save.gameData.y;
