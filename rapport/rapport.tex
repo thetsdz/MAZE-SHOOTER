@@ -147,30 +147,39 @@ Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'o
 \section{Developpement}
 
 
-\subsection{Arborescence du code}\label{Logique du jeu}
-\indent Dans cette section on explique comment s'organise le repertoire du projet. %cette explication est nécéssaire pour mieux comprendre le reste du rapport. En effet, ce fichier est le coeur du code car il fait appel aux reste des fichiers.
+\subsection{Arborescence du code et structure du menu}\label{Logique du jeu}
+\indent Dans cette section on explique comment s'organise le repertoire du projet, et l'architecture logicielle utilisées. Cette structure est importante car elle est le coeur du code et gère les différents modules.
 %Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
 
 
 \bigskip \noindent
-Le repertoire du projet (cf \cite{Github}), est composé de cinq sous dossier : \verb|assets,doc,lib,rapport,src,test|. C'est dans \verb|src/| que se trouve l'intégralité du code decomposé en plusieurs fichier 
-Le code de ce fichier principal se structure en deux partie :  une partie logique, et une partie dessin.
-
-logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable \verb|CurrentScreen|. 
+Le dépôt du projet (cf. \cite{Github}) est structuré en cinq dossiers principaux : assets, doc, lib, rapport, src et test. L'intégralité du code source est regroupée dans le dossier src/, qui est segmenté en plusieurs fichiers.
 
 \bigskip \noindent
-Ensuite, dans la partie logique on mets à jours les variables globales, on appel des fonctions \og generique \fg{} qui initialisent ou mettent à jours nos variables globales(Player,Bot, etc).
-Un bon exemple est le suivant :
-\begin{exemple}\label{Exemple}
-UpdateGame(...) , cf \cite{Github}, cette fonction mets à jours toute la partie logique du jeu en mode solo. 
-\end{exemple}
-\noindent Une fois la logique à jours un peut dessiner. C'est le second switch qui entre en jeu et permet de lancer les bonnes fonctions de dessin toujours en fonction de la valeurs de \verb|CurrentScreen|.
-Desormais, pour comprendre  menu.c, il suffirait lorsque \verb|CurrentScreen| vaut \verb|MENU| dans le premier switch qu'on appel les fonctions gerant la souris et le clavier, puis dans le second on dessinent les boutons voulus. 
+Concernant le fonctionnement de main.c, il sert de tour de contrôle au projet. Il s'appuie sur une variable d'état qui détermine ce qui doit être traité et affiché à l'écran (cf. \autoref{image menu}).
 
-\bigskip
-En réalité par souci de simplicité,pour cette valeur de \verb|CurrentScreen|, la partie logique et dessin est géré simultanément, cependant pour la plus part des valeurs prise par la variable d'etat de jeu de ce projet, les deux logique sont bien distinctes.
+\noindent
+Le code repose sur une séparation claire entre deux étapes :
+\begin{itemize}
+    \item Le traitement logique : Cette phase met à jour les données du jeu. On y utilise des fonctions « génériques » qui gèrent les variables globales.
+        \begin{exemple}
+            Exemple : La fonction UpdateGame(...) centralise toute la logique du mode solo (déplacements, collisions, scores).
+        \end{exemple}
+    \medskip
+    \item Le rendu graphique : Une fois les calculs terminés, on appel les fonctions de dessin correspondantes ( cf \secref{Interface}, pour plus de détail). On s'assure ainsi que l'image affichée correspond exactement à l'état actuel des variables.
+\end{itemize}
 
+\bigskip \noindent
+Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (gestion du clic ou clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
 
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.7\textwidth]{./images/image_menu/photo_menu.png}%
+    }
+    \caption{Capture d'écran du menu principal}
+    \label{image menu}
+\end{figure}
 
 
 
@@ -526,16 +535,6 @@ Lien vers la page du stite Poly Pizza : \href{https://poly.pizza/}{https://poly.
     \label{fig:gantt}
 \end{figure}
 \subsection{Outils utilisés}
-
-
-\begin{figure}[h]
-    \centering
-    \makebox[\textwidth][c]{%
-        \includegraphics[width=1.4\textwidth]{./images/image_menu/photo_menu.png}%
-    }
-    \caption{Capture d'écran du menu principal}
-    \label{image menu}
-\end{figure}
 
 
 \begin{figure}[htbp]
