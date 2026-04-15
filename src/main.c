@@ -202,10 +202,10 @@ int main(void) {
 
             // Rendu multijoueur
             DessinerMultijoueur(
-                &player, &remotePlayer, heal, blocks, projs, &camera,
-                assets.viseur, assets.tabArmes, &netState, assets.healModel,
-                assets.skyModel, assets.wallModel, assets.floorModel,
-                assets.botModel, assets.tabProjModels, assets.iconesArmes);
+    &player, &remotePlayer, heal, blocks, projs, &camera,
+    assets.viseur, assets.tabArmes, assets.healModel,
+    assets.skyModel, assets.wallModel, assets.floorModel,
+    assets.botModel, assets.tabProjModels, assets.iconesArmes);
             break;
 
         // ---------------- CHARGEMENT DE PARTIE ----------------

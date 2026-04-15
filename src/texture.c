@@ -3,8 +3,8 @@
  * \brief Chargement, déchargement et rechargement des assets graphiques.
  */
 
-#include "texture.h"
-
+#include "../lib/headers/texture.h"
+#include "../lib/headers/menu.h"
 #include "../lib/headers/option.h"
 #include "raylib.h"
 #include "rlgl.h"

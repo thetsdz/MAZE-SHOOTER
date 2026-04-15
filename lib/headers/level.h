@@ -25,7 +25,7 @@ void creer_lab(Block blocks[NUM_BLOCKS][NUM_BLOCKS]);
  * @param floorModel Le modèle 3D utilisé pour le sol
 */
 void DrawLevel(Block blocks[NUM_BLOCKS][NUM_BLOCKS], Model wallModel,
-               Model floorModel);
+               Model floorModel, Camera camera, float drawDistance);
 
 /** @brief Génération du labyrinthe
  * @param blocks Le labyrinthe représenté par une matrice de blocs à générer
