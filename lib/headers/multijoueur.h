@@ -26,6 +26,12 @@
  *  \brief Prise en compte du score dans l'entité
  */
 
+ /** \version 3.2
+ *  \author Hugues Astier
+ *  \date 01/04/2026
+ *  \brief Changeemnt de heal en coffre
+ */
+
 typedef enum {
     ETAT_LOBBY_MENU,       // Menu principal du lobby (Héberger, Rejoindre...)
     ETAT_LOBBY_SAISIE_IP,  // Le client tape une adresse IP manuellement
@@ -69,10 +75,11 @@ void InitMultijoueur(Entity *joueur, Entity *ennemi, int estServeur);
  * \param <Entity* ennemi> l'ennemi distant(client)
  * \param <Block blocks[NUM_BLOCKS][NUM_BLOCKS]> le tableau des blocs
  * \param <Projectile projs[MAX_PROJ]> le tableau des projectiles
+ * \param <Coffre *coffre> Les coffres d'armes et de heal
  * \param <Camera3D* camera> la caméra
  * \param <ReseauState* reseau> l'état du réseau
  */
-void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal* heal,
+void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Coffre* coffre,
                        Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                        Projectile projs[MAX_PROJ], Camera3D *camera,
                        ReseauState *reseau, GameScreen *currentScreen);
@@ -87,9 +94,10 @@ void UpdateMultijoueur(Entity *joueur, Entity *ennemi, Heal* heal,
  * \param <ReseauState* netState> l'état du réseau
  * \param <bool* jeuInitialise> un pointeur vers une variable indiquant si le
  * jeu est initialisé
+* \param <Coffre *coffre> Les coffres d'armes et de heal
  * \param <GameScreen* currentScreen> un pointeur vers l'écran de jeu actuel
  */
-void partie_multijoueur(Entity *player, Entity *remotePlayer,Heal* heal,
+void partie_multijoueur(Entity *player, Entity *remotePlayer,Coffre* coffre,
                         Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                         Projectile projs[MAX_PROJ], Camera3D* camera,
                         ReseauState* netState, bool* jeuInitialise,
@@ -109,7 +117,7 @@ void DessinerLobbyMultijoueur();
  * \param <Camera3D* camera> la caméra
  * \param <Texture2D viseur> la texture du viseur
  * \param <Model tabArmes[4]> les modèles 3D des armes
- * \param <Model healModel> le modèle 3D de l'objet de soin
+ * \param <Model coffreModel> le modèle 3D de l'objet de soin
  * \param <Model skyModel> le modèle 3D du ciel
  * \param <Model wallModel> le modèle 3D des murs
  * \param <Model floorModel> le modèle 3D du sol
@@ -120,13 +128,13 @@ void DessinerLobbyMultijoueur();
 
 void DessinerMultijoueur(Entity *player,
                             Entity *remotePlayer,
-                            Heal* heal,
+                            Coffre* coffre,
                             Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                             Projectile projs[MAX_PROJ],
                             Camera3D *camera,
                             Texture2D viseur,
                             Model tabArmes[4],
-                            Model healModel,
+                            Model coffreModel,
                             Model skyModel,
                             Model wallModel,
                             Model floorModel,

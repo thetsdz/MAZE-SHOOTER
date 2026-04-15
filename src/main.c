@@ -12,7 +12,7 @@
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/endGame.h"
-#include "../lib/headers/heal.h"
+#include "../lib/headers/coffre.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/menu.h"
@@ -85,7 +85,7 @@ int main(void) {
     Entity remotePlayer;
     Entity boss;
 
-    Heal heal[10];
+    Coffre coffre[10];
     Block blocks[NUM_BLOCKS][NUM_BLOCKS];
     Projectile projs[MAX_PROJ];
 
@@ -142,7 +142,7 @@ int main(void) {
                 InitBot(&bot[i], blocks);
 
             for (int i = 0; i < 10; i++)
-                InitHeal(&heal[i], blocks);
+                InitCoffre(&coffre[i], blocks);
 
             InitProjectiles(projs);
 
@@ -171,7 +171,7 @@ int main(void) {
             StopAllMusic();
 
             // Mise à jour de la logique du jeu
-            UpdateGame(&player, bot, heal, blocks, projs, &camera,
+            UpdateGame(&player, bot, coffre, blocks, projs, &camera,
                        &currentScreen, &boss, &IsBossAlive);
 
             // Retour au menu
@@ -182,8 +182,8 @@ int main(void) {
             }
 
             // Rendu du jeu
-            UpdateDessinGame(bot, heal, blocks, camera, projs, player,
-                             assets.viseur, assets.tabArmes, assets.healModel,
+            UpdateDessinGame(bot, coffre, blocks, camera, projs, player,
+                             assets.viseur, assets.tabArmes, assets.coffreModel,
                              assets.skyModel, assets.wallModel,
                              assets.floorModel, assets.botModel,
                              assets.tabProjModels, &boss, IsBossAlive,
@@ -195,14 +195,14 @@ int main(void) {
             StopAllMusic();
 
             // Gestion réseau + logique multijoueur
-            partie_multijoueur(&player, &remotePlayer, heal, blocks, projs,
+            partie_multijoueur(&player, &remotePlayer, coffre, blocks, projs,
                                &camera, &netState, &jeuInitialise,
                                &currentScreen);
 
             // Rendu multijoueur
             DessinerMultijoueur(
-    &player, &remotePlayer, heal, blocks, projs, &camera,
-    assets.viseur, assets.tabArmes, assets.healModel,
+    &player, &remotePlayer, coffre, blocks, projs, &camera,
+    assets.viseur, assets.tabArmes, assets.coffreModel,
     assets.skyModel, assets.wallModel, assets.floorModel,
     assets.botModel, assets.tabProjModels, assets.iconesArmes);
             break;
@@ -213,12 +213,12 @@ int main(void) {
             // Chargement effectué une seule fois
             if (!chargement) {
                 int succes =
-                    chargerSauvegarde(&player, bot, &boss, &IsBossAlive, heal);
+                    chargerSauvegarde(&player, bot, &boss, &IsBossAlive, coffre);
 
                 if (succes == 2) {
                     // Sauvegarde invalide → nouvelle partie
                     StopAllMusic();
-                    UpdateGame(&player, bot, heal, blocks, projs, &camera,
+                    UpdateGame(&player, bot, coffre, blocks, projs, &camera,
                                &currentScreen, &boss, &IsBossAlive);
                 } else if (succes == 1) {
                     // Triche détectée
@@ -247,12 +247,12 @@ int main(void) {
                 DrawTricheur(GetScreenWidth());
             } else {
                 // Jeu normal
-                UpdateGame(&player, bot, heal, blocks, projs, &camera,
+                UpdateGame(&player, bot, coffre, blocks, projs, &camera,
                            &currentScreen, &boss, &IsBossAlive);
 
                 UpdateDessinGame(
-                    bot, heal, blocks, camera, projs, player, assets.viseur,
-                    assets.tabArmes, assets.healModel, assets.skyModel,
+                    bot, coffre, blocks, camera, projs, player, assets.viseur,
+                    assets.tabArmes, assets.coffreModel, assets.skyModel,
                     assets.wallModel, assets.floorModel, assets.botModel,
                     assets.tabProjModels, &boss, IsBossAlive, assets.bossModel,
                     assets.iconesArmes);

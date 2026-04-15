@@ -12,14 +12,14 @@
 #include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/boss.h"
-#include "../lib/headers/heal.h"
+#include "../lib/headers/coffre.h"
 #include "../lib/headers/player.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/sauvegarde.h"
 #include "../lib/headers/types.h"
 
 
-void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
+void UpdateGame(Entity *player, Entity bot[18],Coffre coffre[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], Camera3D* camera,
                 GameScreen* currentScreen, Entity* boss, bool* IsBossAlive) {
@@ -39,7 +39,7 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         UpdateBot(&bot[i], blocks, player->pos, projs);
     }
     for(int i = 0; i < 10; i++) {
-        armeUnlock=UpdateHeal(&heal[i],player,blocks);
+        armeUnlock=UpdateCoffre(&coffre[i],player,blocks);
         if (armeUnlock!=-1) {
           switch (armeUnlock){
             case 1 : player->armeUnlock[1]=0; break; // par convention le tableau represente pistolet,sniper,fusil,grenade mais fusil vaut 1 (bref mal organisé je sais, cf heal.c)
@@ -50,7 +50,7 @@ void UpdateGame(Entity *player, Entity bot[18],Heal heal[10],
         }
     }
 
-  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, boss, *IsBossAlive, heal);
+  if (IsKeyPressed(KEY_Y)) sauvegarder(player, bot, boss, *IsBossAlive, coffre);
 
     if (IsKeyPressed(KEY_R)) {
         player->tabammo[CurrentArme]=player->armeEquipee.munitionsMax;

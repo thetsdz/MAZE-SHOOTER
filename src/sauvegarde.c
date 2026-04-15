@@ -17,7 +17,7 @@
 // --- CONSTANTES DE SAUVEGARDE ---
 #define MAX_ARMES 4
 #define MAX_BOTS 18
-#define MAX_HEALS 10
+#define MAX_COFFRES 10
 
 // CLÉ DE CRYPTAGE (À ne pas partager ou modifier !)
 static const char* GAME_KEY =
@@ -30,17 +30,17 @@ typedef struct {
   float yaw, pitch;
   int onGround;
   int tabammo[MAX_ARMES];
-  int armeUnlock[MAX_ARMES];
+  int armeUnlock[MAX_COFFRES];
   int health;
   int maxHealth;
   int life;
   
-  // ATTENTION : Si Entity ou Heal contiennent des Texture2D ou Model, 
+  // ATTENTION : Si Entity ou Coffre contiennent des Texture2D ou Model, 
   // il faudra un jour créer des "SaveEntity" qui ne gardent que la pos et la vie.
   Entity bot[MAX_BOTS];
   Entity boss;
   int IsBossAlive;
-  Heal heal[MAX_HEALS];
+  Coffre coffre[MAX_COFFRES];
 } SaveData;
 
 // Bloc écrit sur le disque : Données + Sécurité
@@ -50,7 +50,7 @@ typedef struct {
 } SaveFile;
 
 
-void sauvegarder(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool IsBossAlive, Heal heal[MAX_HEALS]) {
+void sauvegarder(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool IsBossAlive, Coffre coffre[MAX_COFFRES]) {
   SaveFile save;
 
   // 1. Remplissage des variables simples du joueur
@@ -69,7 +69,7 @@ void sauvegarder(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool IsBoss
   memcpy(save.gameData.tabammo, player->tabammo, sizeof(int) * MAX_ARMES);
   memcpy(save.gameData.armeUnlock, player->armeUnlock, sizeof(int) * MAX_ARMES);
   memcpy(save.gameData.bot, bot, sizeof(Entity) * MAX_BOTS);
-  memcpy(save.gameData.heal, heal, sizeof(Heal) * MAX_HEALS);
+  memcpy(save.gameData.coffre, coffre, sizeof(Coffre) * MAX_COFFRES);
 
   // 3. Sauvegarde du boss
   save.gameData.boss = *boss;
@@ -92,7 +92,7 @@ void sauvegarder(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool IsBoss
   }
 }
 
-int chargerSauvegarde(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool* IsBossAlive, Heal heal[MAX_HEALS]) {
+int chargerSauvegarde(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool* IsBossAlive, Coffre coffre[MAX_COFFRES]) {
   FILE* fr = fopen("save.dat", "rb");
   if (!fr) {
     printf("[Chargement] Aucune sauvegarde trouvée.\n");
@@ -135,7 +135,7 @@ int chargerSauvegarde(Entity* player, Entity bot[MAX_BOTS], Entity* boss, bool* 
   memcpy(player->tabammo, save.gameData.tabammo, sizeof(int) * MAX_ARMES);
   memcpy(player->armeUnlock, save.gameData.armeUnlock, sizeof(int) * MAX_ARMES);
   memcpy(bot, save.gameData.bot, sizeof(Entity) * MAX_BOTS);
-  memcpy(heal, save.gameData.heal, sizeof(Heal) * MAX_HEALS);
+  memcpy(coffre, save.gameData.coffre, sizeof(Coffre) * MAX_COFFRES);
 
   // 5. Restauration du boss
   *boss = save.gameData.boss;

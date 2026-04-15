@@ -46,7 +46,7 @@ et ajout du bot dans le fichier de sauvegarde
  * \param heal récupère les infos des objets de soin et d'armes
  */
 void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
-                 Heal heal[10]);
+                 Coffre coffre[10]);
 
 /** @brief Charge les données cryptés du joueur depuis un fichier texte
     * \param player récupère les infos du joueur
@@ -56,6 +56,6 @@ void sauvegarder(Entity* player, Entity bot[18], Entity* boss, bool IsBossAlive,
     * \param heal récupère les infos des objets de soin et d'armes
  */
 int chargerSauvegarde(Entity* player, Entity bot[18], Entity* boss,
-                      bool* IsBossAlive, Heal heal[10]);
+                      bool* IsBossAlive, Coffre coffre[10]);
 
 #endif

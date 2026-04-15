@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lib/headers/heal.h"
+#include "../lib/headers/coffre.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/projectile.h"
 #include "../lib/headers/types.h"
@@ -174,7 +174,7 @@ static void DrawBar(int x, int y, int w, int h, float ratio, Color fg) {
 /*  Minimap                                                             */
 /* ------------------------------------------------------------------ */
 
-void minimap(Entity player, Entity bot[18], Heal heal[10],
+void minimap(Entity player, Entity bot[18], Coffre coffre[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss,
              bool IsBossAlive) {
   int minimapX = GetScreenWidth() - MINIMAP_W - MINIMAP_PADDING;
@@ -223,11 +223,11 @@ void minimap(Entity player, Entity bot[18], Heal heal[10],
     int botDotY = minimapY + (int)((bot[b].pos.z - originZ) * scaleY);
     DrawRectangle(botDotX - 3, botDotY - 3, 6, 6, RED);
   }
-  /* Heal (vert) */
+  /* Coffre (vert) */
   for (int h = 0; h < 10; h++) {
-    int healDotX = minimapX + (int)((heal[h].pos.x - originX) * scaleX);
-    int healDotY = minimapY + (int)((heal[h].pos.z - originZ) * scaleY);
-    DrawRectangle(healDotX - 3, healDotY - 3, 6, 6, GREEN);
+    int coffreDotX = minimapX + (int)((coffre[h].pos.x - originX) * scaleX);
+    int coffreDotY = minimapY + (int)((coffre[h].pos.z - originZ) * scaleY);
+    DrawRectangle(coffreDotX - 3, coffreDotY - 3, 6, 6, GREEN);
 
 
   }
@@ -435,10 +435,10 @@ void DrawTricheur(int screenWidth) {
 /*  Point d'entrée principal                                            */
 /* ------------------------------------------------------------------ */
 
-void UpdateDessinGame(Entity bot[18], Heal heal[10],
+void UpdateDessinGame(Entity bot[18], Coffre coffre[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
-                      Texture2D viseur, Model tabArmes[], Model healModel,
+                      Texture2D viseur, Model tabArmes[], Model coffreModel,
                       Model skyModel, Model wallModel, Model floorModel,
                       Model botModel, Model tabProjModels[], Entity* boss,
                       bool IsBossAlive, Model bossModel,Texture2D iconesArmes[]) {
@@ -461,7 +461,7 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   } */
   
   for (int i = 0; i < 10; i++) {
-    DrawModel(healModel, heal[i].pos, 1.0f, WHITE);
+    DrawModel(coffreModel, coffre[i].pos, 1.0f, WHITE);
   }
 
   for (int b = 0; b < 18; b++) {
@@ -517,5 +517,5 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   int i = 0;
   while (player.armeEquipee.type != tab[i]) i++;
   DessinerArme(tabArmes[i], i);
-  minimap(player, bot, heal, blocks, boss, IsBossAlive);
+  minimap(player, bot, coffre, blocks, boss, IsBossAlive);
 }

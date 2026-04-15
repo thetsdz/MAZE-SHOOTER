@@ -36,7 +36,7 @@
  * \param boss Le boss actuel (si présent)
  * \param IsBossAlive Indique si le boss est vivant ou non
  */
-void UpdateGame(Entity* player, Entity bot[18], Heal heal[10],
+void UpdateGame(Entity* player, Entity bot[18], Coffre coffre[10],
                 Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                 Projectile projs[MAX_PROJ], Camera3D* camera,
                 GameScreen* currentScreen, Entity* boss, bool* IsBossAlive);

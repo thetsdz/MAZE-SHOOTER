@@ -98,7 +98,7 @@ void DrawProjectiles(Projectile* projs, Model tabProjModels[]);
  * @param boss Pointeur vers l'entité du boss (pour dessiner sa position)
  * @param IsBossAlive Indique si le boss est vivant ou non (pour ne pas le dessiner s'il est mort)
  */
-void minimap(Entity player, Entity bot[18], Heal heal[10],
+void minimap(Entity player, Entity bot[18], Coffre coffre[10],
              Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity* boss,
              bool IsBossAlive);
 
@@ -130,7 +130,7 @@ void DrawTricheur(int screenWidth);
  * @param bossModel Modèle 3D du boss (pour dessiner le boss)
  * @param iconesArmes Tableau des textures des icones des armes (pour dessiner les icones dans l'inventaire)
  */
-void UpdateDessinGame(Entity bot[18], Heal heal[10],
+void UpdateDessinGame(Entity bot[18], Coffre coffre[10],
                       Block blocks[NUM_BLOCKS][NUM_BLOCKS], Camera3D camera,
                       Projectile projs[MAX_PROJ], Entity player,
                       Texture2D viseur, Model tabArmes[], Model healModel,

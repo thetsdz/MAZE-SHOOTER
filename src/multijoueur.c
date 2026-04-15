@@ -13,7 +13,7 @@
 #include "../lib/headers/arme.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/dessin.h"
-#include "../lib/headers/heal.h"
+#include "../lib/headers/coffre.h"
 #include "../lib/headers/level.h"
 #include "../lib/headers/log.h"
 #include "../lib/headers/player.h"
@@ -31,7 +31,7 @@ Si l'hôte n'ouvre pas ce port sur sa box, sa box bloquera ta tentative de
 connexion par sécurité, et la fonction InitClient échouera en retournant -1.*/
 
 #define PORT_BROADCAST 30001    // Port pour le broadcast
-#define MAX_HEALS_MULTI 10      // Nombre maximum de soins sur la carte en multi
+#define MAX_COFFRES_MULTI 10      // Nombre maximum de soins sur la carte en multi
 #define VIES_MULTIJOUEUR 25     // Nombre de vies de chaque joueur
 
 // ======================================================================
@@ -66,12 +66,12 @@ static Vector3 CalculerPositionSpawn(int estServeur, float hauteur) {
 }
 
 // Factorisation du code de lancement d'une partie (évite les répétitions)
-static void LancerPartieReseau(Entity* player, Entity* remotePlayer, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Heal* heal, Projectile projs[MAX_PROJ], int estServeur, bool* jeuInitialise) {
+static void LancerPartieReseau(Entity* player, Entity* remotePlayer, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Coffre* coffre, Projectile projs[MAX_PROJ], int estServeur, bool* jeuInitialise) {
     InitMultijoueur(player, remotePlayer, estServeur);
     srand(42); // Seed commune pour générer le même labyrinthe sur les 2 PCs
     init_lab(blocks);
     creer_lab_multi(blocks);
-    for (int i = 0; i < MAX_HEALS_MULTI; i++) InitHeal(&heal[i], blocks);
+    for (int i = 0; i < MAX_COFFRES_MULTI; i++) InitCoffre(&coffre[i], blocks);
     srand(time(NULL)); // Reset de la seed pour l'aléatoire normal (tirs, etc.)
     InitProjectiles(projs);
     player->score = 0;
@@ -115,15 +115,15 @@ void InitMultijoueur(Entity* joueur, Entity* ennemi, int estServeur) {
 // SOUS-FONCTIONS POUR LA LOGIQUE EN JEU (UpdateMultijoueur)
 // ======================================================================
 
-static void GererActionsLocales(Entity* joueur, Camera3D* camera, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity** ennemiPtr, Heal* heal, Projectile projs[MAX_PROJ], int healUnlockLocal[MAX_HEALS_MULTI], bool* jeTire) {
+static void GererActionsLocales(Entity* joueur, Camera3D* camera, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Entity** ennemiPtr, Coffre* coffre, Projectile projs[MAX_PROJ], int coffreUnlockLocal[MAX_COFFRES_MULTI], bool* jeTire) {
     UpdatePlayer(joueur, blocks, camera, ennemiPtr);
     
     int CurrentArme = joueur->armeEquipee.type;
     
-    for (int i = 0; i < MAX_HEALS_MULTI; i++) {
-        int armeUnlock = UpdateHeal(&heal[i], joueur, blocks);
+    for (int i = 0; i < MAX_COFFRES_MULTI; i++) {
+        int armeUnlock = UpdateCoffre(&coffre[i], joueur, blocks);
         if (armeUnlock > 0) {
-            healUnlockLocal[i] = 1;
+            coffreUnlockLocal[i] = 1;
             if (armeUnlock == 1) joueur->armeUnlock[1] = 0;
             else if (armeUnlock == 2) joueur->armeUnlock[0] = 0;
             else if (armeUnlock == 3) joueur->armeUnlock[2] = 0;
@@ -150,7 +150,7 @@ static void GererActionsLocales(Entity* joueur, Camera3D* camera, Block blocks[N
     }
 }
 
-static void EnvoyerEtatLocal(Entity* joueur, ReseauState* reseau, Camera3D* camera, GameScreen* currentScreen, int healUnlockLocal[MAX_HEALS_MULTI], bool jeTire) {
+static void EnvoyerEtatLocal(Entity* joueur, ReseauState* reseau, Camera3D* camera, GameScreen* currentScreen, int coffreUnlockLocal[MAX_COFFRES_MULTI], bool jeTire) {
     PaquetReseau paquetEnvoi = {0};
     paquetEnvoi.pos = joueur->pos;
     paquetEnvoi.yaw = joueur->yaw;
@@ -158,7 +158,7 @@ static void EnvoyerEtatLocal(Entity* joueur, ReseauState* reseau, Camera3D* came
     paquetEnvoi.tir = jeTire ? 1 : 0;
     paquetEnvoi.arme = joueur->armeEquipee.type;
     paquetEnvoi.life = joueur->life;
-    memcpy(paquetEnvoi.healRamasses, healUnlockLocal, sizeof(int)*MAX_HEALS_MULTI);
+    memcpy(paquetEnvoi.coffreRamasses, coffreUnlockLocal, sizeof(int)*MAX_COFFRES_MULTI);
 
     if (joueur->health <= 0) {
         paquetEnvoi.estMort = 1;
@@ -201,7 +201,7 @@ static void GererPingReseau(ReseauState* reseau) {
     }
 }
 
-static int RecevoirEtTraiterPaquets(Entity* ennemi, Heal* heal, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], ReseauState* reseau, int* infoMortRecue, int* viesAdversaire) {
+static int RecevoirEtTraiterPaquets(Entity* ennemi, Coffre* coffre, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], ReseauState* reseau, int* infoMortRecue, int* viesAdversaire) {
     PaquetReseau paquetRecu;
     int statutRecu = 0;
 
@@ -225,8 +225,8 @@ static int RecevoirEtTraiterPaquets(Entity* ennemi, Heal* heal, Block blocks[NUM
         ennemi->yaw = paquetRecu.yaw;
         ennemi->pitch = paquetRecu.pitch;
 
-        for (int i = 0; i < MAX_HEALS_MULTI; i++) {
-            if (paquetRecu.healRamasses[i] == 1) InitHeal(&heal[i], blocks);
+        for (int i = 0; i < MAX_COFFRES_MULTI; i++) {
+            if (paquetRecu.coffreRamasses[i] == 1) InitCoffre(&coffre[i], blocks);
         }
 
         ennemi->armeEquipee = ObtenirModeleArme(paquetRecu.arme);
@@ -244,24 +244,24 @@ static int RecevoirEtTraiterPaquets(Entity* ennemi, Heal* heal, Block blocks[NUM
 // UPDATE GAMEPLAY MULTI
 // ======================================================================
 
-void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Heal* heal, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], Camera3D* camera, ReseauState* reseau, GameScreen* currentScreen) {
+void UpdateMultijoueur(Entity* joueur, Entity* ennemi, Coffre* coffre, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], Camera3D* camera, ReseauState* reseau, GameScreen* currentScreen) {
     
-    int healUnlockLocal[MAX_HEALS_MULTI] = {0};
+    int coffreUnlockLocal[MAX_COFFRES_MULTI] = {0};
     bool jeTire = false;
     Entity* ennemiPtr = ennemi;
     
-    GererActionsLocales(joueur, camera, blocks, &ennemiPtr, heal, projs, healUnlockLocal, &jeTire);
+    GererActionsLocales(joueur, camera, blocks, &ennemiPtr, coffre, projs, coffreUnlockLocal, &jeTire);
 
     if (IsKeyPressed(KEY_M)) joueur->pos = ennemi->pos; // Cheat debug teleporation
 
-    EnvoyerEtatLocal(joueur, reseau, camera, currentScreen, healUnlockLocal, jeTire);
+    EnvoyerEtatLocal(joueur, reseau, camera, currentScreen, coffreUnlockLocal, jeTire);
     if (*currentScreen == GAME_OVER) return;
 
     GererPingReseau(reseau);
 
     int infoMortRecue = 0;
     int viesAdversaire = 3;
-    int statutRecu = RecevoirEtTraiterPaquets(ennemi, heal, blocks, projs, reseau, &infoMortRecue, &viesAdversaire);
+    int statutRecu = RecevoirEtTraiterPaquets(ennemi, coffre, blocks, projs, reseau, &infoMortRecue, &viesAdversaire);
 
     if (infoMortRecue == 1) {
         joueur->score++;
@@ -336,7 +336,7 @@ static void GererMenuLobby(ReseauState* netState, GameScreen* currentScreen) {
     }
 }
 
-static void GererSaisieIPClient(ReseauState* netState, Entity* player, Entity* remotePlayer, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Heal* heal, Projectile projs[MAX_PROJ], bool* jeuInitialise) {
+static void GererSaisieIPClient(ReseauState* netState, Entity* player, Entity* remotePlayer, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Coffre* coffre, Projectile projs[MAX_PROJ], bool* jeuInitialise) {
     int key = GetCharPressed();
     while (key > 0) {
         if (((key >= '0' && key <= '9') || key == '.') && ctx.ipSaisieLen < 15) {
@@ -361,7 +361,7 @@ static void GererSaisieIPClient(ReseauState* netState, Entity* player, Entity* r
             netState->isServer = 0;
             netState->connected = 1;
             ctx.etat = ETAT_EN_JEU;
-            LancerPartieReseau(player, remotePlayer, blocks, heal, projs, 0, jeuInitialise);
+            LancerPartieReseau(player, remotePlayer, blocks, coffre, projs, 0, jeuInitialise);
         } else {
             ctx.erreurConnexion = true;
             ctx.etat = ETAT_LOBBY_MENU; // Retour au menu pour afficher l'erreur
@@ -373,7 +373,7 @@ static void GererSaisieIPClient(ReseauState* netState, Entity* player, Entity* r
 // FONCTION PRINCIPALE : LOBBY + JEU
 // ======================================================================
 
-void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal* heal, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], Camera3D* camera, ReseauState* netState, bool* jeuInitialise, GameScreen* currentScreen) {
+void partie_multijoueur(Entity* player, Entity* remotePlayer, Coffre* coffre, Block blocks[NUM_BLOCKS][NUM_BLOCKS], Projectile projs[MAX_PROJ], Camera3D* camera, ReseauState* netState, bool* jeuInitialise, GameScreen* currentScreen) {
     
     switch (ctx.etat) {
         
@@ -382,7 +382,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal* heal, Block 
             break;
             
         case ETAT_LOBBY_SAISIE_IP:
-            GererSaisieIPClient(netState, player, remotePlayer, blocks, heal, projs, jeuInitialise);
+            GererSaisieIPClient(netState, player, remotePlayer, blocks, coffre, projs, jeuInitialise);
             break;
             
         case ETAT_LOBBY_ATTENTE:
@@ -397,7 +397,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal* heal, Block 
                 netState->socket = clientSock;
                 netState->connected = 1;
                 ctx.etat = ETAT_EN_JEU;
-                LancerPartieReseau(player, remotePlayer, blocks, heal, projs, 1, jeuInitialise);
+                LancerPartieReseau(player, remotePlayer, blocks, coffre, projs, 1, jeuInitialise);
             }
             AnnulerRechercheOuAttente(netState, currentScreen);
             break;
@@ -414,7 +414,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal* heal, Block 
                         netState->isServer = 0;
                         netState->connected = 1;
                         ctx.etat = ETAT_EN_JEU;
-                        LancerPartieReseau(player, remotePlayer, blocks, heal, projs, 0, jeuInitialise);
+                        LancerPartieReseau(player, remotePlayer, blocks, coffre, projs, 0, jeuInitialise);
                     } else {
                         ctx.erreurConnexion = true;
                         ctx.etat = ETAT_LOBBY_MENU;
@@ -425,7 +425,7 @@ void partie_multijoueur(Entity* player, Entity* remotePlayer, Heal* heal, Block 
             break;
             
         case ETAT_EN_JEU:
-            UpdateMultijoueur(player, remotePlayer, heal, blocks, projs, camera, netState, currentScreen);
+            UpdateMultijoueur(player, remotePlayer, coffre, blocks, projs, camera, netState, currentScreen);
 
             if (*currentScreen == GAME_OVER || *currentScreen == VICTOIRE || IsKeyPressed(KEY_BACKSPACE)) {
                 if (IsKeyPressed(KEY_BACKSPACE) && netState->socket != -1) {
@@ -524,11 +524,11 @@ void DessinerLobbyMultijoueur(void) {
 // FONCTION DE DESSIN EN JEU (LOBBY + PARTIE)
 // ======================================================================
 
-void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal* heal,
+void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Coffre* coffre,
                          Block blocks[NUM_BLOCKS][NUM_BLOCKS],
                          Projectile projs[MAX_PROJ], Camera3D* camera,
                          Texture2D viseur, Model tabArmes[4],
-                         Model healModel, Model skyModel,
+                         Model coffreModel, Model skyModel,
                          Model wallModel, Model floorModel, Model botModel,
                          Model tabModels[4], Texture2D iconesArmes[]) {
                          
@@ -538,8 +538,8 @@ void DessinerMultijoueur(Entity* player, Entity* remotePlayer, Heal* heal,
     Entity dummyBots[18] = {0};
     dummyBots[0] = *remotePlayer;
 
-    UpdateDessinGame(dummyBots, heal, blocks, *camera, projs, *player, viseur,
-                     tabArmes, healModel, skyModel, wallModel, floorModel,
+    UpdateDessinGame(dummyBots, coffre, blocks, *camera, projs, *player, viseur,
+                     tabArmes, coffreModel, skyModel, wallModel, floorModel,
                      botModel, tabModels, NULL, false, botModel, iconesArmes);
                      
     DrawText(TextFormat("Ping: %.0f ms", ctx.ping), 10, GetScreenHeight() - 30, 20, YELLOW);

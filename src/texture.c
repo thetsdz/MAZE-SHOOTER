@@ -64,7 +64,7 @@ void LoadGameAssets(GameAssets *assets) {
     /* --- Entités --- */
     assets->botModel = LoadModel("../assets/models/robots/Robot.glb");
     assets->bossModel = LoadModel("../assets/models/boss/boss.glb");
-    assets->healModel = LoadModel("../assets/models/coffre/Chest2.glb");
+    assets->coffreModel = LoadModel("../assets/models/coffre/Chest2.glb");
 
     /* --- Projectiles --- */
     assets->tabProjModels[0] =
@@ -121,7 +121,7 @@ void UnloadGameAssets(GameAssets *assets) {
 
     UnloadModel(assets->botModel);
     UnloadModel(assets->bossModel);
-    UnloadModel(assets->healModel);
+    UnloadModel(assets->coffreModel);
 
     DechargerModeleNiveau(assets);
 

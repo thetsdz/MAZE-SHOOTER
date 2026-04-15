@@ -254,7 +254,7 @@ typedef struct {
   int life;          /**< Nombre de vies restantes du joueur */
   int isPing;        // 0=normal, 1=ping aller, 2=ping retour
   double timestamp;  // Pour mesurer le RTT
-  int healRamasses[10]; // 1 si l'objet i a été ramassé par moi ce tour-ci, 0 sinon
+  int coffreRamasses[10]; // 1 si l'objet i a été ramassé par moi ce tour-ci, 0 sinon
 } PaquetReseau;
 
 /**
@@ -289,6 +289,29 @@ typedef struct{
     Vector3 pos;            /**< Position de l'objet. */
     int healAmount;         /**< Quantité de soin fournie par l'objet. */
     TypeArme arme ;           /**< Vaut -1 si aucune arme sinon 1,2 et 3 pour le sniper le fusil d'assault et la grenade */
-} Heal;
+} Coffre;
+
+
+/**
+ * \brief Contient tous les assets graphiques du jeu (modèles 3D et textures).
+ */
+typedef struct {
+    Model wallModel;
+    Model floorModel;
+    Texture2D wallTex;
+    Texture2D floorTex;
+    Model skyModel;
+    Model botModel;
+    Model bossModel;
+    Model coffreModel;
+    Model tabArmes[4];
+    Texture2D iconesArmes[4];
+    Model tabProjModels[5];
+    Texture2D viseur;
+} GameAssets;
+
+
+
+
 
 #endif

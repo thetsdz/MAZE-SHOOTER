@@ -8,24 +8,7 @@
 #define TEXTURE_H
 
 #include "raylib.h"
-
-/**
- * \brief Contient tous les assets graphiques du jeu (modèles 3D et textures).
- */
-typedef struct {
-    Model wallModel;
-    Model floorModel;
-    Texture2D wallTex;
-    Texture2D floorTex;
-    Model skyModel;
-    Model botModel;
-    Model bossModel;
-    Model healModel;
-    Model tabArmes[4];
-    Texture2D iconesArmes[4];
-    Model tabProjModels[5];
-    Texture2D viseur;
-} GameAssets;
+#include "types.h"
 
 /**
  * \brief Charge l'ensemble des assets graphiques du jeu.
