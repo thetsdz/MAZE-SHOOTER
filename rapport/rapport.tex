@@ -170,7 +170,7 @@ Le code repose sur une séparation claire entre deux étapes :
 \end{itemize}
 
 \bigskip \noindent
-Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (gestion du clic ou clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
+Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (gestion du clic ou clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité, et ça évite de stocker des variables inutiles la plus par du temps lorsque le joueur joue. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
 
 \begin{figure}[H]
     \centering
@@ -365,7 +365,7 @@ Cette section vise à expliquer comment les armes et leurs munitions sont géré
 Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir,munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou, recuperer des coffres. Des photos d'armes  et du coffre sont diponibles en annexe (cf \autoref{image armes} pour les armes et \autoref{image coffre} pour le coffre) .
 
 \bigskip \noindent
-Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \secref{Interface}, pour plus de détail. 
+Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \autoref{image armes}. 
 
 \bigskip \noindent
 Pour recharger les munitions, le choix qui es proposé dans ce jeu est d'utiliser la touche R.  Une limite de rechargement pourrais être implémenté, mais il faudrait alors d'autre fonctionnalité pour que le joueur puissent avancer jusqu'au boss, s'il est à cours de munitions trop tôt.
@@ -397,6 +397,39 @@ Pour recharger les munitions, le choix qui es proposé dans ce jeu est d'utilise
 \bigskip
 Finalement, grace au rebond et changement de texture (cf \secref{Interface}) de la grenade, une mécanique \og complexe \fg{} est apporté au joueur. De plus, avec le reste des projectiles, ce systeme d'arme contribu clairement au gameplay du joueur.  
 
+\begin{figure}[H]
+ 
+    \centering
+    \begin{subfigure}{0.4\textwidth} % Maintenant tu peux monter à 0.65 !
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_pistolet.png}
+        \caption{Le pistolet}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_sniper.png}
+        \caption{Le sniper}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_fusil.png}
+        \caption{Le fusil}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_grenade.png}
+        \caption{La grenade}
+    \end{subfigure}
+
+    \caption{Captures d'écran des armes}
+    \label{image armes}
+
+\end{figure}
 
 \subsection{Système de sauvegarde crypté}
 Le système de sauvegarde est assez simple. On sauvegarde les données importantes de la partie telles que les différentes informations des entités. Toutes les 
@@ -486,27 +519,26 @@ place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pou
 
 
 \subsection{Interface}\label{Interface}
-Cette partie regroupe les différents aspects graphiques et audios que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
+Cette partie regroupe les différents aspects graphique et audio que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
+
+
 
 \bigskip \noindent
-Commençons par le menu et les options du jeu, comme vu dans la \secref{Logique du jeu}, il devrait y avoir deux parties, une logique et une de dessin, or, ce n'est pas le cas (cf code \cite{Github}). C'est volontaire, ceci évite d'alourdir le fichier main.c de variables qui serait inutile la majorité du temps lorsque le joueur joue en mode solo ou multijoueur.
-
-\bigskip \noindent
-Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même il existe une palette varié d'effet sonore ou de musique qui vise à rendre plus immersif un moment de jeu.
+Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même, il existe une palette variée d'effet sonore ou de musique qui vise à rendre plus immersif un moment de jeu.
 \begin{exemple}
-Lorsque la touche R est pressé, un son de rechargement de l'arme se produit.
+Lorsque la touche R est pressée, un son de rechargement de l'arme se produit.
 \end{exemple}
 
 \bigskip \noindent
 Ensuite, parmi les assets un aspect graphique important nous interesse, il s'agit :
 \begin{itemize}
 	\item des textures 2D, qui sont des images au format .png
-	\item des modèles 3D, qui sont au format .glb, en realité un fichier .glb contient sa propre texture
+	\item des modèles 3D, qui sont au format .glb, en réalité un fichier .glb contient sa propre texture
 \end{itemize}
-La création d'un modèle .glb n'a pas été envisagées pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
+La création d'un modèle .glb n'a pas été envisagée pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
 
 \bigskip \noindent
-Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier on s'interessera à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
+Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier nous nous sommes intéressés à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
 \begin{equation*}
     R_x(\alpha) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\alpha & -\sin\alpha \\ 0 & \sin\alpha & \cos\alpha \end{pmatrix} 
     \qquad \text{et} \qquad
@@ -514,7 +546,7 @@ Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensembl
 \end{equation*}
  
 \noindent
-L'idée est d'appliquer à l'attribut \verb|transform| du modèle une opération grace aux matrice précédentes qui se repercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette opération sont utilisés les \verb|pitch| et \verb|yaw| de la camera du joueur.
+L'idée est d'appliquer à l'attribut \verb|transform| du modèle une opération grace aux matrices précédentes qui se répercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette opération sont utilisés les \verb|pitch| et \verb|yaw| de la camera du joueur.
 
 \begin{exemple}
 Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\theta=pitch$ et $\theta '=yaw$ . Sa position finale $\vec{V}'=(x',y',z')$ est donnée par la relation :
@@ -526,7 +558,7 @@ Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\th
 La matrice $ R_{\theta} \cdot R_{\theta'}$ est la composition de deux rotations élémentaires.
 
 \bigskip \noindent
-Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tout les modèles de projectile (sauf la grenade) sont \og debout \fg. Ne pas l'introduire necéssiterait d'utiliser un logiciel de modélisation.
+Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tous les modèles de projectile (sauf la grenade) sont \og debout \fg. Ne pas l'introduire nécessiterait d'utiliser un logiciel de modélisation.
 
 \section{Résultats et conclusion}
 L'idée qui se cache derrière ce projet était d'avoir un jeu fps dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le gant previsionnel des tâches ont été atteints. 
@@ -636,40 +668,7 @@ Les tests effectués sont les suivants:
 \end{table}
 
 
-\begin{figure}[htbp]
-    \begin{adjustwidth}{-2cm}{-2cm} % On élargit la zone de 2cm à gauche et à droite
-        \centering
-        \begin{subfigure}{0.65\textwidth} % Maintenant tu peux monter à 0.65 !
-            \centering
-            \includegraphics[width=\textwidth]{./images/armes/photo_pistolet.png}
-            \caption{Le pistolet}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}{0.65\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{./images/armes/photo_sniper.png}
-            \caption{Le sniper}
-        \end{subfigure}
 
-        \vspace{0.5cm}
-
-        \begin{subfigure}{0.65\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{./images/armes/photo_fusil.png}
-            \caption{Le fusil}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}{0.65\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{./images/armes/photo_grenade_bot.png}
-            \caption{La grenade et le robot}
-        \end{subfigure}
-
-        \caption{Captures d'écran des armes}
-        \label{image armes}
-    \end{adjustwidth}
-   
-\end{figure}
 
 \begin{figure}[htbp]
 	\includegraphics[width=\textwidth]{./images/armes/photo_coffre.png}
@@ -679,4 +678,4 @@ Les tests effectués sont les suivants:
 
 
 
-\end{document}
+\end{document}pour plus de détail
