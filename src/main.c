@@ -8,7 +8,6 @@
 #include <time.h>
 
 // --- Modules internes du jeu ---
-#include "../lib/headers/asset.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/bot.h"
 #include "../lib/headers/dessin.h"

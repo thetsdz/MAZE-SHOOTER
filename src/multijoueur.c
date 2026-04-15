@@ -11,7 +11,6 @@
 #include <time.h>
 
 #include "../lib/headers/arme.h"
-#include "../lib/headers/asset.h"
 #include "../lib/headers/audio.h"
 #include "../lib/headers/dessin.h"
 #include "../lib/headers/heal.h"

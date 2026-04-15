@@ -42,7 +42,45 @@
  * \brief ajout de l'inventaire d'arme
  */
 
+
+/** \version 5.6
+ * \author Hugues Astier
+ * \date 09/04/2026
+ * \brief réorganisation et suppressionn de asset.c
+ */
+
+
+
+
+
 #include "types.h"
+
+
+
+
+
+
+
+
+
+/**
+    \brief Dessine l'arme on est passé d'une texture 2d à un model 3d
+    \param Texture de l'arme
+    \param Largeur de la fenètre
+    \param Hauteur de la fenètre
+*/
+
+void DessinerArme(Model ModelArme, int indexArme);
+/**
+    \brief Dessine le viseur
+    \param Texture du viseur
+    \param Largeur de la fenètre
+    \param Hauteur de la fenètre
+*/
+
+void DessinerViseur(Texture2D texture, int screenWidth, int screenHeight);
+
+
 
 /**
  * @brief permet de dessiner les projectiles à chaque frame
