@@ -25,7 +25,8 @@ SRCS = main.c        \
        multijoueur.c \
        arme.c        \
        audio.c       \
-       heal.c
+       heal.c        \
+       texture.c
 
 OBJS = $(SRCS:.c=.o)
 

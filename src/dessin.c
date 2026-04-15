@@ -406,7 +406,7 @@ void UpdateDessinGame(Entity bot[18], Heal heal[10],
   rlEnableBackfaceCulling();
   rlEnableDepthMask();
 
-  DrawLevel(blocks, wallModel, floorModel);
+  DrawLevel(blocks, wallModel, floorModel, camera, 50.0f);
 
   /*for (int i = 0; i < 10; i++) {
     float hover = sinf((float)GetTime() * 2.0f) * 0.12f;
