@@ -9,10 +9,10 @@
 \contentsline {subsection}{\numberline {3.2}Création de la carte}{6}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Joueur, déplacement et gestion de la vie}{7}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Ennemis du joueur}{8}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Système d'arme}{10}{subsection.3.5}%
-\contentsline {subsection}{\numberline {3.6}Système de sauvegarde crypté}{12}{subsection.3.6}%
-\contentsline {subsection}{\numberline {3.7}Multijoueur, réseau}{13}{subsection.3.7}%
-\contentsline {subsection}{\numberline {3.8}Interface}{15}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.5}Système d'arme}{11}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Système de sauvegarde crypté}{13}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Multijoueur, réseau}{14}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Interface}{16}{subsection.3.8}%
 \contentsline {section}{\numberline {4}Résultats et conclusion}{17}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Bibliographie}{19}{subsection.4.1}%
 \contentsline {section}{\numberline {A}Annexes}{20}{appendix.A}%
