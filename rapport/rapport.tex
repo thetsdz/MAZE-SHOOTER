@@ -12,6 +12,8 @@
 \usepackage{pdflscape}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{caption}
+\captionsetup{justification=centering}
 \usepackage{subcaption}
 \usepackage{changepage}
 \usepackage{float}
@@ -69,27 +71,13 @@ En effet, dans le cadre d'une deuxième année de Licence Informatique, à l'uni
 Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes. Un mode \emph{Solo} orienté sur la survie face à des vagues de robots, ainsi que d'un boss. Le second mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
 
 \bigskip \noindent
-Ce compte rendu  qui retrace l'ensemble du cycle de vie du projet a plusieurs objectifs. En premier lieu celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Pour cette répartition, nous avons utilisé un gant prévisionnel des tâches (cf \secref{gant}), ce qui a permis un travail collaboratif efficace. Puis, en vue de faciliter la lecture du code  et de la rendre accessible sur la page github (cf \cite{Github}), une présentation explicative des différents points qui nous ont semblé difficiles est faite. Enfin, dans ce rapport est disponible un bilan global qui vise à analyser les forces et les faiblesses du projet.
+Ce compte rendu  qui retrace l'ensemble du cycle de vie du projet a plusieurs objectifs. En premier lieu celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Puis, en vue de faciliter la lecture du code  et de la rendre accessible sur la page github (cf \cite{Github}), une présentation explicative des différents points qui nous ont semblé difficiles est faite. Enfin, dans ce rapport est disponible un bilan global qui vise à analyser les forces et les faiblesses du projet.
  
  
 \section{Conception}
 
-\subsection{Cahier des charges} \label{cdc}
-Le cahier des charges à respecter suit les points suivants : 
-\begin{itemize}
-    \item Réaliser un jeu par groupe (de trois ici)
-    \item Utiliser le language C
-    \item Utiliser une librairie graphique comme SDL ou RAYLIB
-    \item Se servir de GIT 
-    \item Suivre un model de gestion de projet 
-    \item Utiliser doxygen
-\end{itemize} 
-
-\smallskip
-On a utilisé la librairie graphique Raylib, ainsi que GIT avec quatre branche (master, corentin, Thomas et HUgues) et on a suivit modèle linéaire.
-
-
-MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, proposant une expérience dynamique s'articulant autour d'un grand nombre de mécaniques implémentées de A à Z :
+\subsection{Fonctionnalités du jeu} \label{cdc}
+Les fonctionnalités du jeu correspondent aux différents points suivant: 
 
 \begin{itemize}
     \item \textbf{Modes de jeu variés :} Le jeu propose un mode \emph{Solo} orienté survie (le joueur doit éliminer un maximum de robots et affronter des boss 
@@ -112,13 +100,14 @@ MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, pro
     sauvegarde (\emph{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
 \end{itemize}
 
-\section{Organisation du projet}\label{gantt}
 
 \subsection{Repartition des tâches}
 Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
 
+\medskip \noindent
 Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux robots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
 
+\medskip \noindent
 Hugues s’est occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des robots ainsi que des coffres (soin et armes) et du joueur. Il a développé le système d’armes, permettant d'en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
 
 \medskip \noindent
@@ -126,7 +115,7 @@ Le diagramme de Gantt présent en annexe (cf \autoref{fig:gantt}) présente cett
 
 
 \subsection{Outils utilisés}
-Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'outils informatiques:
+Afin de mener à bien ce projet, nous nous avons utilisés un grand nombres d'outils informatiques:
 
 \begin{itemize}
     \item \textbf{Git} (Contrôle de version) : Indispensable pour notre organisation, Git nous a permis de travailler simultanément sur la même base de code 
@@ -148,29 +137,27 @@ Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'o
 
 
 \subsection{Arborescence du code et structure du menu}\label{Logique du jeu}
-\indent Dans cette section on explique comment s'organise le repertoire du projet, et l'architecture logicielle utilisées. Cette structure est importante car elle est le coeur du code et gère les différents modules.
-%Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
-
+\indent Dans cette section, on explique comment s'organise le répertoire du projet et l'architecture logicielle utilisée. Cette structure est importante, car elle est le cœur du code et gère les différents modules.
 
 \bigskip \noindent
-Le dépôt du projet (cf. \cite{Github}) est structuré en cinq dossiers principaux : assets, doc, lib, rapport, src et test. L'intégralité du code source est regroupée dans le dossier src/, qui est segmenté en plusieurs fichiers.
+Le dépôt du projet (cf. \cite{Github}) est structuré en cinq dossiers principaux : \verb|assets|, \verb|doc|, \verb|lib|, \verb|rapport|, \verb|src| et \verb|test|. L'intégralité du code source est regroupée dans le dossier \verb|src/|, qui est segmenté en plusieurs fichiers.
 
 \bigskip \noindent
-Concernant le fonctionnement de main.c, il sert de tour de contrôle au projet. Il s'appuie sur une variable d'état qui détermine ce qui doit être traité et affiché à l'écran (cf. \autoref{image menu}).
+Concernant le fonctionnement de \verb|main.c|, il sert de tour de contrôle au projet. Il s'appuie sur une variable d'état qui détermine ce qui doit être traité et affiché à l'écran.
 
 \noindent
 Le code repose sur une séparation claire entre deux étapes :
 \begin{itemize}
-    \item Le traitement logique : Cette phase met à jour les données du jeu. On y utilise des fonctions « génériques » qui gèrent les variables globales.
+    \item \textbf{Le traitement logique :} Cette phase met à jour les données du jeu. On y utilise des fonctions « génériques » qui gèrent les variables globales.
         \begin{exemple}
-            Exemple : La fonction UpdateGame(...) centralise toute la logique du mode solo (déplacements, collisions, scores).
+            La fonction \verb|UpdateGame(...)| centralise toute la logique du mode solo (déplacements, collisions, scores).
         \end{exemple}
     \medskip
-    \item Le rendu graphique : Une fois les calculs terminés, on appel les fonctions de dessin correspondantes ( cf \secref{Interface}, pour plus de détail). On s'assure ainsi que l'image affichée correspond exactement à l'état actuel des variables.
+    \item \textbf{Le rendu graphique :} Une fois les calculs terminés, on appelle les fonctions de dessin correspondantes (cf. \secref{Interface} pour plus de détails). On s'assure ainsi que l'image affichée correspond exactement à l'état actuel des variables.
 \end{itemize}
 
 \bigskip \noindent
-Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (gestion du clic ou clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité, et ça évite de stocker des variables inutiles la plus par du temps lorsque le joueur joue. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
+Pour le cas spécifique de \verb|menu.c| (cf. \autoref{image menu}), nous avons choisi de regrouper la logique (gestion du clic ou du clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité. Cela évite de stocker des variables inutiles la plupart du temps lorsque le joueur joue. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
 
 \begin{figure}[H]
     \centering
@@ -180,7 +167,6 @@ Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (ge
     \caption{Capture d'écran du menu principal}
     \label{image menu}
 \end{figure}
-
 
 
 \subsection{Création de la carte}\label{map}
@@ -350,66 +336,34 @@ du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss o
 
 
 \subsection{Système d'arme}\label{sys_arme}
-Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile ou munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. 
+Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appellations suivantes : projectile ou munitions. La première sera davantage utilisée pour les collisions, la seconde pour la capacité du chargeur de l'arme. 
 
 \bigskip
-\noindent Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet, il existe quatre armes différentes: 
+\noindent Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet. Il existe quatre armes différentes : 
 \begin{enumerate}
     \item un pistolet,
     \item un sniper,
-    \item un fusil d'assault,
+    \item un fusil d'assaut,
     \item une grenade.
-  
-
 \end{enumerate}
-Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir,munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou, recuperer des coffres. Des photos d'armes  et du coffre sont diponibles en annexe (cf \autoref{image armes} pour les armes et \autoref{image coffre} pour le coffre) .
+
+Chacune des armes dispose de ses propres caractéristiques (dégâts, capacité du chargeur, cadence de tir, munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme. Pour en obtenir d'autres, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou récupérer des coffres. 
 
 \bigskip \noindent
-Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \autoref{image armes}. 
-
-\bigskip \noindent
-Pour recharger les munitions, le choix qui es proposé dans ce jeu est d'utiliser la touche R.  Une limite de rechargement pourrais être implémenté, mais il faudrait alors d'autre fonctionnalité pour que le joueur puissent avancer jusqu'au boss, s'il est à cours de munitions trop tôt.
-
-\bigskip
-\noindent Dans la partie logique du jeu (cf \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
-
-\noindent La première récupere les caractéristiques de l'arme nécéssaire pour tous les changement qu'operera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
-\begin{exemple}
-	Le joueur tape sur la touche \verb|F4|, la fonction \verb|ChangementArme(...)| verfie que
-	les conditions sont remplies, alors on recupere les caractéristiques de la grenade et les
-	donne au joueur.
-\end{exemple}
-
-\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemies}, il faut compendre que les trois dimensions du jeu se represente bien grace à RAYLIB avec des vecteurs en trois dimension, l'analogie avec les axes X,Y et Z est pertinentes. \`A chaque projectile on associe  : un vecteur \verb|pos|, un vecteur \verb|vel|,une valeur bouléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
-
-\bigskip
-\noindent Ensuite, il a été choisi de representer tout les projectiles présent sur le jeu par un tableau. Une iteration sur ce tableau permets alors de tester les colisions avec les murs,robot et sol (ie une cible). Cette grande boucle est d'une complexité $O(n^3)$, en effet elle contient deux sous boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 robots. 
-
-\bigskip
-\noindent Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de test grace à un break pour la triple boucle. Et au final le nombre maximum de projectile actif et de murs est respectivement de 50 et 51x51 (cf \secref{map}). Donc dans l'ambition du jeu qui a été la notre il n'y a aucun impact. 
-
-\bigskip
-\noindent Pour revenir au colisions, la logique appliqué aux projectiles , excepté la grenade, est la suivante : on teste si le bord du projectile touche une cible, si oui, on change alors la valeur du booléen.
-
-\bigskip
-\noindent Dans le cas de la grenade, pour les murs, il y a juste un changement de signe sur les coordonnées du vecteur vélocité selon où elle touche un mur. Ce changement vise à obtenir un effet de rebond sur murs, une application de la gravité est aussi présente en vu d'un gain de réalisme. Sinon, le lecteur est invité à consulter le fichier projectile.c pour plus de détails sur le code, cf \cite{Github}, notamment sur la manière dont l'explosion est géré.
-
-\bigskip
-Finalement, grace au rebond et changement de texture (cf \secref{Interface}) de la grenade, une mécanique \og complexe \fg{} est apporté au joueur. De plus, avec le reste des projectiles, ce systeme d'arme contribu clairement au gameplay du joueur.  
+Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sniper, le fusil et la grenade ; cet ordre va de l'arme la moins forte à la plus forte. Mentionnons aussi qu'un modèle par arme, et par projectile, est présente (voir \autoref{image armes}). 
 
 \begin{figure}[H]
- 
     \centering
-    \begin{subfigure}{0.4\textwidth} % Maintenant tu peux monter à 0.65 !
+    \begin{subfigure}{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./images/armes/photo_pistolet.png}
-        \caption{Le pistolet}
+        \caption{Modèle du pistolet}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./images/armes/photo_sniper.png}
-        \caption{Le sniper}
+        \caption{Modèle du sniper}
     \end{subfigure}
 
     \vspace{0.5cm}
@@ -417,19 +371,48 @@ Finalement, grace au rebond et changement de texture (cf \secref{Interface}) de 
     \begin{subfigure}{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./images/armes/photo_fusil.png}
-        \caption{Le fusil}
+        \caption{Modèle du fusil}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{./images/armes/photo_grenade.png}
-        \caption{La grenade}
+        \caption{Modèle de la grenade}
     \end{subfigure}
-
     \caption{Captures d'écran des armes}
     \label{image armes}
-
 \end{figure}
+
+\bigskip \noindent
+Pour recharger les munitions, le choix qui est proposé dans ce jeu est d'utiliser la touche \verb|R|. Une limite de rechargement pourrait être implémentée, mais il faudrait alors d'autres fonctionnalités pour que le joueur puisse avancer jusqu'au boss s'il est à court de munitions trop tôt.
+
+\bigskip
+\noindent Dans la partie mise à jours des variables globales, (cf. \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
+
+\noindent La première récupère les caractéristiques de l'arme nécessaires pour tous les changements qu'opérera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
+\begin{exemple}
+    Le joueur tape sur la touche \verb|F4|, la fonction \verb|ChangementArme(...)| vérifie que
+    les conditions sont remplies, alors on récupère les caractéristiques de la grenade et on les
+    donne au joueur.
+\end{exemple}
+
+\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemis}, il faut comprendre que les trois dimensions du jeu se représentent bien grâce à RAYLIB avec des vecteurs en trois dimensions ; l'analogie avec les axes X, Y et Z est pertinente. \`A chaque projectile on associe : un vecteur \verb|pos|, un vecteur \verb|vel|, une valeur booléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
+
+\bigskip
+\noindent Ensuite, il a été choisi de représenter tous les projectiles présents dans le jeu par un tableau. Une itération sur ce tableau permet alors de tester les collisions avec les murs, les robots et le sol (i.e. une cible). Cette grande boucle est d'une complexité $O(n^3)$ ; en effet, elle contient deux sous-boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 robots. 
+
+\bigskip
+\noindent Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de tests grâce à un \verb|break| pour la triple boucle. Et au final, le nombre maximum de projectiles actifs et de murs est respectivement de 50 et 51x51 (cf. \secref{map}). Donc dans l'ambition du jeu qui a été la nôtre, il n'y a aucun impact. 
+
+\bigskip
+\noindent Pour revenir aux collisions, la logique appliquée aux projectiles, excepté la grenade, est la suivante : on teste si le bord du projectile touche une cible ; si oui, on change alors la valeur du booléen.
+
+\bigskip
+\noindent Dans le cas de la grenade, pour les murs, il y a juste un changement de signe sur les coordonnées du vecteur vélocité selon l'endroit où elle touche un mur. Ce changement vise à obtenir un effet de rebond sur les murs ; une application de la gravité est aussi présente en vue d'un gain de réalisme. Sinon, le lecteur est invité à consulter le fichier \verb|projectile.c| pour plus de détails sur le code (cf. \cite{Github}), notamment sur la manière dont l'explosion est gérée.
+
+\bigskip
+Finalement, grâce au rebond et au changement de modèle (cf. \secref{Interface}) de la grenade, une mécanique \og complexe \fg{} est apportée au joueur. De plus, avec le reste des projectiles, ce système d'arme contribue clairement au gameplay du joueur.
+
 
 \subsection{Système de sauvegarde crypté}
 Le système de sauvegarde est assez simple. On sauvegarde les données importantes de la partie telles que les différentes informations des entités. Toutes les 
@@ -517,28 +500,26 @@ place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pou
 
 
 
-
 \subsection{Interface}\label{Interface}
-Cette partie regroupe les différents aspects graphique et audio que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
-
-
+Cette partie regroupe les différents aspects graphiques et audio que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
 
 \bigskip \noindent
-Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même, il existe une palette variée d'effet sonore ou de musique qui vise à rendre plus immersif un moment de jeu.
+Pour les options et l'audio, une idée de choix de différents thèmes (lave, glace, classique) est proposée au joueur afin de diversifier l'environnement de jeu. De même, il existe une palette variée d'effets sonores ou de musiques qui vise à rendre plus immersif un moment de jeu.
 \begin{exemple}
 Lorsque la touche R est pressée, un son de rechargement de l'arme se produit.
 \end{exemple}
 
 \bigskip \noindent
-Ensuite, parmi les assets un aspect graphique important nous interesse, il s'agit :
+Ensuite, parmi les assets, un aspect graphique important nous intéresse, il s'agit :
 \begin{itemize}
-	\item des textures 2D, qui sont des images au format .png
-	\item des modèles 3D, qui sont au format .glb, en réalité un fichier .glb contient sa propre texture
+    \item des textures 2D, qui sont des images au format .png
+    \item des modèles 3D, qui sont au format .glb, en réalité un fichier .glb contient sa propre texture
 \end{itemize}
-La création d'un modèle .glb n'a pas été envisagée pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
+La logique de dessin est la suivante : d'abord on dessine tous les éléments 3D, ensuite seulement, on rajoute des éléments 2D par-dessus.
 
 \bigskip \noindent
-Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier nous nous sommes intéressés à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
+La création d'un modèle .glb n'a pas été envisagée pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza} libres de droits. 
+Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelés sommets. En particulier, on s'intéresse ici à la gestion des modèles de projectiles car elle fait appel aux matrices de rotation sur l'axe des $X$ et $Y$ suivantes :
 \begin{equation*}
     R_x(\alpha) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\alpha & -\sin\alpha \\ 0 & \sin\alpha & \cos\alpha \end{pmatrix} 
     \qquad \text{et} \qquad
@@ -546,10 +527,10 @@ Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensembl
 \end{equation*}
  
 \noindent
-L'idée est d'appliquer à l'attribut \verb|transform| du modèle une opération grace aux matrices précédentes qui se répercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette opération sont utilisés les \verb|pitch| et \verb|yaw| de la camera du joueur.
+L'idée est d'appliquer à l'attribut \verb|transform| du modèle une rotation grâce aux matrices précédentes qui se répercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette rotation sont utilisés le \verb|pitch| et le \verb|yaw| de la caméra du joueur, car le but est que l'orientation du modèle soit la même que celle de la caméra. 
 
 \begin{exemple}
-Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\theta=pitch$ et $\theta '=yaw$ . Sa position finale $\vec{V}'=(x',y',z')$ est donnée par la relation :
+Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\theta=pitch$ et $\theta'=yaw$. Sa position finale $\vec{V}'=(x',y',z')$ est donnée par la relation :
 \[
 \vec{V}' = \vec{V} \cdot R_{\theta} \cdot R_{\theta'}    
 \]
@@ -558,7 +539,33 @@ Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\th
 La matrice $ R_{\theta} \cdot R_{\theta'}$ est la composition de deux rotations élémentaires.
 
 \bigskip \noindent
-Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tous les modèles de projectile (sauf la grenade) sont \og debout \fg. Ne pas l'introduire nécessiterait d'utiliser un logiciel de modélisation.
+Dans le code, l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tous les modèles de projectiles (sauf la grenade) sont \og debout \fg. Ne pas l'introduire nécessiterait d'utiliser un logiciel de modélisation.
+
+\bigskip \noindent
+Concernant les modèles d'armes, une rotation a aussi lieu, mais elle est statique car elle ne dépend pas de la caméra du joueur. En effet, il suffit de simuler une caméra statique dès que tous le reste des éléments 3D est dessiné, puis d'appliquer la rotation voulue sur le modèle.
+
+\bigskip \noindent
+Pour finir sur cette partie, notons qu'un changement de modèle a lieu pour la grenade lorsqu'elle explose en vue de plus de réalisme et de dynamisme. Aussi, un panel HUD représentant une barre de vie, une minimap, un inventaire,etc. (cf. \autoref{HUD}) est dessiné statiquement après la partie 3D.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/2d/panel_HUD.png}
+        \caption{Panel d'informations du joueur}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/2d/minimap.png}
+        \caption{Minimap}
+    \end{subfigure}
+    \caption{Captures d'écran du HUD}
+    \label{HUD}
+\end{figure}
+
+
+
+
 
 \section{Résultats et conclusion}
 L'idée qui se cache derrière ce projet était d'avoir un jeu fps dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le gant previsionnel des tâches ont été atteints. 
@@ -589,7 +596,7 @@ Pour la recherche du joueur par les robots, il existe des méthode de recherche 
 Concernant le cahier des charges, il a aussi été respecté, je renvoie à la \secref{cdc} pour consulter la liste.
 
 \bigskip 
-Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en cascade. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en V, en supposant par exemple un un cahier des charges très aboutie, n'aurait pas été possible.
+Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en V. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en cascade, en supposant par exemple un un cahier des charges très aboutie, n'aurait pas été possible.
 
 \newpage
 \subsection{Bibliographie}
