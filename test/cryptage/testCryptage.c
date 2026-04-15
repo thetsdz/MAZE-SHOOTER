@@ -47,13 +47,13 @@ int main() {
     GameSave loadedSave;
     uint32_t read_checksum;
 
-    fp = fopen("savegame.txt", "rb"); // Mode binaire "rb" indispensable !
+    fp = fopen("savegame.txt", "rb"); // Mode binaire "rb"
     if (fp) {
         fread(&read_checksum, sizeof(uint32_t), 1, fp);
         fread(&loadedSave, sizeof(GameSave), 1, fp);
         fclose(fp);
 
-        // a. Décryptage (RC4 est symétrique : on réapplique la même fonction)
+        // a. Décryptage (RC4 est symétrique)
         rc4_crypt((unsigned char*)&loadedSave, sizeof(GameSave), KEY, strlen(KEY));
 
         // b. Vérification Anti-Triche

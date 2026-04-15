@@ -22,7 +22,7 @@ int clean_suite(void) { return 0; }
 /* --- TESTS UNITAIRES --- */
 
 /**
- * @brief Test simple : Ouverture et fermeture d'un serveur TCP
+ * @brief Test simple : Ouverture et fermeture d'un serveur
  */
 void test_init_serveur(void) {
   int port = 12345;
