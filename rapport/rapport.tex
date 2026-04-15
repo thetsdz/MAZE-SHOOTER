@@ -188,7 +188,18 @@ Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (ge
 \subsection{Création de la carte}\label{map}
 
 La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
-de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs. Chaque bloc possède une
+de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs (cf \autoref{labyrinthe}).
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.7\textwidth]{images/image.png}
+    }
+    \caption{Vue du labyrinthe}
+    \label{labyrinthe}
+\end{figure}
+
+ Chaque bloc possède une
 position dans l'espace, des dimensions fixes $(3 \times 6 \times 3)$ et un état binaire :
 \textbf{mur} (\texttt{isWall = 1}) ou \textbf{passage} (\texttt{isWall = 0}).
 
@@ -220,6 +231,7 @@ passages sont affichés comme une dalle de sol ultra-plate (\textit{scale}
 $3 \times 0{,}001 \times 3$). Pour éviter les artefacts visuels, les blocs ouverts lors
 de la génération ont leur coordonnée $y$ fixée à $-20$, les dissimulant ainsi sous le sol,
 seule la dalle étant rendue à $y = 0$.
+
 
 
 
