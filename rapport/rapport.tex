@@ -15,6 +15,7 @@
 \usepackage{subcaption}
 \usepackage{changepage}
 \usepackage{float}
+\usepackage{siunitx}
 
 \counterwithin{figure}{section}
 
@@ -88,8 +89,6 @@ Le cahier des charges à respecter suit les points suivants :
 On a utilisé la librairie graphique Raylib, ainsi que GIT avec quatre branche (master, corentin, Thomas et HUgues) et on a suivit modèle linéaire.
 
 
-\subsection{Fonctionnalités du jeu}
-
 MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, proposant une expérience dynamique s'articulant autour d'un grand nombre de mécaniques implémentées de A à Z :
 
 \begin{itemize}
@@ -113,34 +112,20 @@ MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, pro
     sauvegarde (\emph{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
 \end{itemize}
 
-\section{Organisation du projet}
+\section{Organisation du projet}\label{gantt}
 
-\subsection{Reparition des tâches}
+\subsection{Repartition des tâches}
 Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
 
 Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux bots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
 
 Hugues s’est occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des bots ainsi que des coffres (soin et armes) et du joueur. Il a développé le système d’armes, permettant d'en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
 
+\medskip \noindent
+Le diagramme de Gantt présent en annexe (cf \autoref{fig:gantt}) présente cette répartition des tâches sur la durée du projet, du 30 janvier au 17 avril 2026.
 
-\subsection{Planning prévisionnel}\label{gant}
 
-Le diagramme de Gantt ci-dessous présente la répartition temporelle des tâches 
-sur la durée du projet, du 30 janvier au 17 avril 2026.
-
-\begin{figure}[H]
-    \centering
-    \vspace{-3cm} 
-    \makebox[\textwidth][c]{
-        \includegraphics[width=1.4\textwidth, height=0.95\textheight, keepaspectratio]{gantt_final.png}
-    }
-    
-    \vspace{-0.5cm}
-    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
-    \label{fig:gantt}
-\end{figure}
 \subsection{Outils utilisés}
-
 Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'outils informatiques:
 
 \begin{itemize}
@@ -162,17 +147,16 @@ Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'o
 \section{Developpement}
 
 
-\subsection{Logique d'execution du jeu}\label{Logique du jeu}
-\indent Dans cette section on explique la logique de fonctionnement du fichier main.c, et par la même ocasion, la naviguation du joueur dans le menu du jeu.
-Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
+\subsection{Arborescence du code}\label{Logique du jeu}
+\indent Dans cette section on explique comment s'organise le repertoire du projet. %cette explication est nécéssaire pour mieux comprendre le reste du rapport. En effet, ce fichier est le coeur du code car il fait appel aux reste des fichiers.
+%Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
+
 
 \bigskip \noindent
-Pour comprendre comment fonctionnent la logique du jeu dans main.c, on a besoin d'une variable importante : CurrentScreen, c'est un pointeur sur un Gamescreen, qui decris l'etat de jeu actuel. 
-Cet variable peut prendre diverse valeurs comme \verb|NOUVELLE_PARTIE|, 
-\verb|CHARGER_PARTIE| ou encore \verb|MENU|. Par default \verb|CurrentScreen| vaut \verb|MENU|. 
+Le repertoire du projet (cf \cite{Github}), est composé de cinq sous dossier : \verb|assets,doc,lib,rapport,src,test|. C'est dans \verb|src/| que se trouve l'intégralité du code decomposé en plusieurs fichier 
+Le code de ce fichier principal se structure en deux partie :  une partie logique, et une partie dessin.
 
-\noindent Il faut maintenant comprendre comment le jeu tourne. Pour cela, dans main.c, on utilise une grande boucle \verb|while| tournant tant qu'une variable running n'est pas mise à \verb|FALSE| (ou que le joueur ne supprime pas sa fenetre).
-Dans cette boucle, il faut distinguer la partie logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable \verb|CurrentScreen|. 
+logique du jeu de la partie dessin, chaque partie correspond à un switch case. Chaque switch case regarde ce que vaut la variable \verb|CurrentScreen|. 
 
 \bigskip \noindent
 Ensuite, dans la partie logique on mets à jours les variables globales, on appel des fonctions \og generique \fg{} qui initialisent ou mettent à jours nos variables globales(Player,Bot, etc).
@@ -529,6 +513,21 @@ Lien vers la page du stite Poly Pizza : \href{https://poly.pizza/}{https://poly.
 
 \appendix
 \section{Annexes}
+
+\begin{figure}[H]
+    \centering
+    \vspace{-3cm} 
+    \makebox[\textwidth][c]{
+        \includegraphics[width=1.4\textwidth, height=0.95\textheight, keepaspectratio]{gantt_final.png}
+    }
+    
+    \vspace{-0.5cm}
+    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
+    \label{fig:gantt}
+\end{figure}
+\subsection{Outils utilisés}
+
+
 \begin{figure}[h]
     \centering
     \makebox[\textwidth][c]{%
