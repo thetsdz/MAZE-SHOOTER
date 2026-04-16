@@ -66,51 +66,38 @@ void UpdatePlayer(Entity *player, Block blocks[NUM_BLOCKS][NUM_BLOCKS],
     player->velocityY -= gravity; // On réduit la vitesse Y à chaque frame
 
     // --- Calcul du Mouvement (Clavier) ---
-    Vector3 nextPos = player->pos; // Position hypothétique future
+    Vector3 nextPos = player->pos; 
     Vector3 move = {0, 0, 0};
+    bool estEnMouvement = false; // Nouvelle variable pour pister le mouvement
 
-    // On ajoute les vecteurs directionnels selon les touches
-    if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { // QWERTY
-
+    if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { 
         move.x += forward.x;
         move.z += forward.z;
-        if (player->onGround == true)
-            PlayWalk();
-        else {
-            PauseWalk();
-        }
+        estEnMouvement = true;
     }
     if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
         move.x -= forward.x;
         move.z -= forward.z;
-        if (player->onGround == true)
-            PlayWalk();
-        else {
-            PauseWalk();
-        }
+        estEnMouvement = true;
     }
-    // Pour aller à gauche/droite, on inverse X et Z du vecteur forward
-    // (Mathématiquement : vecteur orthogonal)
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
         move.x += forward.z;
         move.z -= forward.x;
-        if (player->onGround == true)
-            PlayWalk();
-        else {
-            PauseWalk();
-        }
+        estEnMouvement = true;
     }
     if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
         move.x -= forward.z;
         move.z += forward.x;
-        if (player->onGround == true)
-            PlayWalk();
-        else {
-            PauseWalk();
-        }
+        estEnMouvement = true;
+    }
+
+    // Gestion de l'audio des bruits de pas
+    if (estEnMouvement && player->onGround) {
+        PlayWalk();
     } else {
         PauseWalk();
     }
+
     PlayGameMusic();
 
     // Normalisation : Si on appuie sur W et D en même temps, la longueur du
