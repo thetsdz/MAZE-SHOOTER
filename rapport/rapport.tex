@@ -74,11 +74,11 @@
 \newpage
 \section{Introduction}
 \hspace*{1.5em}
-Ce rapport est une présentation du projet intitulé \verb|MAZE-SHOOTER|, réalisé par le groupe formé de Thomas, Corentin et Hugues. 
+Ce rapport est une présentation du projet intitulé \verb|MAZE-SHOOTER|, il a été réalisé par le groupe formé de Thomas, Corentin et Hugues. 
 
-En effet, dans le cadre d'une deuxième année de Licence Informatique à l'université du Mans, nous avons été chargés de concevoir et développer un projet informatique. Pour ce faire, c'est le modèle linéaire en cascade qui a été choisi. Ce choix visait à laisser aux étudiants peu expérimentés un maximum de temps pour l'apprentissage d'outils nouveaux, tandis que d'autres modèles auraient nécessité une phase de conception plus longue, avec des objectifs de jeu plus précis, sans que les étudiants ne sachent réellement comment s'y prendre.
+En effet, dans le cadre d'une deuxième année de Licence Informatique, à l'université du Mans, nous avons été chargés de concevoir et développer un projet informatique. Pour ce faire, c'est le modèle linéaire en cascade qui a été choisi. Ce choix visait à laisser aux étudiants peu expérimentés un maximum de temps pour l'apprentissage d'outils nouveaux. Tandis que d'autres modèles auraient nécessité une phase de conception plus longue, avec des objectifs de jeu plus précis, sans que les étudiants ne sachent  réellement comment s'y prendre.
 
-Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à Internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes : un mode \emph{Solo} orienté sur la survie face à des vagues de robots ainsi qu'à un boss, et un second mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
+Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes. Un mode \emph{Solo} orienté sur la survie face à des vagues de robots, ainsi qu'un boss. Le second mode est le mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
 
 Ce compte rendu, qui retrace l'ensemble du cycle de vie du projet, a plusieurs objectifs. En premier lieu, celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Puis, en vue de faciliter la lecture du code et de la rendre accessible sur la page GitHub (cf. \cite{Github}), une présentation explicative des différents points qui nous ont semblés difficiles est faite. Enfin, ce rapport intègre un bilan global qui vise à analyser les forces et les faiblesses du projet.
 \section{Conception}
@@ -121,7 +121,7 @@ Afin de mener à bien ce projet, nous avons utilisé un grand nombre d'outils in
 \end{itemize}
 
 
-\section{Developpement}
+\section{Développement}
 
 
 \subsection{Arborescence du code et structure du menu}\label{Logique du jeu}
@@ -254,13 +254,13 @@ niveau des yeux), et son point cible est obtenu en additionnant la position et l
 directionnel 3D complet, calculé en coordonnées sphériques à partir du \texttt{yaw} et du
 \texttt{pitch}.
 
-Le joueur a également la possibilité de soigner, en passant sur des caisses dissiminés partout dans le labyrinthe.
-Elles sont au nombres de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50\% de chances de se soigner
+Le joueur a également la possibilité de soigner, en passant sur des caisses disséminées partout dans le labyrinthe.
+Elles sont au nombre de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50\% de chances de se soigner
 de 20 points de vie, 35\% pour 40, 14\% pour 60 et 1\% pour 100. Le joueur peut aussi récupérer des armes
-dans les caisse. IL a ainsi 70\% de chance de ne rien récupérer, 18 \% pour un sniper,
-9\% pour le fusil d'assault et 1\% pour la grenade. Une fois une caisse récupéré, elles disparaissent
-pour se remettre à autre endroit aléatoire du labyrinthe. Cette mécanique de caisse de soin et d'armes
-est developpé en mode solo mais également en mode multijoueur.
+dans les caisses. Il a ainsi 70\% de chance de ne rien récupérer, 18 \% pour un sniper,
+9\% pour le fusil d'assaut et 1\% pour la grenade. Une fois une caisse récupérée, elle disparaît
+pour se remettre à un autre endroit aléatoire du labyrinthe. Cette mécanique de caisse de soin et d'armes
+est développée en mode solo mais également en mode multijoueur.
 
 
 
@@ -316,7 +316,7 @@ que les robots standards, laissant au joueur l'opportunité d'adopter une strat�
 
 
 Enfin, la logique d'apparition (spawn) varie selon le type d'ennemi. À la mort d'un robot classique, celui-ci réapparaît immédiatement à un autre endroit aléatoire 
-du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss obéissent à une logique de progression : ils n'apparaissent que tous les 50 
+du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss obéissent à une logique de progression : ils n'apparaissent que toutes les 50 
 éliminations de robots classiques. Cela rythme la partie en récompensant la survie du joueur par l'apparition d'un défi majeur.
 
 
@@ -337,7 +337,7 @@ Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet. 
 
 Chacune des armes dispose de ses propres caractéristiques (dégâts, capacité du chargeur, cadence de tir, munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme. Pour en obtenir d'autres, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou récupérer des coffres. 
 
-Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sniper, le fusil et la grenade ; cet ordre va de l'arme la moins forte à la plus forte. Mentionnons aussi qu'un modèle par arme, et par projectile, est présente (voir \autoref{image armes}). 
+Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sniper, le fusil et la grenade ; cet ordre va de l'arme la moins forte à la plus forte. Mentionnons aussi qu'un modèle par arme, et par projectile, est présent (voir \autoref{image armes}). 
 
 \begin{figure}[H]
     \centering
@@ -372,7 +372,7 @@ Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sni
 
 Pour recharger les munitions, le choix qui est proposé dans ce jeu est d'utiliser la touche \verb|R|. Une limite de rechargement pourrait être implémentée, mais il faudrait alors d'autres fonctionnalités pour que le joueur puisse avancer jusqu'au boss s'il est à court de munitions trop tôt.
 
-Dans la partie mise à jours des variables globales, (cf. \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
+Dans la partie mise à jour des variables globales, (cf. \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
 
 La première récupère les caractéristiques de l'arme nécessaires pour tous les changements qu'opérera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
 \begin{exemple}
@@ -505,9 +505,9 @@ La matrice $ R_{\theta} \cdot R_{\theta'}$ est la composition de deux rotations 
 
 Dans le code, l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tous les modèles de projectiles (sauf la grenade) sont \og debout \fg. Ne pas l'introduire nécessiterait d'utiliser un logiciel de modélisation.
 
-Concernant les modèles d'armes, une rotation a aussi lieu, mais elle est statique car elle ne dépend pas de la caméra du joueur. En effet, il suffit de simuler une caméra statique dès que tous le reste des éléments 3D est dessiné, puis d'appliquer la rotation voulue sur le modèle.
+Concernant les modèles d'armes, une rotation a aussi lieu, mais elle est statique car elle ne dépend pas de la caméra du joueur. En effet, il suffit de simuler une caméra statique dès que tout le reste des éléments 3D est dessiné, puis d'appliquer la rotation voulue sur le modèle.
 
-Pour finir sur cette partie, notons qu'un changement de modèle a lieu pour la grenade lorsqu'elle explose en vue de plus de réalisme et de dynamisme. Aussi, un panel HUD représentant une barre de vie, une minimap, un inventaire,etc. (cf. \autoref{HUD}) est dessiné statiquement après la partie 3D.
+Pour finir sur cette partie, notons qu'un changement de modèle a lieu pour la grenade lorsqu'elle explose en vue de plus de réalisme et de dynamisme. Aussi, un panel HUD représentant une barre de vie, une minimap, un inventaire, etc. (cf. \autoref{HUD}) est dessiné statiquement après la partie 3D.
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.3\textwidth}
@@ -530,29 +530,29 @@ Pour finir sur cette partie, notons qu'un changement de modèle a lieu pour la g
 
 
 \section{Résultats et conclusion}
-L'idée qui se cache derrière ce projet était d'avoir un jeu fps dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le gant previsionnel des tâches ont été atteints. 
+L'idée qui se cache derrière ce projet était d'avoir un jeu FPS dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le Gantt prévisionnel des tâches ont été atteints. 
 
-En effet, il existe bien les deux modes de jeu prévu : multijoueur et solo, dans lequel un joueur évolue à la première personne et peux tirer sur des ennemies; et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et visuels sont proposés. De même que des tests on été apporté sur le cryptage et le reseau. Donc les objectifs initaux  sont atteints. En cela c'est une force car quasiment aucune impasse de fonctionnalité prévue inialement n'a été faite.
+En effet, il existe bien les deux modes de jeu prévus : multijoueur et solo, dans lequel un joueur évolue à la première personne et peut tirer sur des ennemis ; et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et visuels sont proposés. De même que des tests ont été apportés sur le cryptage et le réseau. Donc les objectifs initiaux  sont atteints. En cela c'est une force car quasiment aucune impasse de fonctionnalité prévue initialement n'a été faite.
 
-En réalité, certaines fonctionnalités en plus de ce qui été prévu initialement, ont été ajoutées. En effet le coffre qui permet au joueur de recuperer de la vie et des armes, ainsi que le boss, n'était pas prévue. 
+En réalité, certaines fonctionnalités en plus de ce qui était prévu initialement, ont été ajoutées. En effet le coffre qui permet au joueur de récupérer de la vie et des armes, ainsi que le boss, n'étaient pas prévus. 
 
 Cependant, ce projet peut être améliorable, en effet, en premier lieu on pourrait lister une longue liste de contenu à rajouter pour en faire un jeu plus attractif :
 \begin{itemize}
-	\item ajout d'un mode histoire plus complet, avec un systeme de niveau
-	\item ajout de davantage d'arme dans le systeme d'arme
-	\item interface d'inventaire pousser
-	\item creation et loot d'item aidant le joueur
+	\item ajout d'un mode histoire plus complet, avec un système de niveau
+	\item ajout de davantage d'armes dans le système d'arme
+	\item interface d'inventaire poussée
+	\item création et loot d'items aidant le joueur
 	\item ...
 \end{itemize}
-Cette liste n'a de fin que celle de notre imagination. Ce projet a été fait par des étudiants en second cyle universitaire donc, ici, la limite de ce projet a été donné par les dates de rendue imposé.
+Cette liste n'a de fin que celle de notre imagination. Ce projet a été fait par des étudiants en second cycle universitaire donc, ici, la limite de ce projet a été donnée par les dates de rendu imposées.
  
-De plus,  des choix d'implementation autre, peut etre plus performant, pourrait être fait. Pour cela il y a les colisions des projectiles qui ont l'a vu  dans la \secref{sys_arme}, meme si ce systeme fonctionne parfaitement bien pour l'ambition du projet, la compléxité est élevé,  donc un meuilleur algorithme pourrait être à trouver.
+De plus,  des choix d'implémentation autres, peut-être plus performants, pourraient être faits. Pour cela il y a les collisions des projectiles qui on l'a vu  dans la \secref{sys_arme}, même si ce système fonctionne parfaitement bien pour l'ambition du projet, la complexité est élevée,  donc un meilleur algorithme pourrait être à trouver.
 
-Pour la recherche du joueur par les robots, il existe des méthode de recherche plsu performant à l'aide d'une fonction heuristique  (exemple : algorithme A* ou A star).
+Pour la recherche du joueur par les robots, il existe des méthodes de recherche plus performantes à l'aide d'une fonction heuristique  (exemple : algorithme A* ou A star).
 
 Concernant le cahier des charges, il a aussi été respecté, je renvoie à la \secref{cdc} pour consulter la liste.
 
-Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en V. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en cascade, en supposant par exemple un un cahier des charges très aboutie, n'aurait pas été possible.
+Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était un modèle en cascade. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en V, en supposant par exemple un cahier des charges très abouti, n'aurait pas été possible.
 
 \newpage
 \subsection{Bibliographie}
@@ -566,8 +566,8 @@ Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en V. Ce
 \bibitem[LaTeX]{LaTeX} Lien vers la page wikipedia de \LaTeX : \url{https://fr.wikipedia.org/wiki/LaTeX}
 \bibitem[LaTeX]{LaTeX} Lien vers le site de \LaTeX : \url{https://www.latex-project.org/}
 \bibitem[LaTeX]{LaTeX} Lien vers la documentation de \LaTeX : \url{https://www.latex-project.org/help/documentation/}
-
-
+\bibitem[Poly Pizza]{polypizza}
+Lien vers la page du site Poly Pizza : \href{https://poly.pizza/}{https://poly.pizza/}
 
 \end{thebibliography}
 
@@ -576,8 +576,8 @@ Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en V. Ce
 
 \subsection{Outils utilisés}
 
-Des tests ont aussi été implémentés pour vérifier que les fonctions de \hyperref[testCrypt]{cryptage} et de \hyperref[testReseau]{reseau} fonctionnent comme prévus. 
-Les tests effectués sont les suivants:
+Des tests ont aussi été implémentés pour vérifier que les fonctions de \hyperref[testCrypt]{cryptage} et de \hyperref[testReseau]{réseau} fonctionnent comme prévu. 
+Les tests effectués sont les suivants :
 
 \bigskip
 
@@ -585,7 +585,7 @@ Les tests effectués sont les suivants:
     \centering
     \begin{tabular}{|c|c|}
         \hline
-        Cas de tests & test passé? \\
+        Cas de tests & test passé ? \\
         \hline
         Test clé vide & oui \\
         \hline
