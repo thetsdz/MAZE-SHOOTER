@@ -18,6 +18,7 @@
 \usepackage{changepage}
 \usepackage{float}
 \usepackage{siunitx}
+\usepackage{rotating}
 
 \usepackage{indentfirst}
 
@@ -573,17 +574,6 @@ Lien vers la page du stite Poly Pizza : \href{https://poly.pizza/}{https://poly.
 \appendix
 \section{Annexes}
 
-\begin{figure}[H]
-    \centering
-    \vspace{-3cm} 
-    \makebox[\textwidth][c]{
-        \includegraphics[width=1.4\textwidth, height=0.95\textheight, keepaspectratio]{gantt_final.png}
-    }
-    
-    \vspace{-0.5cm}
-    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
-    \label{fig:gantt}
-\end{figure}
 \subsection{Outils utilisés}
 
 Des tests ont aussi été implémentés pour vérifier que les fonctions de \hyperref[testCrypt]{cryptage} et de \hyperref[testReseau]{reseau} fonctionnent comme prévus. 
@@ -641,6 +631,18 @@ Les tests effectués sont les suivants:
 	\caption{Capture d'écran du coffre}
 	\label{image coffre}
 \end{figure}
+
+\begin{sidewaysfigure}
+    \centering
+    \vspace{-1.5cm} % Tire l'image vers le bord (gauche de la feuille physique)
+    \makebox[\textwidth][c]{
+        \includegraphics[width=0.98\paperheight, keepaspectratio]{./images/gantt/gantt.png}
+    }
+    \vspace{-0.5cm} % Rapproche la légende de l'image
+    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
+    \label{fig:gantt}
+\end{sidewaysfigure}
+\clearpage
 
 
 
