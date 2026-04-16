@@ -1,0 +1,699 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{nameref}
+\usepackage{amsthm}
+\usepackage{chngcntr}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{changepage}
+\usepackage{float}
+\usepackage{siunitx}
+
+\counterwithin{figure}{section}
+
+%\theoremstyle{definition}
+\newtheorem{exemple}{Exemple}
+
+\newcommand{\secref}[1]{\autoref{#1} \og \nameref{#1} \fg{}}
+
+\begin{document}
+\begin{figure}
+    \includegraphics[width=0.3\textwidth,]{./images/logo_univ/univ.png}
+    \hfill
+    \includegraphics[width=0.3\textwidth]{./images/logo_univ/ic2.png} 
+	\vspace{1.cm}
+\end{figure}
+
+
+\begin{titlepage}
+   \begin{center}
+        \vspace{0.7cm}
+        \huge \textbf{\textcolor{blue}{Le Mans Université}} 
+        
+        Licence Informatique \textit{2ème année} 
+        
+        Module 174UPO2 Rapport de Projet
+    \end{center}
+    
+    \begin{center}
+        \Huge \textbf{MAZE-SHOOTER} 
+        
+        \vspace{0.7cm}
+        \Large DEQUIREZ Thomas \\ JAMMES Corentin \\ ASTIER Hugues\\
+        \vspace{0.7cm}
+        \large \today \\
+        \vspace{0.7cm}
+        \url{https://github.com/thetsdz/MAZE-SHOOTER}
+    \end{center}
+
+\end{titlepage}
+
+
+
+\tableofcontents 
+
+\newpage
+\section{Introduction}
+Ce rapport est une présentation du projet intitulé \verb|MAZE-SHOOTER|, et, il réaliser par le groupe formé de Thomas,Corentin et Hugues. 
+
+\noindent
+En effet, dans le cadre d'une deuxième année de Licence Informatique, à l'université du Mans, nous avons été chargés de concevoir et développer un projet informatique. Pour ce faire, c'est le modèle linéaire en cascade qui a été choisis. Ce choix visait à laisser aux étudiants peu expérimentés un maximum de temps pour l'apprentissage d'outils nouveaux. Tandis que d'autres modèles auraient nécéssité une phase de conception plus longue, avec des objectifs de jeu plus précis, sans que les étudiants ne sachent  réellement comment s'y prendre.
+
+\bigskip \noindent
+Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes. Un mode \emph{Solo} orienté sur la survie face à des vagues de robots, ainsi que d'un boss. Le second mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
+
+\bigskip \noindent
+Ce compte rendu  qui retrace l'ensemble du cycle de vie du projet a plusieurs objectifs. En premier lieu celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Pour cette répartition, nous avons utilisé un gant prévisionnel des tâches (cf \secref{gant}), ce qui a permis un travail collaboratif efficace. Puis, en vue de faciliter la lecture du code  et de la rendre accessible sur la page github (cf \cite{Github}), une présentation explicative des différents points qui nous ont semblé difficiles est faite. Enfin, dans ce rapport est disponible un bilan global qui vise à analyser les forces et les faiblesses du projet.
+ 
+ 
+\section{Conception}
+
+\subsection{Cahier des charges} \label{cdc}
+Le cahier des charges à respecter suit les points suivants : 
+\begin{itemize}
+    \item Réaliser un jeu par groupe (de trois ici)
+    \item Utiliser le language C
+    \item Utiliser une librairie graphique comme SDL ou RAYLIB
+    \item Se servir de GIT 
+    \item Suivre un model de gestion de projet 
+    \item Utiliser doxygen
+\end{itemize} 
+
+\smallskip
+On a utilisé la librairie graphique Raylib, ainsi que GIT avec quatre branche (master, corentin, Thomas et HUgues) et on a suivit modèle linéaire.
+
+
+MAZE-SHOOTER est un jeu de tir à la première personne (FPS) en 3D complet, proposant une expérience dynamique s'articulant autour d'un grand nombre de mécaniques implémentées de A à Z :
+
+\begin{itemize}
+    \item \textbf{Modes de jeu variés :} Le jeu propose un mode \emph{Solo} orienté survie (le joueur doit éliminer un maximum de robots et affronter des boss 
+    apparaissant périodiquement) ainsi qu'un mode \emph{Multijoueur} compétitif en LAN ou via IP publique, où le premier à atteindre 25 éliminations l'emporte.
+    \item \textbf{Génération procédurale de niveaux :} Les labyrinthes sont générés aléatoirement à chaque partie. L'algorithme adapte d'ailleurs l'architecture 
+    selon le mode de jeu (espaces plus ouverts en multijoueur pour favoriser les affrontements à distance).
+    \item \textbf{Arsenal diversifié et balistique :} Les joueurs ont accès à quatre armes disposant de leurs propres modèles 3D : un Pistolet, un Fusil d'assaut, 
+    un Sniper et des Grenades. Le jeu gère un système de tirs par projectiles complet, incluant la cadence de tir, la capacité des chargeurs, les temps de 
+    rechargement et des mécaniques d'explosion pour les grenades.
+    \item \textbf{Intelligence Artificielle (IA) :} Les robots et les boss traquent le joueur grâce à une combinaison de "Raycasting" (calcul de ligne de vue) et 
+    d'un algorithme de recherche de chemin (BFS). Ils possèdent également des mécaniques d'esquive (salto).
+    \item \textbf{Éléments interactifs (Loot) :} Le joueur peut interagir avec des coffres répartis sur la carte pour regagner des points de vie lors des combats 
+    critiques.
+    \item \textbf{Personnalisation visuelle et Skybox :} Via le menu "Options", le joueur peut modifier dynamiquement le thème visuel du labyrinthe. Plusieurs 
+    ensembles de textures sont disponibles (neige, herbe, briques, lave) et sont accompagnés d'un ciel rendu dynamiquement (Skybox) via des \emph{shaders} 
+    personnalisés.
+    \item \textbf{Ensemble d'ambiances sonores :} Le jeu intègre un système audio complet gérant à la fois les musiques de fond (menu, jeu) et les bruitages 
+    contextuels (bruits de pas, tirs de différentes armes, rechargement, explosions, soins, et même des battements de cœur lorsque le joueur est critique en santé).
+    \item \textbf{Sauvegarde chiffrée :} Un système de sauvegarde local permet d'enregistrer la progression du joueur. Pour éviter la triche, les fichiers de 
+    sauvegarde (\emph{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
+\end{itemize}
+
+\section{Organisation du projet}\label{gantt}
+
+\subsection{Repartition des tâches}
+Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
+
+Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux robots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
+
+Hugues s’est occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des robots ainsi que des coffres (soin et armes) et du joueur. Il a développé le système d’armes, permettant d'en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
+
+\medskip \noindent
+Le diagramme de Gantt présent en annexe (cf \autoref{fig:gantt}) présente cette répartition des tâches sur la durée du projet, du 30 janvier au 17 avril 2026.
+
+
+\subsection{Outils utilisés}
+Afin de mener à bien ce projet , nous nous avons utilisés un grand nombres d'outils informatiques:
+
+\begin{itemize}
+    \item \textbf{Git} (Contrôle de version) : Indispensable pour notre organisation, Git nous a permis de travailler simultanément sur la même base de code 
+    (répartie sur nos branches respectives) tout en traçant l'historique des modifications et en évitant les conflits majeurs.
+    \item \textbf{Diagramme de Gantt} (Gestion de projet) : Il a été le support principal de notre planification temporelle, nous permettant de visualiser 
+    l'avancement global et d'assigner clairement les tâches à chaque membre de l'équipe.
+    \item \textbf{Raylib} (Moteur graphique) : Cette bibliothèque C a été choisie pour gérer la boucle principale du jeu. Elle a considérablement facilité la 
+    gestion du fenêtrage, des entrées utilisateur (clavier/souris) et le rendu des environnements 2D et 3D.
+    \item \textbf{Overleaf} (Rédaction) : Cet éditeur LaTeX en ligne a été notre outil de prédilection pour rédiger ce rapport de manière collaborative et en 
+    temps réel.
+    \item \textbf{Doxygen} (Documentation) : En standardisant nos commentaires directement dans le code source, Doxygen nous a permis de générer automatiquement 
+    une documentation technique complète et navigable.
+    \item \textbf{Instagram} (Communication) : Notre canal de messagerie instantanée principal pour échanger rapidement des idées, partager des problèmes 
+    techniques et coordonner nos sessions de travail.
+\end{itemize}
+
+
+\section{Developpement}
+
+
+\subsection{Arborescence du code et structure du menu}\label{Logique du jeu}
+\indent Dans cette section on explique comment s'organise le repertoire du projet, et l'architecture logicielle utilisées. Cette structure est importante car elle est le coeur du code et gère les différents modules.
+%Ce menu permet d'afficher différents boutons utilent à la navigation du joueur, cf \autoref{image menu}.
+
+
+\bigskip \noindent
+Le dépôt du projet (cf. \cite{Github}) est structuré en cinq dossiers principaux : assets, doc, lib, rapport, src et test. L'intégralité du code source est regroupée dans le dossier src/, qui est segmenté en plusieurs fichiers.
+
+\bigskip \noindent
+Concernant le fonctionnement de main.c, il sert de tour de contrôle au projet. Il s'appuie sur une variable d'état qui détermine ce qui doit être traité et affiché à l'écran (cf. \autoref{image menu}).
+
+\noindent
+Le code repose sur une séparation claire entre deux étapes :
+\begin{itemize}
+    \item Le traitement logique : Cette phase met à jour les données du jeu. On y utilise des fonctions « génériques » qui gèrent les variables globales.
+        \begin{exemple}
+            Exemple : La fonction UpdateGame(...) centralise toute la logique du mode solo (déplacements, collisions, scores).
+        \end{exemple}
+    \medskip
+    \item Le rendu graphique : Une fois les calculs terminés, on appel les fonctions de dessin correspondantes ( cf \secref{Interface}, pour plus de détail). On s'assure ainsi que l'image affichée correspond exactement à l'état actuel des variables.
+\end{itemize}
+
+\bigskip \noindent
+Pour le cas spécifique de menu.c, nous avons choisi de regrouper la logique (gestion du clic ou clavier) et le dessin (affichage des boutons) au même endroit par souci de simplicité, et ça évite de stocker des variables inutiles la plus par du temps lorsque le joueur joue. En revanche, pour tout le reste du jeu, ces deux blocs sont bien isolés afin de garder un code structuré et facile à déboguer.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.7\textwidth]{./images/image_menu/photo_menu.png}%
+    }
+    \caption{Capture d'écran du menu principal}
+    \label{image menu}
+\end{figure}
+
+
+
+\subsection{Création de la carte}\label{map}
+
+La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
+de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs (cf \autoref{labyrinthe}).
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.7\textwidth]{images/image.png}
+    }
+    \caption{Vue du labyrinthe}
+    \label{labyrinthe}
+\end{figure}
+
+ Chaque bloc possède une
+position dans l'espace, des dimensions fixes $(3 \times 6 \times 3)$ et un état binaire :
+\textbf{mur} (\texttt{isWall = 1}) ou \textbf{passage} (\texttt{isWall = 0}).
+
+La génération commence par l'initialisation de tous les blocs en murs, disposés en grille
+avec un espacement de 3 unités. L'algorithme utilisé pour creuser les passages est un
+parcours en profondeur d'abord (DFS) itératif, implémenté à l'aide d'une pile maison
+(\texttt{pile.h}) afin d'éviter tout débordement de pile récursive. En partant de la
+case $(1, 1)$, l'algorithme recherche à chaque étape les voisins situés à une
+\textbf{distance de 2 cases} qui sont encore des murs. Ce saut de deux cases est
+essentiel : il garantit qu'un bloc mur sépare toujours deux cellules adjacentes, ce qui
+est la condition nécessaire pour obtenir un labyrinthe valide. Un voisin est alors
+choisi aléatoirement, la cellule cible est ouverte, ainsi que le bloc intermédiaire qui
+la sépare de la case courante. Si aucun voisin valide n'est disponible, l'algorithme
+\textbf{dépile} (\textit{backtrack}) pour revenir à une case précédente disposant encore
+de voisins non visités. Ce processus se répète jusqu'à ce que la pile soit vide, garantissant
+que chaque cellule de la grille est visitée exactement une fois et que le labyrinthe
+généré est parfait, c'est-à-dire sans cycle et avec un chemin unique entre deux cases.
+
+En mode multijoueur, une variante \texttt{creer\_lab\_multi} est utilisée. Elle génère
+d'abord un labyrinthe classique, puis modifie le tiers central de la grille pour créer
+une grande arène ouverte. Dans cette zone, 90\% des blocs sont vidés pour laisser un
+espace dégagé, tandis que les 10\% restants sont conservés comme obstacles aléatoires
+afin d'animer l'espace et d'offrir des possibilités tactiques aux joueurs.
+
+L'affichage de la carte est assuré par \texttt{DrawLevel}, qui parcourt l'intégralité de
+la grille à chaque frame et dessine chaque bloc selon son état. Les blocs murs sont
+rendus avec un modèle 3D haut (\textit{scale} $3 \times 6 \times 3$), tandis que les
+passages sont affichés comme une dalle de sol ultra-plate (\textit{scale}
+$3 \times 0{,}001 \times 3$). Pour éviter les artefacts visuels, les blocs ouverts lors
+de la génération ont leur coordonnée $y$ fixée à $-20$, les dissimulant ainsi sous le sol,
+seule la dalle étant rendue à $y = 0$.
+
+
+
+
+
+\subsection{Joueur, déplacement et gestion de la vie}
+
+Le joueur est représenté par une structure \texttt{Entity} initialisée par \texttt{InitPlayer},
+qui définit l'ensemble de ses attributs de base : une position de départ en hauteur
+(\texttt{y = 10}), 100 points de vie sur un maximum de 100, 3 vies, une taille de 1 unité
+utilisée pour les calculs de collision, ainsi qu'une arme de départ (le pistolet) avec ses
+munitions chargées au maximum. Un chronomètre de tir \texttt{chronoTir} est également initialisé
+à 0 pour permettre de tirer immédiatement dès le début de la partie. Par défaut, aucune arme
+supplémentaire n'est débloquée (\texttt{armeUnlock} initialisé à $-1$).
+
+Le déplacement et la mise à jour de l'état du joueur sont entièrement gérés à chaque frame par
+\texttt{UpdatePlayer}. L'orientation de la caméra est contrôlée à la souris via deux angles :
+le \texttt{yaw}, qui correspond à la rotation horizontale gauche/droite, et le \texttt{pitch},
+qui correspond à l'inclinaison verticale haut/bas. Ce dernier est borné à $\pm 1{,}5$ radians
+(environ $\pm 85°$) afin d'éviter un retournement complet de la caméra. À partir du \texttt{yaw},
+un vecteur \textbf{forward} est calculé \textit{uniquement} sur le plan horizontal $(XZ)$, ce qui
+garantit que le joueur se déplace toujours à plat, sans s'envoler, même lorsqu'il regarde vers
+le ciel ou vers le sol.
+
+Les touches directionnelles (\texttt{W/A/S/D} ou les flèches) construisent un vecteur de
+mouvement en combinant le vecteur \textbf{forward} et son vecteur orthogonal pour les
+déplacements latéraux. Ce vecteur est ensuite \textbf{normalisé} avant d'être multiplié par la
+vitesse, ce qui empêche le joueur de se déplacer plus vite en diagonale qu'en ligne droite —
+sans cette normalisation, la longueur du vecteur diagonal serait $\sqrt{2} \approx 1{,}41$ fois
+supérieure. Les sons de pas sont également déclenchés ou mis en pause selon que le joueur est
+au sol ou en l'air. La gravité est simulée en décrémentant \texttt{velocityY} d'une valeur fixe
+à chaque frame, ce qui produit une accélération progressive vers le bas. Le joueur peut sauter
+en appuyant sur \texttt{ESPACE} uniquement lorsqu'il est détecté comme étant au sol
+(\texttt{onGround = true}), ce qui empêche les sauts successifs en l'air.
+
+La gestion des collisions consiste à calculer une position future \texttt{nextPos} avant de
+l'appliquer, puis à vérifier si cette position entre en conflit avec les blocs de la scène ou
+les ennemis. En cas de collision, trois situations sont distinguées : une chute sur le dessus
+d'un bloc, qui pose le joueur à sa surface et réinitialise \texttt{velocityY} à 0 en activant
+\texttt{onGround} ; un choc par le dessous lors d'un saut, qui stoppe immédiatement la montée ;
+ou une collision latérale contre un mur. Dans ce dernier cas, l'axe de \textbf{moindre
+pénétration} est identifié en comparant les chevauchements sur $X$ et $Z$, et le joueur est
+repoussé uniquement sur cet axe en laissant l'autre intact, produisant un effet de
+\textbf{glissement fluide} le long des murs. Ce même système est appliqué aux interactions
+avec les ennemis, avec en plus la possibilité d'atterrir sur la tête d'un adversaire et d'y
+effectuer un nouveau saut. Enfin, la caméra Raylib est recalculée à chaque frame en positionnant
+son origine légèrement au-dessus du centre du joueur (\texttt{+0.5f} sur $Y$ pour simuler le
+niveau des yeux), et son point cible est obtenu en additionnant la position et le vecteur
+directionnel 3D complet, calculé en coordonnées sphériques à partir du \texttt{yaw} et du
+\texttt{pitch}.
+
+Le joueur a également la possibilité de soigner, en passant sur des caisses dissiminés partout dans le labyrinthe.
+Elles sont au nombres de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50\% de chances de se soigner
+de 20 points de vie, 35\% pour 40, 14\% pour 60 et 1\% pour 100. Le joueur peut aussi récupérer des armes
+dans les caisse. IL a ainsi 70\% de chance de ne rien récupérer, 18 \% pour un sniper,
+9\% pour le fusil d'assault et 1\% pour la grenade. Une fois une caisse récupéré, elles disparaissent
+pour se remettre à autre endroit aléatoire du labyrinthe. Cette mécanique de caisse de soin et d'armes
+est developpé en mode solo mais également en mode multijoueur.
+
+
+
+
+\subsection{Ennemis du joueur}\label{Ennemis}
+
+D'un point de vue architectural, les robots et les boss partagent le même type abstrait : ce sont tous deux des \emph{Entity}. Une entité représente tout objet 
+animé dans le jeu, qu'il soit contrôlé par un joueur (comme \emph{ENTITY\_PLAYER}) ou par une intelligence artificielle (\emph{ENTITY\_BOT} et 
+\emph{ENTITY\_BOSS}). Ils partagent des caractéristiques communes, telles qu'une position générée aléatoirement sur des cases praticables du labyrinthe, et des 
+comportements de base comme se diriger vers le joueur, attaquer à bonne distance et réagir aux dégâts.
+
+
+
+Concernant leurs déplacements, les robots sont guidés par une intelligence artificielle simple mais efficace. Le jeu vérifie d'abord si le joueur est visible grâce 
+à une fonction de ligne de vue (\emph{Line of Sight}). Cette fonction utilise une technique de \textbf{lancer de rayon (Raycasting) simplifié} : elle trace une 
+ligne virtuelle entre le robot et le joueur, l'échantillonne en plusieurs points (trois par unité de distance), et vérifie si l'un de ces points se superpose à un 
+mur. Si la voie est libre, le robot poursuit sa cible en ligne droite, ce qui allège considérablement les calculs.
+
+
+
+Dans le cas contraire, si la vision est bloquée, l'IA utilise un algorithme de recherche de chemin (pathfinding) pour trouver la route la plus courte en 
+contournant les obstacles. Cet algorithme s'appuie sur trois structures de données. La première, \emph{visited}, est une matrice de booléens indiquant si une 
+case a déjà été explorée. La deuxième, \emph{parent}, mémorise la case de provenance pour chaque case visitée. Enfin, la troisième est une file (\emph{queue}) 
+contenant la liste des cases restantes à traiter. Cela permet d'effectuer une recherche en largeur (BFS). Pour vulgariser, c'est comme si l'on versait de l'eau 
+depuis la position du robot : l'eau se propage uniformément dans toutes les directions en évitant les murs. La file suit l'avancée de l'eau, la matrice 
+\emph{visited} retient les zones inondées, et la matrice \emph{parent} trace d'où l'eau est venue. Lorsque l'eau atteint le joueur, il suffit de remonter le 
+courant grâce à la matrice \emph{parent} pour obtenir le chemin le plus court.
+
+
+
+Pour se déplacer sans traverser les murs ou se retrouver à l'intérieur, les entités s'appuient sur un système de \textbf{collisions AABB} (Axis-Aligned Bounding 
+Box) développé sur mesure. Lorsqu'un robot entre en contact avec un mur, l'algorithme calcule la profondeur de pénétration sur les axes X et Z, et le repousse en 
+douceur sur l'axe où l'intersection est la plus faible, permettant au robot de glisser le long des murs au lieu de s'y retrouver coincé. À cela s'ajoute une 
+gravité simulée permettant de gérer dynamiquement leur hauteur sur l'axe Y.
+
+
+
+Les robots possèdent également une mécanique d'esquive singulière : le salto. Effectuée de manière aléatoire, cette action fait tourner le robot sur lui-même à une 
+vitesse de 720 degrés par seconde pendant une demi-seconde, lui permettant d'esquiver les tirs. Pour maintenir l'équilibre du jeu, cette capacité est soumise à 
+un temps de recharge. Elle rend les robots imprévisibles et ajoute un peu de dynamisme aux affrontements.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=6cm]{images/Ennemis_joueur/bot.png}\\
+\caption{{\emph{exemple de partie multijoueur}}}
+\end{figure}
+
+
+
+Les boss, quant à eux, sont des ennemis redoutables dotés de comportements plus avancés. Contrairement aux robots équipés de pistolets classiques, les boss manient 
+un fusil de précision (sniper) infligeant des dégâts massifs. Leur IA est extrêmement précise : ils ne ratent presque jamais leur cible, à moins que le joueur ne 
+soit à couvert ou en déplacement très rapide. En contrepartie de leur grande réserve de points de vie et de leur létalité, ils se déplacent deux fois moins vite 
+que les robots standards, laissant au joueur l'opportunité d'adopter une stratégie de fuite.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=6cm]{images/Ennemis_joueur/boss.png}\\
+\caption{{\emph{exemple de partie multijoueur}}}
+\end{figure}
+
+
+
+Enfin, la logique d'apparition (spawn) varie selon le type d'ennemi. À la mort d'un robot classique, celui-ci réapparaît immédiatement à un autre endroit aléatoire 
+du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss obéissent à une logique de progression : ils n'apparaissent que tous les 50 
+éliminations de robots classiques. Cela rythme la partie en récompensant la survie du joueur par l'apparition d'un défi majeur.
+
+
+
+
+
+\subsection{Système d'arme}\label{sys_arme}
+Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appelations suivante : projectile ou munitions, la première sera davantage utilisé pour les colisions, la seconde pour la capacité du chargeur de l'arme. 
+
+\bigskip
+\noindent Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet, il existe quatre armes différentes: 
+\begin{enumerate}
+    \item un pistolet,
+    \item un sniper,
+    \item un fusil d'assault,
+    \item une grenade.
+  
+
+\end{enumerate}
+Chacune des armes disposent de ses propres caractéristiques (degats, capacité du chargeur, cadence de tir,munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme, pour en obtenir d'autre, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou, recuperer des coffres. Des photos d'armes  et du coffre sont diponibles en annexe (cf \autoref{image armes} pour les armes et \autoref{image coffre} pour le coffre) .
+
+\bigskip \noindent
+Les paliers de score : 5,10 et 20 permettent de récuperer respectivement le sniper, le fusil et la grenade, cet ordre va de l'arme la moins à la plus forte. Mentionnons aussi qu'une texture par arme, et par projectile, est présente, voir \autoref{image armes}. 
+
+\bigskip \noindent
+Pour recharger les munitions, le choix qui es proposé dans ce jeu est d'utiliser la touche R.  Une limite de rechargement pourrais être implémenté, mais il faudrait alors d'autre fonctionnalité pour que le joueur puissent avancer jusqu'au boss, s'il est à cours de munitions trop tôt.
+
+\bigskip
+\noindent Dans la partie logique du jeu (cf \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
+
+\noindent La première récupere les caractéristiques de l'arme nécéssaire pour tous les changement qu'operera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
+\begin{exemple}
+	Le joueur tape sur la touche \verb|F4|, la fonction \verb|ChangementArme(...)| verfie que
+	les conditions sont remplies, alors on recupere les caractéristiques de la grenade et les
+	donne au joueur.
+\end{exemple}
+
+\noindent Concernant les projectiles, comme abordé dans la \secref{Ennemies}, il faut compendre que les trois dimensions du jeu se represente bien grace à RAYLIB avec des vecteurs en trois dimension, l'analogie avec les axes X,Y et Z est pertinentes. \`A chaque projectile on associe  : un vecteur \verb|pos|, un vecteur \verb|vel|,une valeur bouléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
+
+\bigskip
+\noindent Ensuite, il a été choisi de representer tout les projectiles présent sur le jeu par un tableau. Une iteration sur ce tableau permets alors de tester les colisions avec les murs,robot et sol (ie une cible). Cette grande boucle est d'une complexité $O(n^3)$, en effet elle contient deux sous boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 robots. 
+
+\bigskip
+\noindent Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de test grace à un break pour la triple boucle. Et au final le nombre maximum de projectile actif et de murs est respectivement de 50 et 51x51 (cf \secref{map}). Donc dans l'ambition du jeu qui a été la notre il n'y a aucun impact. 
+
+\bigskip
+\noindent Pour revenir au colisions, la logique appliqué aux projectiles , excepté la grenade, est la suivante : on teste si le bord du projectile touche une cible, si oui, on change alors la valeur du booléen.
+
+\bigskip
+\noindent Dans le cas de la grenade, pour les murs, il y a juste un changement de signe sur les coordonnées du vecteur vélocité selon où elle touche un mur. Ce changement vise à obtenir un effet de rebond sur murs, une application de la gravité est aussi présente en vu d'un gain de réalisme. Sinon, le lecteur est invité à consulter le fichier projectile.c pour plus de détails sur le code, cf \cite{Github}, notamment sur la manière dont l'explosion est géré.
+
+\bigskip
+Finalement, grace au rebond et changement de texture (cf \secref{Interface}) de la grenade, une mécanique \og complexe \fg{} est apporté au joueur. De plus, avec le reste des projectiles, ce systeme d'arme contribu clairement au gameplay du joueur.  
+
+\begin{figure}[H]
+ 
+    \centering
+    \begin{subfigure}{0.4\textwidth} % Maintenant tu peux monter à 0.65 !
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_pistolet.png}
+        \caption{Le pistolet}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_sniper.png}
+        \caption{Le sniper}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_fusil.png}
+        \caption{Le fusil}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./images/armes/photo_grenade.png}
+        \caption{La grenade}
+    \end{subfigure}
+
+    \caption{Captures d'écran des armes}
+    \label{image armes}
+
+\end{figure}
+
+\subsection{Système de sauvegarde crypté}
+Le système de sauvegarde est assez simple. On sauvegarde les données importantes de la partie telles que les différentes informations des entités. Toutes les 
+données sont sauvegardées dans un fichier \emph{save.dat}. 
+
+
+
+Le système de cryptage utilise un algorithme de chiffrement connu nommé RC4. Il s'agit d'un algorithme symétrique, ce qui signifie que la clé de chiffrement est 
+la même que la clé de déchiffrement. L'algorithme est certes vulnérable face aux standards de sécurité modernes, mais pour l'envergure de ce projet, il est 
+amplement suffisant. RC4 fonctionne en générant un flux de données pseudo-aléatoires (le \emph{keystream}) à partir de la clé secrète. Ce flux est ensuite 
+combiné octet par octet avec les données de la sauvegarde via une opération logique XOR (OU exclusif). Sa grande simplicité le rend extrêmement rapide à exécuter, 
+ce qui évite tout ralentissement en jeu lors de l'écriture du fichier.
+
+
+
+En complément du chiffrement, le système intègre un \emph{checksum} (somme de contrôle). Il s'agit d'une empreinte numérique mathématique calculée à partir des 
+données de sauvegarde en clair, juste avant leur chiffrement. Lors du chargement d'une partie, le jeu déchiffre le fichier, recalcule le checksum sur les données 
+obtenues, et le compare à celui qui avait été stocké.
+
+
+
+L'utilisation conjointe de ces deux méthodes est primordiale pour la fiabilité du jeu. D'une part, le chiffrement RC4 assure la \textbf{confidentialité} : il 
+empêche un joueur de lire le fichier en clair pour modifier facilement ses statistiques (comme se donner des points de vie infinis ou un score artificiel). 
+D'autre part, le checksum garantit l'\textbf{intégrité} des données. En effet, si un joueur tente de tricher en modifiant aveuglément les octets du fichier 
+chiffré, ou si le fichier est corrompu à la suite d'une fermeture inattendue du programme, les données déchiffrées seront altérées. Le checksum recalculé ne 
+correspondra plus à l'original, ce qui permet au jeu de détecter la corruption et de bloquer le chargement de cette sauvegarde, évitant ainsi des plantages 
+(crashs) ou des comportements imprévisibles dans le jeu.
+
+
+
+\subsection{Multijoueur, réseau}
+
+Dans le mode multijoueur, les joueurs s'affrontent dans un labyrinthe revisité pour faciliter les combats à longue distance. L'objectif est d'atteindre 25 
+éliminations pour remporter la partie (les joueurs apparaissant avec 25 vies aux coins opposés de la carte). Ils se déplacent librement et utilisent l'ensemble 
+des armes présenté précédemment, tout en pouvant récupérer des objets octroyant des avantages cruciaux (comme des caisses de soins) qui apparaissent aléatoirement 
+et se synchronisent entre les joueurs.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=7cm]{images/multijoueur/exempleMulti.png}\\
+\caption{{\emph{exemple de partie multijoueur}}}
+\end{figure}
+
+
+
+L'architecture réseau repose sur un modèle client-serveur : un joueur héberge la partie (le serveur) et l'autre s'y connecte (le client). Un effort particulier a 
+été apporté à la portabilité du code. Grâce à l'utilisation de directives de préprocesseur, notre système réseau est entièrement \textbf{multiplateforme}, 
+s'appuyant sur l'API \emph{Winsock2} sous Windows et sur les \emph{sockets POSIX} standard sous systèmes Unix (Linux/macOS).
+
+
+
+Afin d'optimiser la bande passante, la communication s'effectue via l'échange bidirectionnel d'une structure de données légère (\emph{PaquetReseau}). 
+Ce paquet ne contient que les variables d'état strictement nécessaires : la position dans l'espace (X, Y, Z), les angles de rotation de la caméra (\emph{yaw}, 
+\emph{pitch}), l'état des tirs, l'arme équipée et les points de vie. 
+
+
+
+Un aspect technique crucial de notre implémentation est l'utilisation de sockets \textbf{non bloquants}. En effet, le serveur doit gérer à la fois la logique du 
+jeu locale et la synchronisation avec le client. Grâce aux sockets non bloquants, le programme peut traiter toutes ces actions sans que le jeu ne se fige dans 
+l'attente d'une réponse réseau. Cependant, comme les paquets ne sont pas reçus à chaque image générée par le jeu (\emph{frame}), les mouvements de l'adversaire 
+pourraient paraître saccadés. Pour pallier ce problème, nous avons implémenté une \textbf{interpolation linéaire} (Lerp) sur la position de l'entité distante, 
+garantissant ainsi un rendu visuel fluide et évitant l'effet de téléportation. Le jeu intègre d'ailleurs son propre système de calcul de latence (\emph{Ping}), 
+en envoyant un paquet horodaté toutes les 100 millisecondes.
+
+
+
+Pour se connecter à une partie, deux méthodes exploitant des protocoles différents sont proposées :
+\begin{itemize}
+    \item \textbf{Connexion en ligne via IP (TCP) :} Le client entre l'adresse IP publique du serveur. Cette méthode utilise le protocole TCP, garantissant que 
+    les données sont transmises de manière fiable et ordonnée. Toutefois, elle requiert que l'hôte ait préalablement configuré son routeur (redirection de port 
+    ou \emph{Port Forwarding}) pour ouvrir le port 30000.
+    \item \textbf{Connexion en réseau local (UDP) :} Si les joueurs sont sur le même réseau (LAN), le client peut trouver le serveur automatiquement grâce à un 
+    \emph{broadcast} local. Dans ce cas, c'est le protocole UDP qui est utilisé : le client écoute sur le port 30001 un message d'identification ("MAZE\_HOST") 
+    diffusé par le serveur. Cette méthode est beaucoup plus simple et sécurisée pour l'hôte.
+
+
+    
+\end{itemize}
+Enfin, concernant la gestion de l'état du jeu, chaque instance gère de manière autonome ses propres données vitales. Concrètement, si le joueur local perd 
+l'intégralité de sa santé, c'est lui-même qui décrémente son compteur de vies et envoie un paquet l'annonçant au réseau. Bien que cette méthode soit sujette 
+à la triche (un client malveillant pourrait manipuler ses paquets pour ne jamais signaler sa mort), elle s'avère beaucoup plus simple et réactive à mettre en 
+place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pour offrir une expérience agréable malgré les difficultés rencontrées.
+
+
+
+
+\subsection{Interface}\label{Interface}
+Cette partie regroupe les différents aspects graphique et audio que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
+
+
+
+\bigskip \noindent
+Pour les options et l'audio, une idée de choix de différent thème (lave,glace, classique) est proposé au joueur afin de diversifier l'environement de jeu. De même, il existe une palette variée d'effet sonore ou de musique qui vise à rendre plus immersif un moment de jeu.
+\begin{exemple}
+Lorsque la touche R est pressée, un son de rechargement de l'arme se produit.
+\end{exemple}
+
+\bigskip \noindent
+Ensuite, parmi les assets un aspect graphique important nous interesse, il s'agit :
+\begin{itemize}
+	\item des textures 2D, qui sont des images au format .png
+	\item des modèles 3D, qui sont au format .glb, en réalité un fichier .glb contient sa propre texture
+\end{itemize}
+La création d'un modèle .glb n'a pas été envisagée pour le projet (car trop complexe), tous les modèles utilisés viennent du site \cite{polypizza}. 
+
+\bigskip \noindent
+Néanmoins, la gestion de ces modèles reste intéressante, car c'est un ensemble fini de vecteurs $\vec{V} \in \mathbb{R}^3$, appelé sommets. En particulier nous nous sommes intéressés à la gestion des modèles de projectiles car elle fait appel aux matrices de rotations sur l'axe des $X$ et $Y$ suivante :
+\begin{equation*}
+    R_x(\alpha) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\alpha & -\sin\alpha \\ 0 & \sin\alpha & \cos\alpha \end{pmatrix} 
+    \qquad \text{et} \qquad
+    R_y(\beta) = \begin{pmatrix} \cos\beta & 0 & \sin\beta \\ 0 & 1 & 0 \\ -\sin\beta & 0 & \cos\beta \end{pmatrix}
+\end{equation*}
+ 
+\noindent
+L'idée est d'appliquer à l'attribut \verb|transform| du modèle une opération grace aux matrices précédentes qui se répercutera sur chaque vecteur sommet pour calculer la bonne orientation. Pour cette opération sont utilisés les \verb|pitch| et \verb|yaw| de la camera du joueur.
+
+\begin{exemple}
+Soit $\vec{V}=(x,y,z)$ un sommet de l'attribut \verb|transform| du modèle, $\theta=pitch$ et $\theta '=yaw$ . Sa position finale $\vec{V}'=(x',y',z')$ est donnée par la relation :
+\[
+\vec{V}' = \vec{V} \cdot R_{\theta} \cdot R_{\theta'}    
+\]
+\end{exemple}
+\noindent
+La matrice $ R_{\theta} \cdot R_{\theta'}$ est la composition de deux rotations élémentaires.
+
+\bigskip \noindent
+Dans le code l'introduction d'une constante de $\frac{\pi}{2}$ (correspondant à l'angle de $90^\circ$) est nécessaire pour réorienter le modèle original avant d'appliquer l'inclinaison verticale pitch car tous les modèles de projectile (sauf la grenade) sont \og debout \fg. Ne pas l'introduire nécessiterait d'utiliser un logiciel de modélisation.
+
+\section{Résultats et conclusion}
+L'idée qui se cache derrière ce projet était d'avoir un jeu fps dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le gant previsionnel des tâches ont été atteints. 
+
+\noindent En effet, il existe bien les deux modes de jeu prévu : multijoueur et solo, dans lequel un joueur évolue à la première personne et peux tirer sur des ennemies; et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et visuels sont proposés. De même que des tests on été apporté sur le cryptage et le reseau. Donc les objectifs initaux  sont atteints. En cela c'est une force car quasiment aucune impasse de fonctionnalité prévue inialement n'a été faite.
+
+\bigskip \noindent 
+En réalité, certaines fonctionnalités en plus de ce qui été prévu initialement, ont été ajoutées. En effet le coffre qui permet au joueur de recuperer de la vie et des armes, ainsi que le boss, n'était pas prévue. 
+
+\bigskip \noindent
+Cependant, ce projet peut être améliorable, en effet, en premier lieu on pourrait lister une longue liste de contenu à rajouter pour en faire un jeu plus attractif :
+\begin{itemize}
+	\item ajout d'un mode histoire plus complet, avec un systeme de niveau
+	\item ajout de davantage d'arme dans le systeme d'arme
+	\item interface d'inventaire pousser
+	\item creation et loot d'item aidant le joueur
+	\item ...
+\end{itemize}
+Cette liste n'a de fin que celle de notre imagination. Ce projet a été fait par des étudiants en second cyle universitaire donc, ici, la limite de ce projet a été donné par les dates de rendue imposé.
+ 
+\noindent
+De plus,  des choix d'implementation autre, peut etre plus performant, pourrait être fait. Pour cela il y a les colisions des projectiles qui ont l'a vu  dans la \secref{sys_arme}, meme si ce systeme fonctionne parfaitement bien pour l'ambition du projet, la compléxité est élevé,  donc un meuilleur algorithme pourrait être à trouver.
+
+\noindent
+Pour la recherche du joueur par les robots, il existe des méthode de recherche plsu performant à l'aide d'une fonction heuristique  (exemple : algorithme A* ou A star).
+
+\bigskip \noindent
+Concernant le cahier des charges, il a aussi été respecté, je renvoie à la \secref{cdc} pour consulter la liste.
+
+\bigskip 
+Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était en cascade. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en V, en supposant par exemple un un cahier des charges très aboutie, n'aurait pas été possible.
+
+\newpage
+\subsection{Bibliographie}
+
+\begin{thebibliography}{9}
+
+\bibitem[Github]{Github}Lien vers le projet GitHub : \url{https://github.com/thetsdz/MAZE-SHOOTER}
+\bibitem[Poly Pizza]{polypizza}Lien vers la page du site Poly Pizza : \url{https://poly.pizza/}
+\bibitem[Raylib]{raylib} Lien vers le site de Raylib : \url{https://www.raylib.com/} 
+\bibitem[Raylib]{raylib} Lien vers le Github de Raylib : \url{https://github.com/raysan5/raylib-game-template}
+\bibitem[LaTeX]{LaTeX} Lien vers la page wikipedia de \LaTeX : \url{https://fr.wikipedia.org/wiki/LaTeX}
+\bibitem[LaTeX]{LaTeX} Lien vers le site de \LaTeX : \url{https://www.latex-project.org/}
+\bibitem[LaTeX]{LaTeX} Lien vers la documentation de \LaTeX : \url{https://www.latex-project.org/help/documentation/}
+
+
+
+\end{thebibliography}
+
+\appendix
+\section{Annexes}
+
+\begin{figure}[H]
+    \centering
+    \vspace{-3cm} 
+    \makebox[\textwidth][c]{
+        \includegraphics[width=1.4\textwidth, height=0.95\textheight, keepaspectratio]{gantt_final.png}
+    }
+    
+    \vspace{-0.5cm}
+    \caption{Diagramme de Gantt prévisionnel -- Maze Shooter}
+    \label{fig:gantt}
+\end{figure}
+\subsection{Outils utilisés}
+
+Des tests ont aussi été implémentés pour vérifier que les fonctions de \hyperref[testCrypt]{cryptage} et de \hyperref[testReseau]{reseau} fonctionnent comme prévus. 
+Les tests effectués sont les suivants:
+
+\bigskip
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Cas de tests & test passé? \\
+        \hline
+        Test clé vide & oui \\
+        \hline
+        Test clé très courte & oui \\
+        \hline
+        Test données nulles & oui \\
+        \hline
+        Test avec un gros volume de données & oui \\
+        \hline
+        Test messages identiques avec clés différentes & oui \\
+        \hline
+        Test déchiffrement avec la mauvaise clé & oui \\
+        \hline
+    \end{tabular}
+    \caption{\emph{Tableau des tests de cryptage}}
+    \label{testCrypt}
+\end{table}
+
+\bigskip
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Cas de tests & test passé? \\
+        \hline
+        Test ouverture/fermeture d'un serveur & oui \\
+        \hline
+        Test simulation connexion TCP & oui \\
+        \hline
+        Test simulation broadcast & oui \\
+        \hline
+    \end{tabular}
+    \caption{\emph{Tableau des tests du réseau}}
+    \label{testReseau}
+\end{table}
+
+
+
+
+\begin{figure}[htbp]
+	\includegraphics[width=\textwidth]{./images/armes/photo_coffre.png}
+	\caption{Capture d'écran du coffre}
+	\label{image coffre}
+\end{figure}
+
+
+
+\end{document}pour plus de détail
