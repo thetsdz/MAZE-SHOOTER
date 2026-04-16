@@ -74,68 +74,50 @@
 \newpage
 \section{Introduction}
 \hspace*{1.5em}
-Ce rapport est une présentation du projet intitulé \verb|MAZE-SHOOTER|, il  réaliser par le groupe formé de Thomas,Corentin et Hugues. 
+Ce rapport est une présentation du projet intitulé \verb|MAZE-SHOOTER|, réalisé par le groupe formé de Thomas, Corentin et Hugues. 
 
-En effet, dans le cadre d'une deuxième année de Licence Informatique, à l'université du Mans, nous avons été chargés de concevoir et développer un projet informatique. Pour ce faire, c'est le modèle linéaire en cascade qui a été choisis. Ce choix visait à laisser aux étudiants peu expérimentés un maximum de temps pour l'apprentissage d'outils nouveaux. Tandis que d'autres modèles auraient nécéssité une phase de conception plus longue, avec des objectifs de jeu plus précis, sans que les étudiants ne sachent  réellement comment s'y prendre.
+En effet, dans le cadre d'une deuxième année de Licence Informatique à l'université du Mans, nous avons été chargés de concevoir et développer un projet informatique. Pour ce faire, c'est le modèle linéaire en cascade qui a été choisi. Ce choix visait à laisser aux étudiants peu expérimentés un maximum de temps pour l'apprentissage d'outils nouveaux, tandis que d'autres modèles auraient nécessité une phase de conception plus longue, avec des objectifs de jeu plus précis, sans que les étudiants ne sachent réellement comment s'y prendre.
 
-Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes. Un mode \emph{Solo} orienté sur la survie face à des vagues de robots, ainsi que d'un boss. Le second mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
+Ce projet est un jeu de tir à la première personne (FPS : First Person Shooter) en 3D, réalisé en autonomie avec un accès libre à Internet. Ce jeu plonge le joueur dans des labyrinthes générés de manière procédurale. Il propose deux expériences de jeu distinctes : un mode \emph{Solo} orienté sur la survie face à des vagues de robots ainsi qu'à un boss, et un second mode \emph{Multijoueur}, où deux joueurs connectés sur un même réseau s'affrontent.
 
-Ce compte rendu, qui retrace l'ensemble du cycle de vie du projet, a plusieurs objectifs. En premier lieu celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Puis, en vue de faciliter la lecture du code  et de la rendre accessible sur la page github (cf \cite{Github}), une présentation explicative des différents points qui nous ont semblé difficiles est faite. Enfin, dans ce rapport est disponible un bilan global qui vise à analyser les forces et les faiblesses du projet.
- 
- 
+Ce compte rendu, qui retrace l'ensemble du cycle de vie du projet, a plusieurs objectifs. En premier lieu, celui de présenter la conception générale du projet et de détailler les nombreuses fonctionnalités du jeu. Dans un second temps, il explique comment ont été réparties les tâches au sein de l'équipe. Puis, en vue de faciliter la lecture du code et de la rendre accessible sur la page GitHub (cf. \cite{Github}), une présentation explicative des différents points qui nous ont semblés difficiles est faite. Enfin, ce rapport intègre un bilan global qui vise à analyser les forces et les faiblesses du projet.
 \section{Conception}
 
 \subsection{Fonctionnalités du jeu} \label{cdc}
 \hspace*{1.5em}
-Les fonctionnalités du jeu correspondent aux différents points suivant: 
+Les fonctionnalités du jeu correspondent aux points suivants : 
 
 \begin{itemize}
-    \item \textbf{Modes de jeu variés :} Le jeu propose un mode \emph{Solo} orienté survie (le joueur doit éliminer un maximum de robots et affronter des boss 
-    apparaissant périodiquement) ainsi qu'un mode \emph{Multijoueur} compétitif en LAN ou via IP publique, où le premier à atteindre 25 éliminations l'emporte.
-    \item \textbf{Génération procédurale de niveaux :} Les labyrinthes sont générés aléatoirement à chaque partie. L'algorithme adapte d'ailleurs l'architecture 
-    selon le mode de jeu (espaces plus ouverts en multijoueur pour favoriser les affrontements à distance).
-    \item \textbf{Arsenal diversifié et balistique :} Les joueurs ont accès à quatre armes disposant de leurs propres modèles 3D : un Pistolet, un Fusil d'assaut, 
-    un Sniper et des Grenades. Le jeu gère un système de tirs par projectiles complet, incluant la cadence de tir, la capacité des chargeurs, les temps de 
-    rechargement et des mécaniques d'explosion pour les grenades.
-    \item \textbf{Intelligence Artificielle (IA) :} Les robots et les boss traquent le joueur grâce à une combinaison de "Raycasting" (calcul de ligne de vue) et 
-    d'un algorithme de recherche de chemin (BFS). Ils possèdent également des mécaniques d'esquive (salto).
-    \item \textbf{Éléments interactifs (Loot) :} Le joueur peut interagir avec des coffres répartis sur la carte pour regagner des points de vie lors des combats 
-    critiques.
-    \item \textbf{Personnalisation visuelle et Skybox :} Via le menu "Options", le joueur peut modifier dynamiquement le thème visuel du labyrinthe. Plusieurs 
-    ensembles de textures sont disponibles (neige, herbe, briques, lave) et sont accompagnés d'un ciel rendu dynamiquement (Skybox) via des \emph{shaders} 
-    personnalisés.
-    \item \textbf{Ensemble d'ambiances sonores :} Le jeu intègre un système audio complet gérant à la fois les musiques de fond (menu, jeu) et les bruitages 
-    contextuels (bruits de pas, tirs de différentes armes, rechargement, explosions, soins, et même des battements de cœur lorsque le joueur est critique en santé).
-    \item \textbf{Sauvegarde chiffrée :} Un système de sauvegarde local permet d'enregistrer la progression du joueur. Pour éviter la triche, les fichiers de 
-    sauvegarde (\emph{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
+    \item \textbf{Modes de jeu variés :} Le jeu propose un mode \emph{Solo} orienté survie (le joueur doit éliminer un maximum de robots et affronter des boss apparaissant périodiquement) ainsi qu'un mode \emph{Multijoueur} compétitif en LAN ou via IP publique, où le premier à atteindre 25 éliminations l'emporte.
+    \item \textbf{Génération procédurale de niveaux :} Les labyrinthes sont générés aléatoirement à chaque partie. L'algorithme adapte d'ailleurs l'architecture selon le mode de jeu (espaces plus ouverts en multijoueur pour favoriser les affrontements à distance).
+    \item \textbf{Arsenal diversifié et balistique :} Les joueurs ont accès à quatre armes disposant de leurs propres modèles 3D : un pistolet, un fusil d'assaut, un fusil de précision (sniper) et des grenades. Le jeu gère un système complet de tir par projectiles, incluant la cadence de tir, la capacité des chargeurs, les temps de rechargement et des mécaniques d'explosion pour les grenades.
+    \item \textbf{Intelligence Artificielle (IA) :} Les robots et les boss traquent le joueur grâce à une combinaison de \emph{raycasting} (calcul de la ligne de vue) et d'un algorithme de recherche de chemin (BFS). Ils possèdent également des mécaniques d'esquive (salto).
+    \item \textbf{Éléments interactifs (Loot) :} Le joueur peut interagir avec des coffres répartis sur la carte pour regagner des points de vie lors des combats critiques.
+    \item \textbf{Personnalisation visuelle et Skybox :} Via le menu "Options", le joueur peut modifier dynamiquement le thème visuel du labyrinthe. Plusieurs ensembles de textures sont disponibles (neige, herbe, briques, lave) et sont accompagnés d'un ciel rendu dynamiquement (\emph{skybox}) via des \emph{shaders} personnalisés.
+    \item \textbf{Ambiance sonore :} Le jeu intègre un système audio complet gérant à la fois les musiques de fond (menu, jeu) et les bruitages contextuels (bruits de pas, tirs de différentes armes, rechargements, explosions, soins, et même des battements de cœur lorsque la santé du joueur est critique).
+    \item \textbf{Sauvegarde chiffrée :} Un système de sauvegarde local permet d'enregistrer la progression du joueur. Pour éviter la triche, les fichiers de sauvegarde (\texttt{save.dat}) sont protégés par un chiffrement RC4 couplé à une somme de contrôle (\emph{checksum}).
 \end{itemize}
-
 
 \subsection{Repartition des tâches}
 \hspace*{1.5em}
-Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier main.c, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entitées, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de logs, permettant un débogage simplifié. Thomas a aussi gérer les thèmes du jeu, permettant d’avoir différents ensemble de textures de sol et mur. Il a également implémenté le HUD (heads-up display) permettant aux joueurs de visualiser ses statistiques.
+Dans le projet, les tâches ont été réparties dès le début et de façon assez claire. Thomas s’est occupé de la base conceptuelle du jeu. Il a créé le fichier \texttt{main.c}, et les initialisations du jeu : initialiser la caméra 3D, les bases des différentes entités, le labyrinthe… Il a aussi conçu les déplacements des joueurs. C’est lui qui s’est occupé de gérer les principaux paramètres de Raylib, la bibliothèque graphique. Il a aussi conçu le système de \emph{logs}, permettant un débogage simplifié. Thomas a aussi géré les thèmes du jeu, permettant d’avoir différents ensembles de textures de sol et de mur. Il a également implémenté le HUD (\emph{heads-up display}) permettant au joueur de visualiser ses statistiques.
 
-Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux robots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système “multijoueur” avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
+Corentin s’est occupé de la sauvegarde du jeu. Il a conçu le programme permettant de chiffrer l’état actuel du jeu dans un fichier avec clé de chiffrement, pour ne pas que l’on puisse modifier son état actuel. Il a également créé l’IA qui permet aux robots de chercher le joueur et de tirer. Le système de tir et de collision vient également de lui. Sa plus grosse contribution reste le système "multijoueur" avec le réseau. Il s’est occupé d’établir la connexion et le partage de données entre 2 machines, permettant à deux personnes de jouer simultanément sans problème de latence ou de bug.
 
-Hugues s’est occupé de la partie visuel du projet. Il a implémenté les modèles d’armes et ceux des robots ainsi que des coffres (soin et armes) et du joueur. Il a développé le système d’armes, permettant d'en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait l’HUD permettant d’afficher les armes débloquées par le joueur.
+Hugues s’est occupé de la partie visuelle du projet. Il a implémenté les modèles d’armes et ceux des robots ainsi que des coffres (soins et armes) et du joueur. Il a développé le système d’armes, permettant d'en débloquer au fur et à mesure dans des caisses ou en marquant plus de points. Il a par ailleurs conçu la physique des munitions, notamment celle de la grenade avec le rebond. Il a aussi fait le HUD permettant d’afficher les armes débloquées par le joueur.
 
-Le diagramme de Gantt présent en annexe (cf \autoref{fig:gantt}) présente cette répartition des tâches sur la durée du projet, du 30 janvier au 17 avril 2026.
-
+Le diagramme de Gantt présent en annexe (cf. \autoref{fig:gantt}) présente cette répartition des tâches sur la durée du projet, du 30 janvier au 17 avril 2026.
 
 \subsection{Outils utilisés}
-Afin de mener à bien ce projet, nous nous avons utilisés un grand nombres d'outils informatiques:
+Afin de mener à bien ce projet, nous avons utilisé un grand nombre d'outils informatiques :
 
 \begin{itemize}
-    \item \textbf{Git} (Contrôle de version) : Indispensable pour notre organisation, Git nous a permis de travailler simultanément sur la même base de code 
-    (répartie sur nos branches respectives) tout en traçant l'historique des modifications et en évitant les conflits majeurs.
-    \item \textbf{Diagramme de Gantt} (Gestion de projet) : Il a été le support principal de notre planification temporelle, nous permettant de visualiser 
-    l'avancement global et d'assigner clairement les tâches à chaque membre de l'équipe.
-    \item \textbf{Raylib} (Moteur graphique) : Cette bibliothèque C a été choisie pour gérer la boucle principale du jeu. Elle a considérablement facilité la 
-    gestion du fenêtrage, des entrées utilisateur (clavier/souris) et le rendu des environnements 2D et 3D.
+    \item \textbf{Git} (Contrôle de version) : Indispensable pour notre organisation, Git nous a permis de travailler simultanément sur la même base de code (répartie sur nos branches respectives) tout en traçant l'historique des modifications et en évitant les conflits majeurs.
+    \item \textbf{Diagramme de Gantt} (Gestion de projet) : Il a été le support principal de notre planification temporelle, nous permettant de visualiser l'avancement global et d'assigner clairement les tâches à chaque membre de l'équipe.
+    \item \textbf{Raylib} (Moteur graphique) : Cette bibliothèque C a été choisie pour gérer la boucle principale du jeu. Elle a considérablement facilité la gestion du fenêtrage, des entrées utilisateur (clavier/souris) et le rendu des environnements 2D et 3D.
     \item \textbf{Overleaf et Texmaker} (Rédaction) : Ces éditeurs LaTeX en ligne ont été nos outils de prédilection pour rédiger ce rapport de manière collaborative.
-    \item \textbf{Doxygen} (Documentation) : En standardisant nos commentaires directement dans le code source, Doxygen nous a permis de générer automatiquement 
-    une documentation technique complète et navigable.
-    \item \textbf{Instagram} (Communication) : Notre canal de messagerie instantanéeprincipal pour échanger rapidement des idées, partager des problèmes techniques et coordonner nos sessions de travail.
+    \item \textbf{Doxygen} (Documentation) : En standardisant nos commentaires directement dans le code source, Doxygen nous a permis de générer automatiquement une documentation technique complète et navigable.
+    \item \textbf{Instagram} (Communication) : Notre canal de messagerie instantanée principal pour échanger rapidement des idées, partager des problèmes techniques et coordonner nos sessions de travail.
 \end{itemize}
 
 
@@ -146,7 +128,7 @@ Afin de mener à bien ce projet, nous nous avons utilisés un grand nombres d'ou
 \hspace*{1.5em}
 Cette section pose les bases du projet en détaillant son organisation. Elle présente deux aspects fondamentaux : d'une part, le rangement des fichiers dans les différents dossiers, et d'autre part, la logique globale qui les relie (l'architecture logicielle). Avoir cette vue d'ensemble sur le cœur du code permet de mieux appréhender la façon dont les différents modules du jeu communiquent et fonctionnent ensemble.
 
-Le dépôt du projet (cf. \cite{Github}) est structuré en cinq dossiers principaux : \verb|assets|, \verb|doc|, \verb|lib|, \verb|rapport|, \verb|src| et \verb|test|. L'intégralité du code source est regroupée dans le dossier \verb|src/|, qui est segmenté en plusieurs fichiers.
+Le dépôt du projet (cf. \cite{Github}) est structuré en six dossiers principaux : \verb|assets|, \verb|doc|, \verb|lib|, \verb|rapport|, \verb|src| et \verb|test|. L'intégralité du code source est regroupée dans le dossier \verb|src/|, qui est segmenté en plusieurs fichiers.
 
 Concernant le fonctionnement de \verb|main.c|, il sert de tour de contrôle au projet. Il s'appuie sur une variable d'état qui détermine ce qui doit être traité et affiché à l'écran.
 
@@ -173,7 +155,6 @@ Pour le cas spécifique de \verb|menu.c| (cf. \autoref{image menu}), nous avons 
     \caption{Capture d'écran du menu principal}
     \label{image menu}
 \end{figure}
-
 
 \subsection{Création de la carte}\label{map}
 \hspace*{1.5em}
@@ -490,7 +471,6 @@ place. Pour un projet de cette ampleur, ce compromis est amplement suffisant pou
 
 \subsection{Interface}\label{Interface}
 \hspace*{1.5em}
-
 Cette partie regroupe les différents aspects graphiques et audio que le joueur rencontre. Cela va du menu principal jusqu'à la page de fin de jeu.
 
 Pour les options et l'audio, une idée de choix de différents thèmes (lave, glace, classique) est proposée au joueur afin de diversifier l'environnement de jeu. De même, il existe une palette variée d'effets sonores ou de musiques qui vise à rendre plus immersif un moment de jeu.

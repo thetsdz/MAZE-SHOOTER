@@ -8,7 +8,7 @@
 \contentsline {subsection}{\numberline {3.1}Arborescence du code et structure du menu}{5}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Création de la carte}{6}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Joueur, déplacement et gestion de la vie}{7}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Ennemis du joueur}{8}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.4}Ennemis du joueur}{9}{subsection.3.4}%
 \contentsline {subsection}{\numberline {3.5}Système d'arme}{11}{subsection.3.5}%
 \contentsline {subsection}{\numberline {3.6}Système de sauvegarde crypté}{13}{subsection.3.6}%
 \contentsline {subsection}{\numberline {3.7}Multijoueur, réseau}{14}{subsection.3.7}%
