@@ -158,9 +158,7 @@ Pour le cas spécifique de \verb|menu.c| (cf. \autoref{image menu}), nous avons 
 
 \subsection{Création de la carte}\label{map}
 \hspace*{1.5em}
-
-La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille
-de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs (cf \autoref{labyrinthe}).
+La carte du jeu est un labyrinthe 3D généré de manière procédurale à partir d'une grille de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs (cf. \autoref{labyrinthe}).
 
 \begin{figure}[H]
     \centering
@@ -171,96 +169,28 @@ de \texttt{NUM\_BLOCKS} $\times$ \texttt{NUM\_BLOCKS} blocs (cf \autoref{labyrin
     \label{labyrinthe}
 \end{figure}
 
- Chaque bloc possède une
-position dans l'espace, des dimensions fixes $(3 \times 6 \times 3)$ et un état binaire :
-\textbf{mur} (\texttt{isWall = 1}) ou \textbf{passage} (\texttt{isWall = 0}).
+Chaque bloc possède une position dans l'espace, des dimensions fixes $(3 \times 6 \times 3)$ et un état binaire : \textbf{mur} (\texttt{isWall = 1}) ou \textbf{passage} (\texttt{isWall = 0}).
 
-La génération commence par l'initialisation de tous les blocs en murs, disposés en grille
-avec un espacement de 3 unités. L'algorithme utilisé pour creuser les passages est un
-parcours en profondeur d'abord (DFS) itératif, implémenté à l'aide d'une pile maison
-(\texttt{pile.h}) afin d'éviter tout débordement de pile récursive. En partant de la
-case $(1, 1)$, l'algorithme recherche à chaque étape les voisins situés à une
-\textbf{distance de 2 cases} qui sont encore des murs. Ce saut de deux cases est
-essentiel : il garantit qu'un bloc mur sépare toujours deux cellules adjacentes, ce qui
-est la condition nécessaire pour obtenir un labyrinthe valide. Un voisin est alors
-choisi aléatoirement, la cellule cible est ouverte, ainsi que le bloc intermédiaire qui
-la sépare de la case courante. Si aucun voisin valide n'est disponible, l'algorithme
-\textbf{dépile} (\textit{backtrack}) pour revenir à une case précédente disposant encore
-de voisins non visités. Ce processus se répète jusqu'à ce que la pile soit vide, garantissant
-que chaque cellule de la grille est visitée exactement une fois et que le labyrinthe
-généré est parfait, c'est-à-dire sans cycle et avec un chemin unique entre deux cases.
+La génération commence par l'initialisation de tous les blocs en murs, disposés en grille avec un espacement de 3 unités. L'algorithme utilisé pour creuser les passages est un parcours en profondeur d'abord (DFS) itératif, implémenté à l'aide d'une pile maison (\texttt{pile.h}) afin d'éviter tout débordement de pile récursive. En partant de la case $(1, 1)$, l'algorithme recherche à chaque étape les voisins situés à une \textbf{distance de 2 cases} qui sont encore des murs. Ce saut de deux cases est essentiel : il garantit qu'un bloc mur sépare toujours deux cellules adjacentes, ce qui est la condition nécessaire pour obtenir un labyrinthe valide. Un voisin est alors choisi aléatoirement, la cellule cible est ouverte, ainsi que le bloc intermédiaire qui la sépare de la case courante. Si aucun voisin valide n'est disponible, l'algorithme \textbf{dépile} (\textit{backtrack}) pour revenir à une case précédente disposant encore de voisins non visités. Ce processus se répète jusqu'à ce que la pile soit vide, garantissant que chaque cellule de la grille est visitée exactement une fois et que le labyrinthe généré est parfait, c'est-à-dire sans cycle et avec un chemin unique entre deux cases.
 
-En mode multijoueur, une variante \texttt{creer\_lab\_multi} est utilisée. Elle génère
-d'abord un labyrinthe classique, puis modifie le tiers central de la grille pour créer
-une grande arène ouverte. Dans cette zone, 90\% des blocs sont vidés pour laisser un
-espace dégagé, tandis que les 10\% restants sont conservés comme obstacles aléatoires
-afin d'animer l'espace et d'offrir des possibilités tactiques aux joueurs.
+En mode multijoueur, une variante \texttt{creer\_lab\_multi} est utilisée. Elle génère d'abord un labyrinthe classique, puis modifie le tiers central de la grille pour créer une grande arène ouverte. Dans cette zone, 90~\% des blocs sont vidés pour laisser un espace dégagé, tandis que les 10~\% restants sont conservés comme obstacles aléatoires afin d'animer l'espace et d'offrir des possibilités tactiques aux joueurs.
 
-L'affichage de la carte est assuré par \texttt{DrawLevel}, qui parcourt l'intégralité de
-la grille à chaque frame et dessine chaque bloc selon son état. Les blocs murs sont
-rendus avec un modèle 3D haut (\textit{scale} $3 \times 6 \times 3$), tandis que les
-passages sont affichés comme une dalle de sol ultra-plate (\textit{scale}
-$3 \times 0{,}001 \times 3$). Pour éviter les artefacts visuels, les blocs ouverts lors
-de la génération ont leur coordonnée $y$ fixée à $-20$, les dissimulant ainsi sous le sol,
-seule la dalle étant rendue à $y = 0$.
-
+L'affichage de la carte est assuré par \texttt{DrawLevel}, qui parcourt l'intégralité de la grille à chaque frame et dessine chaque bloc selon son état. Les blocs murs sont rendus avec un modèle 3D haut (\textit{scale} $3 \times 6 \times 3$), tandis que les passages sont affichés comme une dalle de sol ultra-plate (\textit{scale} $3 \times 0{,}001 \times 3$). Pour éviter les artefacts visuels, les blocs ouverts lors de la génération ont leur coordonnée $y$ fixée à $-20$, les dissimulant ainsi sous le sol, seule la dalle étant rendue à $y = 0$.
 
 
 
 
 \subsection{Joueur, déplacement et gestion de la vie}
 \hspace*{1.5em}
-Le joueur est représenté par une structure \texttt{Entity} initialisée par \texttt{InitPlayer},
-qui définit l'ensemble de ses attributs de base : une position de départ en hauteur
-(\texttt{y = 10}), 100 points de vie sur un maximum de 100, 3 vies, une taille de 1 unité
-utilisée pour les calculs de collision, ainsi qu'une arme de départ (le pistolet) avec ses
-munitions chargées au maximum. Un chronomètre de tir \texttt{chronoTir} est également initialisé
-à 0 pour permettre de tirer immédiatement dès le début de la partie. Par défaut, aucune arme
-supplémentaire n'est débloquée (\texttt{armeUnlock} initialisé à $-1$).
+Le joueur est représenté par une structure \texttt{Entity} initialisée par \texttt{InitPlayer}, qui définit l'ensemble de ses attributs de base : une position de départ en hauteur (\texttt{y = 10}), 100 points de vie sur un maximum de 100, 3 vies, une taille de 1 unité utilisée pour les calculs de collision, ainsi qu'une arme de départ (le pistolet) avec ses munitions chargées au maximum. Un chronomètre de tir \texttt{chronoTir} est également initialisé à $0$ pour permettre de tirer immédiatement dès le début de la partie. Par défaut, aucune arme supplémentaire n'est débloquée (\texttt{armeUnlock} initialisé à $-1$).
 
-Le déplacement et la mise à jour de l'état du joueur sont entièrement gérés à chaque frame par
-\texttt{UpdatePlayer}. L'orientation de la caméra est contrôlée à la souris via deux angles :
-le \texttt{yaw}, qui correspond à la rotation horizontale gauche/droite, et le \texttt{pitch},
-qui correspond à l'inclinaison verticale haut/bas. Ce dernier est borné à $\pm 1{,}5$ radians
-(environ $\pm 85°$) afin d'éviter un retournement complet de la caméra. À partir du \texttt{yaw},
-un vecteur \textbf{forward} est calculé \textit{uniquement} sur le plan horizontal $(XZ)$, ce qui
-garantit que le joueur se déplace toujours à plat, sans s'envoler, même lorsqu'il regarde vers
-le ciel ou vers le sol.
+Le déplacement et la mise à jour de l'état du joueur sont entièrement gérés à chaque frame par \texttt{UpdatePlayer}. L'orientation de la caméra est contrôlée à la souris via deux angles : le \texttt{yaw}, qui correspond à la rotation horizontale gauche/droite, et le \texttt{pitch}, qui correspond à l'inclinaison verticale haut/bas. Ce dernier est borné à $\pm 1{,}5$ radians (environ $\pm 85^\circ$) afin d'éviter un retournement complet de la caméra. À partir du \texttt{yaw}, un vecteur \textbf{forward} est calculé \textit{uniquement} sur le plan horizontal $(XZ)$, ce qui garantit que le joueur se déplace toujours à plat, sans s'envoler, même lorsqu'il regarde vers le ciel ou vers le sol.
 
-Les touches directionnelles (\texttt{W/A/S/D} ou les flèches) construisent un vecteur de
-mouvement en combinant le vecteur \textbf{forward} et son vecteur orthogonal pour les
-déplacements latéraux. Ce vecteur est ensuite \textbf{normalisé} avant d'être multiplié par la
-vitesse, ce qui empêche le joueur de se déplacer plus vite en diagonale qu'en ligne droite —
-sans cette normalisation, la longueur du vecteur diagonal serait $\sqrt{2} \approx 1{,}41$ fois
-supérieure. Les sons de pas sont également déclenchés ou mis en pause selon que le joueur est
-au sol ou en l'air. La gravité est simulée en décrémentant \texttt{velocityY} d'une valeur fixe
-à chaque frame, ce qui produit une accélération progressive vers le bas. Le joueur peut sauter
-en appuyant sur \texttt{ESPACE} uniquement lorsqu'il est détecté comme étant au sol
-(\texttt{onGround = true}), ce qui empêche les sauts successifs en l'air.
+Les touches directionnelles (\texttt{W/A/S/D} ou les flèches) construisent un vecteur de mouvement en combinant le vecteur \textbf{forward} et son vecteur orthogonal pour les déplacements latéraux. Ce vecteur est ensuite \textbf{normalisé} avant d'être multiplié par la vitesse, ce qui empêche le joueur de se déplacer plus vite en diagonale qu'en ligne droite — sans cette normalisation, la longueur du vecteur diagonal serait $\sqrt{2} \approx 1{,}41$ fois supérieure. Les sons de pas sont également déclenchés ou mis en pause selon que le joueur est au sol ou en l'air. La gravité est simulée en décrémentant \texttt{velocityY} d'une valeur fixe à chaque frame, ce qui produit une accélération progressive vers le bas. Le joueur peut sauter en appuyant sur \texttt{ESPACE} uniquement lorsqu'il est détecté comme étant au sol (\texttt{onGround = true}), ce qui empêche les sauts successifs en l'air.
 
-La gestion des collisions consiste à calculer une position future \texttt{nextPos} avant de
-l'appliquer, puis à vérifier si cette position entre en conflit avec les blocs de la scène ou
-les ennemis. En cas de collision, trois situations sont distinguées : une chute sur le dessus
-d'un bloc, qui pose le joueur à sa surface et réinitialise \texttt{velocityY} à 0 en activant
-\texttt{onGround} ; un choc par le dessous lors d'un saut, qui stoppe immédiatement la montée ;
-ou une collision latérale contre un mur. Dans ce dernier cas, l'axe de \textbf{moindre
-pénétration} est identifié en comparant les chevauchements sur $X$ et $Z$, et le joueur est
-repoussé uniquement sur cet axe en laissant l'autre intact, produisant un effet de
-\textbf{glissement fluide} le long des murs. Ce même système est appliqué aux interactions
-avec les ennemis, avec en plus la possibilité d'atterrir sur la tête d'un adversaire et d'y
-effectuer un nouveau saut. Enfin, la caméra Raylib est recalculée à chaque frame en positionnant
-son origine légèrement au-dessus du centre du joueur (\texttt{+0.5f} sur $Y$ pour simuler le
-niveau des yeux), et son point cible est obtenu en additionnant la position et le vecteur
-directionnel 3D complet, calculé en coordonnées sphériques à partir du \texttt{yaw} et du
-\texttt{pitch}.
+La gestion des collisions consiste à calculer une position future \texttt{nextPos} avant de l'appliquer, puis à vérifier si cette position entre en conflit avec les blocs de la scène ou les ennemis. En cas de collision, trois situations sont distinguées : une chute sur le dessus d'un bloc, qui pose le joueur à sa surface et réinitialise \texttt{velocityY} à $0$ en activant \texttt{onGround} ; un choc par le dessous lors d'un saut, qui stoppe immédiatement la montée ; ou une collision latérale contre un mur. Dans ce dernier cas, l'axe de \textbf{moindre pénétration} est identifié en comparant les chevauchements sur $X$ et $Z$, et le joueur est repoussé uniquement sur cet axe en laissant l'autre intact, produisant un effet de \textbf{glissement fluide} le long des murs. Ce même système est appliqué aux interactions avec les ennemis, avec en plus la possibilité d'atterrir sur la tête d'un adversaire et d'y effectuer un nouveau saut. Enfin, la caméra Raylib est recalculée à chaque frame en positionnant son origine légèrement au-dessus du centre du joueur (\texttt{+0.5f} sur $Y$ pour simuler le niveau des yeux), et son point cible est obtenu en additionnant la position et le vecteur directionnel 3D complet, calculé en coordonnées sphériques à partir du \texttt{yaw} et du \texttt{pitch}.
 
-Le joueur a également la possibilité de soigner, en passant sur des caisses disséminées partout dans le labyrinthe.
-Elles sont au nombre de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50\% de chances de se soigner
-de 20 points de vie, 35\% pour 40, 14\% pour 60 et 1\% pour 100. Le joueur peut aussi récupérer des armes
-dans les caisses. Il a ainsi 70\% de chance de ne rien récupérer, 18 \% pour un sniper,
-9\% pour le fusil d'assaut et 1\% pour la grenade. Une fois une caisse récupérée, elle disparaît
-pour se remettre à un autre endroit aléatoire du labyrinthe. Cette mécanique de caisse de soin et d'armes
-est développée en mode solo mais également en mode multijoueur.
+Le joueur a également la possibilité de se soigner en passant sur des caisses disséminées partout dans le labyrinthe. Elles sont au nombre de 10 et apparaissent aléatoirement. Quand on passe dessus, il y a 50~\% de chances de se soigner de 20 points de vie, 35~\% pour 40, 14~\% pour 60 et 1~\% pour 100. Le joueur peut aussi récupérer des armes dans les caisses. Il a ainsi 70~\% de chances de ne rien récupérer, 18~\% pour un sniper, 9~\% pour le fusil d'assaut et 1~\% pour la grenade. Une fois une caisse récupérée, elle disparaît pour se replacer à un autre endroit aléatoire du labyrinthe. Cette mécanique de caisses de soins et d'armes est développée en mode solo mais également en mode multijoueur.
 
 
 
@@ -325,7 +255,7 @@ du labyrinthe, maintenant ainsi une pression constante sur le joueur. Les boss o
 
 \subsection{Système d'arme}\label{sys_arme}
 \hspace*{1.5em}
-Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appellations suivantes : projectile ou munitions. La première sera davantage utilisée pour les collisions, la seconde pour la capacité du chargeur de l'arme. 
+Cette section vise à expliquer comment les armes et leurs munitions sont gérées. On utilisera l'une des appellations suivantes : projectile ou munition. La première sera davantage utilisée pour les collisions, la seconde pour la capacité du chargeur de l'arme. 
 
 Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet. Il existe quatre armes différentes : 
 \begin{enumerate}
@@ -335,7 +265,7 @@ Faisons un rapide tour d'horizon des fonctionnalités disponibles sur ce sujet. 
     \item une grenade.
 \end{enumerate}
 
-Chacune des armes dispose de ses propres caractéristiques (dégâts, capacité du chargeur, cadence de tir, munitions, ...). Dans le jeu, le joueur ne commence qu'avec la première arme. Pour en obtenir d'autres, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou récupérer des coffres. 
+Chacune des armes dispose de ses propres caractéristiques (dégâts, capacité du chargeur, cadence de tir, munitions...). Dans le jeu, le joueur ne commence qu'avec la première arme. Pour en obtenir d'autres, il doit satisfaire certaines conditions : augmenter son score en tuant d'autres robots, ou récupérer des coffres. 
 
 Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sniper, le fusil et la grenade ; cet ordre va de l'arme la moins forte à la plus forte. Mentionnons aussi qu'un modèle par arme, et par projectile, est présent (voir \autoref{image armes}). 
 
@@ -372,7 +302,7 @@ Les paliers de score 5, 10 et 20 permettent de récupérer respectivement le sni
 
 Pour recharger les munitions, le choix qui est proposé dans ce jeu est d'utiliser la touche \verb|R|. Une limite de rechargement pourrait être implémentée, mais il faudrait alors d'autres fonctionnalités pour que le joueur puisse avancer jusqu'au boss s'il est à court de munitions trop tôt.
 
-Dans la partie mise à jour des variables globales, (cf. \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
+Dans la partie mise à jour des variables globales (cf. \secref{Logique du jeu}), deux grandes fonctions interviennent : \verb|ObtenirModeleArme(...)| et \verb|ChangementArme(...)|. 
 
 La première récupère les caractéristiques de l'arme nécessaires pour tous les changements qu'opérera la seconde fonction. L'exemple suivant donne l'idée de ce qui se passe :
 \begin{exemple}
@@ -381,11 +311,11 @@ La première récupère les caractéristiques de l'arme nécessaires pour tous l
     donne au joueur.
 \end{exemple}
 
-Concernant les projectiles, comme abordé dans la \secref{Ennemis}, il faut comprendre que les trois dimensions du jeu se représentent bien grâce à RAYLIB avec des vecteurs en trois dimensions ; l'analogie avec les axes X, Y et Z est pertinente. \`A chaque projectile on associe : un vecteur \verb|pos|, un vecteur \verb|vel|, une valeur booléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
+Concernant les projectiles, comme abordé dans la \secref{Ennemis}, il faut comprendre que les trois dimensions du jeu se représentent bien grâce à Raylib avec des vecteurs en trois dimensions ; l'analogie avec les axes $X, Y$ et $Z$ est pertinente. À chaque projectile on associe : un vecteur \verb|pos|, un vecteur \verb|vel|, une valeur booléenne \verb|actif| et un \verb|float radius| (pour les bords du projectile). Les vecteurs définissent une position et une vitesse.
 
 Ensuite, il a été choisi de représenter tous les projectiles présents dans le jeu par un tableau. Une itération sur ce tableau permet alors de tester les collisions avec les murs, les robots et le sol (i.e. une cible). Cette grande boucle est d'une complexité $O(n^3)$ ; en effet, elle contient deux sous-boucles pour tester si les projectiles touchent un mur, et une autre pour les 18 robots. 
 
-Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de tests grâce à un \verb|break| pour la triple boucle. Et au final, le nombre maximum de projectiles actifs et de murs est respectivement de 50 et 51x51 (cf. \secref{map}). Donc dans l'ambition du jeu qui a été la nôtre, il n'y a aucun impact. 
+Heureusement, le booléen \verb|actif| permet de beaucoup amoindrir le nombre de tests grâce à un \verb|break| pour la triple boucle. Et au final, le nombre maximum de projectiles actifs et de murs est respectivement de 50 et $51 \times 51$ (cf. \secref{map}). Donc dans l'ambition du jeu qui a été la nôtre, il n'y a aucun impact. 
 
 Pour revenir aux collisions, la logique appliquée aux projectiles, excepté la grenade, est la suivante : on teste si le bord du projectile touche une cible ; si oui, on change alors la valeur du booléen.
 
@@ -481,7 +411,7 @@ Lorsque la touche R est pressée, un son de rechargement de l'arme se produit.
 Ensuite, parmi les assets, un aspect graphique important nous intéresse, il s'agit :
 \begin{itemize}
     \item des textures 2D, qui sont des images au format .png
-    \item des modèles 3D, qui sont au format .glb, en réalité un fichier .glb contient sa propre texture
+    \item des modèles 3D, qui sont au format .glb, en réalité, un fichier .glb contient sa propre texture
 \end{itemize}
 La logique de dessin est la suivante : d'abord on dessine tous les éléments 3D, ensuite seulement, on rajoute des éléments 2D par-dessus.
 
@@ -530,29 +460,29 @@ Pour finir sur cette partie, notons qu'un changement de modèle a lieu pour la g
 
 
 \section{Résultats et conclusion}
-L'idée qui se cache derrière ce projet était d'avoir un jeu FPS dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le Gantt prévisionnel des tâches ont été atteints. 
+L'idée qui se cache derrière ce projet était d'avoir un jeu FPS dans un labyrinthe. Comme le lecteur aura pu le constater dans ce rapport, les objectifs initiaux fixés sur le diagramme de Gantt prévisionnel des tâches ont été atteints. 
 
-En effet, il existe bien les deux modes de jeu prévus : multijoueur et solo, dans lequel un joueur évolue à la première personne et peut tirer sur des ennemis ; et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et visuels sont proposés. De même que des tests ont été apportés sur le cryptage et le réseau. Donc les objectifs initiaux  sont atteints. En cela c'est une force car quasiment aucune impasse de fonctionnalité prévue initialement n'a été faite.
+En effet, il existe bien les deux modes de jeu prévus : multijoueur et solo, dans lesquels un joueur évolue à la première personne et peut tirer sur des ennemis, et cela dans un labyrinthe généré aléatoirement. Aussi, des sons et des visuels sont proposés, de même que des tests ont été effectués sur le cryptage et le réseau. Donc les objectifs initiaux sont atteints. En cela, c'est une force car quasiment aucune impasse sur une fonctionnalité prévue initialement n'a été faite.
 
-En réalité, certaines fonctionnalités en plus de ce qui était prévu initialement, ont été ajoutées. En effet le coffre qui permet au joueur de récupérer de la vie et des armes, ainsi que le boss, n'étaient pas prévus. 
+En réalité, certaines fonctionnalités, en plus de ce qui était prévu initialement, ont été ajoutées. En effet, le coffre qui permet au joueur de récupérer de la vie et des armes, ainsi que le boss, n'étaient pas prévus. 
 
-Cependant, ce projet peut être améliorable, en effet, en premier lieu on pourrait lister une longue liste de contenu à rajouter pour en faire un jeu plus attractif :
+Cependant, ce projet peut être amélioré ; en effet, en premier lieu, on pourrait lister une longue liste de contenus à rajouter pour en faire un jeu plus attractif :
 \begin{itemize}
-	\item ajout d'un mode histoire plus complet, avec un système de niveau
-	\item ajout de davantage d'armes dans le système d'arme
-	\item interface d'inventaire poussée
-	\item création et loot d'items aidant le joueur
-	\item ...
+    \item ajout d'un mode histoire plus complet, avec un système de niveaux ;
+    \item ajout de davantage d'armes dans le système d'armes ;
+    \item interface d'inventaire poussée ;
+    \item création et \emph{loot} d'items aidant le joueur ;
+    \item ...
 \end{itemize}
-Cette liste n'a de fin que celle de notre imagination. Ce projet a été fait par des étudiants en second cycle universitaire donc, ici, la limite de ce projet a été donnée par les dates de rendu imposées.
+Cette liste n'a de fin que celle de notre imagination. Ce projet a été réalisé par des étudiants en premier cycle universitaire, donc, ici, la limite de ce projet a été donnée par les dates de rendu imposées.
  
-De plus,  des choix d'implémentation autres, peut-être plus performants, pourraient être faits. Pour cela il y a les collisions des projectiles qui on l'a vu  dans la \secref{sys_arme}, même si ce système fonctionne parfaitement bien pour l'ambition du projet, la complexité est élevée,  donc un meilleur algorithme pourrait être à trouver.
+De plus, d'autres choix d'implémentation, peut-être plus performants, pourraient être faits. Pour cela, il y a les collisions des projectiles qui, comme on l'a vu dans la \secref{sys_arme}, même si ce système fonctionne parfaitement bien pour l'ambition du projet, présentent une complexité élevée ; donc un meilleur algorithme pourrait être à trouver.
 
-Pour la recherche du joueur par les robots, il existe des méthodes de recherche plus performantes à l'aide d'une fonction heuristique  (exemple : algorithme A* ou A star).
+Pour la recherche du joueur par les robots, il existe des méthodes de recherche plus performantes à l'aide d'une fonction heuristique (exemple : algorithme A* ou \emph{A-star}).
 
 Concernant le cahier des charges, il a aussi été respecté, je renvoie à la \secref{cdc} pour consulter la liste.
 
-Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était un modèle en cascade. Ce modèle certes classique était adapté au profil de groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc se projeter trop loin avec un modèle en V, en supposant par exemple un cahier des charges très abouti, n'aurait pas été possible.
+Enfin, concluons ce rapport sur le modèle linéaire choisi, qui était un modèle en cascade. Ce modèle certes classique était adapté au profil du groupe réalisant ce projet, car ils n'ont que peu d'expérience dans le monde du jeu vidéo. Donc, se projeter trop loin avec un modèle en V, en supposant par exemple un cahier des charges très abouti, n'aurait pas été possible.
 
 \newpage
 \subsection{Bibliographie}
