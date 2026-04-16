@@ -574,7 +574,7 @@ Lien vers la page du site Poly Pizza : \href{https://poly.pizza/}{https://poly.p
 \appendix
 \section{Annexes}
 
-\subsection{Outils utilisés}
+\subsection{Tests}
 
 Des tests ont aussi été implémentés pour vérifier que les fonctions de \hyperref[testCrypt]{cryptage} et de \hyperref[testReseau]{réseau} fonctionnent comme prévu. 
 Les tests effectués sont les suivants :
@@ -623,8 +623,58 @@ Les tests effectués sont les suivants :
     \label{testReseau}
 \end{table}
 
+\subsection{Débogage avec GDB}
 
+\subsubsection*{Mise en contexte}
+Au cours du développement du projet en langage C, nous avons été confrontés à plusieurs reprises à des erreurs liées à la gestion de la mémoire. Ces erreurs se traduisent généralement par des arrêts soudains du programme (les fameuses erreurs de segmentation ou \emph{Segmentation fault}). Afin d'identifier, de comprendre et de corriger ces dysfonctionnements de manière efficace, nous avons utilisé l'outil d'analyse \textbf{GDB} (GNU Debugger). 
 
+Pour illustrer notre démarche technique de résolution de bugs, nous présentons ici un cas concret : un plantage qui survenait en cours de partie lors d'une action spécifique du joueur (l'ajout de points de score pour le débogage via la touche 'M').
+
+\subsubsection*{Déroulement de l'investigation}
+
+\textbf{Étape 1 : Préparation de l'environnement} \\
+Dans un premier temps, le programme a été nettoyé puis recompilé via notre \texttt{Makefile} avec la règle spécifique au débogage (activant les \emph{flags} \texttt{-g3 -O0}). Ces options sont cruciales : elles désactivent les optimisations du compilateur et incluent les symboles de débogage, ce qui permet à GDB de faire le lien direct entre les adresses mémoire fautives et nos lignes de code source en C. Nous avons ensuite attaché GDB à notre exécutable.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/debuggage/debutDebug.png}
+    \caption{Initialisation de la session GDB sur l'exécutable du jeu.}
+    \label{fig:gdb1}
+\end{figure}
+
+\textbf{Étape 2 : Reproduction et interception du plantage} \\
+Une fois le jeu lancé depuis l'invite GDB avec la commande \texttt{run}, nous avons joué normalement puis reproduit l'action fautive en appuyant sur la touche 'M'. Le programme s'est immédiatement interrompu. GDB a parfaitement intercepté le crash, signalant un \texttt{SIGSEGV} (Segmentation fault). Cette étape nous a permis de confirmer que l'erreur ne provenait pas de l'initialisation du jeu, mais bien d'un problème d'exécution (runtime) lié à l'événement de la touche.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/debuggage/ErreurDuProgramme.png}
+    \caption{Interception en temps réel de l'erreur de segmentation par GDB.}
+    \label{fig:gdb2}
+\end{figure}
+
+\textbf{Étape 3 : Analyse de la pile d'appels (\emph{Backtrace})} \\
+Pour comprendre l'origine exacte de la faille mémoire, nous avons utilisé la commande \texttt{bt} (\emph{backtrace}). L'analyse a révélé que le plantage se produisait à un très bas niveau, dans la fonction système \texttt{\_\_memcpy\_avx\_unaligned\_erms}, avec une impossibilité d'accéder à l'adresse mémoire \texttt{0x7ffffffe6f98}. 
+
+L'investigation de la pile d'appels nous a permis de remonter jusqu'à notre fonction \texttt{UpdateGame}. L'erreur était causée par un appel à la fonction \texttt{sprintf}. Un pointeur de chaîne de caractères (\texttt{char *debug\_msg;}) avait été déclaré mais l'allocation mémoire correspondante (\texttt{malloc}) avait été oubliée. Le pointeur contenait donc une adresse aléatoire "poubelle", et lorsque \texttt{sprintf} a tenté d'y écrire via \texttt{memcpy}, le système d'exploitation a bloqué cet accès illégal, provoquant le crash.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/debuggage/verificationProbleme.png}
+    \caption{Affichage de la pile d'appels (\texttt{bt}) révélant l'accès mémoire invalide.}
+    \label{fig:gdb3}
+\end{figure}
+
+\textbf{Étape 4 : Application du correctif et validation} \\
+Suite à cette analyse ciblée, la correction dans \texttt{updategame.c} a été immédiate. Au lieu d'utiliser un pointeur non alloué, nous avons alloué un tableau de caractères statique directement sur la pile de la fonction (\texttt{char debug\_msg[50];}). 
+
+Après recompilation, une nouvelle session de tests sous GDB a permis de valider notre correctif : la touche 'M' fonctionne désormais parfaitement, et le joueur peut quitter le programme de manière standard sans déclencher de nouvelle erreur de segmentation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/debuggage/problemeResolu.png}
+    \caption{Vérification de la stabilité du programme après correction du pointeur.}
+    \label{fig:gdb4}
+\end{figure}
 
 \begin{figure}[htbp]
 	\includegraphics[width=\textwidth]{./images/armes/photo_coffre.png}
